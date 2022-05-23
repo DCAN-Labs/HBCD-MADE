@@ -2,7 +2,7 @@ function check_if_plugins_are_present(ext)
 %CHECK_IF_PLUGINS_ARE_PRESENT helper function to check if all plugins needed
 %by MADE are present
 if exist('eeglab','file')==0
-    error(['Please make sure EEGLAB is on your Matlab path. Please see EEGLAB' ...
+    error(['Please make sure EEGLAB is on your Matlab path. Please see EEGLAB ' ...
         'wiki page for download and instalation instructions']);
 end
 
