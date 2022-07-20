@@ -132,12 +132,44 @@ for run=1:length(datafile_names)
     highpass = s.highpass; % High-pass frequency
     lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
 
+    % 8. Are you processing task-related or resting-state EEG data?
+    %task_eeg = s.task_eeg; % 0 = resting, 1 = task
+    %task_event_markers = s.task_event_markers; % enter all the event/condition markers
+
+    % 9. Do you want to epoch/segment your data?
+    %epoch_data = s.epoch_data; % 0 = NO (do not epoch), 1 = YES (epoch data)
+    %task_epoch_length = s.task_epoch_length; % epoch length in second
+    %rest_epoch_length = s.rest_epoch_length; % for resting EEG continuous data will be segmented into consecutive epochs of a specified length (here 2 second) by adding dummy events
+    %overlap_epoch = s.overlap_epoch;     % 0 = NO (do not create overlapping epoch), 1 = YES (50% overlapping epoch)
+    %dummy_events = s.dummy_events; % enter dummy events name
+
+    % 10. Do you want to remove/correct baseline?
+    %remove_baseline = s.remove_baseline; % 0 = NO (no baseline correction), 1 = YES (baseline correction)
+    %baseline_window = s.baseline_window; % baseline period in milliseconds (MS) [] = entire epoch
+
+    % 11. Do you want to remove artifact laden epoch based on voltage threshold?
+    %voltthres_rejection = s.voltthres_rejection; % 0 = NO, 1 = YES
+    %volt_threshold = s.volt_threshold; % lower and upper threshold (in uV)
+
+    % 12. Do you want to perform epoch level channel interpolation for artifact laden epoch? (see manuscript for detail)
+    %interp_epoch = s.interp_epoch; % 0 = NO, 1 = YES.
+    %frontal_channels = s.frontal_channels; % If you set interp_epoch = 1, enter the list of frontal channels to check (see manuscript for detail)
+    % recommended list for EGI 128 channel net: {'E1', 'E8', 'E14', 'E21', 'E25', 'E32', 'E17'}
+
+    %13. Do you want to interpolate the bad channels that were removed from data?
+    %interp_channels = s.interp_channels; % 0 = NO (Do not interpolate), 1 = YES (interpolate missing channels)
+
     % 14. Do you want to rereference your data?
     rerefer_data = s.rerefer_data; % 0 = NO, 1 = YES
     reref=s.reref; % Enter electrode name/s or number/s to be used for rereferencing
     % For channel name/s enter, reref = {'channel_name', 'channel_name'};
     % For channel number/s enter, reref = [channel_number, channel_number];
     % For average rereference enter, reref = []; default is average rereference
+
+    % 15. Do you want to save interim results?
+    %save_interim_result = s.save_interim_result; % 0 = NO (Do not save) 1 = YES (save interim results)
+    %I THINK IF SAVE INTERIM RESULTS ARE SET TO 0, IT TRIES TO SAVE SOMETHING
+    %AT ASSUMED PATH OF 'C:/Users/erikl/Documents/EEG.jpg'.
 
     % 16. How do you want to save your data? .set or .mat
     output_format = s.output_format; % 1 = .set (EEGLAB data structure), 2 = .mat (Matlab data structure)
@@ -190,7 +222,10 @@ for run=1:length(datafile_names)
         EEG = eeg_eegrej( EEG, [1 EEG.event(disconMarkers(1)).latency] ); % remove discontinuous chunk... if not EGI, MODIFY BEFORE USING THIS SECTION
         EEG = eeg_checkset( EEG );
     end
-
+    % remove data after last trsp (OPTIONAL for EGI files... useful when file has noisy data at the end)
+%    trsp_flags = find(strcmp({EEG.event.type},'TRSP')); % find indices of TRSP flags
+%    EEG = eeg_eegrej( EEG, [(EEG.event(trsp_flags(end)).latency+(1.5*EEG.srate)) EEG.pnts] ); % remove everything 1.5 seconds after the last TRSP
+%    EEG = eeg_checkset( EEG );
     
     %% STEP 2: Import channel locations
     EEG=pop_chanedit(EEG, 'load',{channel_locations 'filetype' 'autodetect'});
