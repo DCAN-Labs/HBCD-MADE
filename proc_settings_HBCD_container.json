@@ -3,6 +3,12 @@
     "boundary_marker": "boundary",
     "channel_locations": "/sample_locs/GSN129.sfp",
     "down_sample": 0,
+    "ekg_channels": [
+      "E125",
+      "E126",
+      "E127",
+      "E128"
+    ],
     "sampling_rate": 250,
     "delete_outerlayer": 1,
     "outerlayer_channel": [
@@ -17,10 +23,6 @@
       "E119",
       "E120",
       "E121",
-      "E125",
-      "E126",
-      "E127",
-      "E128",
       "E56",
       "E63",
       "E68",
