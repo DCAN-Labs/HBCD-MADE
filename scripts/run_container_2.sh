@@ -7,10 +7,10 @@
 
 
 
-output_dir_name=/home/midb-ig/shared/data_sources/leex6144/UMD0012_546802_V03_MADE_CONTAINER_OUTPUT_7_25_22/
+output_dir_name=/home/midb-ig/shared/data_sources/leex6144/UMD0012_546802_V03_MADE_CONTAINER_OUTPUT_7_29_22/
 bids_dir=/home/midb-ig/shared/data_sources/leex6144/UMD0012_546802_V03_bids/
 participant_label=sub-UMD0012
-container_path=/home/midb-ig/shared/containers/leex6144/hbcd-made-112.sif
+container_path=/home/midb-ig/shared/containers/leex6144/hbcd_made_112_1.sif
 json_folder=/home/midb-ig/shared/repositories/leex6144/HBCD-MADE/
 save_interim_result=1
 channel_locs_dir=/panfs/roc/groups/8/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline/eeglab2021.0/sample_locs/
@@ -21,8 +21,8 @@ module load singularity
 -B $bids_dir:/bids_dir \
 -B $json_folder:/json_folder \
 $container_path  \
-/json_folder/proc_settings_HBCD_container.json \
-/output_dir \
 /bids_dir \
-$participant_label \
+/output_dir \
+participant \
+/json_folder/proc_settings_HBCD_container.json 
 

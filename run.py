@@ -19,14 +19,23 @@ args = parser.parse_args()
 compiled_executable_path = os.getenv("EXECUTABLE_PATH")
 mcr_path = os.getenv("MCR_PATH")
 
+#Get cwd in case relative paths are given
+cwd = os.getcwd()
+
 #reassign variables to command line input
 bids_dir = args.bids_dir
+if os.path.isabs(bids_dir) == False:
+	bids_dir = os.path.join(cwd, bids_dir)
 output_dir = args.output_dir
+if os.path.isabs(output_dir) == False:
+	output_dir = os.path.join(cwd, output_dir)
 analysis_level = args.analysis_level
 if analysis_level != 'participant':
     raise ValueError('Error: analysis level must be participant, but program received: ' + analysis_level)
 json_settings = args.json_settings
-
+if os.path.isabs(json_settings) == False:
+	json_settings = os.path.join(cwd, json_settings)
+	
 #Find participants to try running
 if args.participant_label:
     participant_split = args.participant_label.split(' ')

@@ -37,7 +37,7 @@ RUN rm /mcr_path/mcr.zip
 
 #Download the unique code for this project
 RUN mkdir /code
-RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v112.zip -O /code/code.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v113.zip -O /code/code.zip
 RUN cd /code && unzip -q ./code.zip
 RUN rm /code/code.zip
 
@@ -52,6 +52,11 @@ RUN rm /sample_locs/sample_locs.zip
 ENV MCR_PATH=/mcr_path
 ENV EXECUTABLE_PATH=/code/run_compiled.sh
 
+#Change Permissions
 RUN chmod 555 -R /mcr_path /code /sample_locs
 
-ENTRYPOINT ["/code/run.py"]
+#Add code dir to path
+ENV PATH="${PATH}:/code"
+RUN pipeline_name=made && cp /code/run.py /code/$pipeline_name
+
+ENTRYPOINT ["run.py"]
