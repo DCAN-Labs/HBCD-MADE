@@ -52,7 +52,7 @@ else:
 #Set session label
 if args.session_id:
     session_label = args.session_id
-    if 'ses-' not in session_id:
+    if 'ses-' not in session_label:
         session_label = 'ses-' + session_label
 else:
     session_label = '_' #underscore instead of string to be able to make things easier for calling function
