@@ -1,14 +1,14 @@
 {
   "global_parameters": {
     "boundary_marker": "boundary",
-    "channel_locations": "/sample_locs/GSN129.sfp",
-    "down_sample": 0,
     "ekg_channels": [
       "E125",
       "E126",
       "E127",
       "E128"
     ],
+    "channel_locations": "/panfs/roc/groups/8/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline/eeglab2021.0/sample_locs/GSN129.sfp",
+    "down_sample": 0,
     "sampling_rate": 250,
     "delete_outerlayer": 1,
     "outerlayer_channel": [
@@ -90,7 +90,7 @@
     "pre_latency": 0.5,
     "post_latency": 1,
     "marker_names": [
-      "face"
+      "fix+"
     ]
   }
 }

@@ -8,6 +8,8 @@ s = struct();
 %NEW - to cover case where boundary marker changes
 s.global_parameters.boundary_marker = 'boundary';
 
+s.global_parameters.ekg_channels = {'E125', 'E126', 'E127', 'E128'};
+
 % 3. Enter the path of the channel location file
 %channel_locations = ['path to eeglab folder' filesep 'sample_locs' filesep 'GSN128.sfp'];
 s.global_parameters.channel_locations = '/panfs/roc/groups/8/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline/eeglab2021.0/sample_locs/GSN129.sfp';
@@ -21,7 +23,7 @@ s.global_parameters.sampling_rate = 250; % set sampling rate (in Hz), if you wan
 %    like to analyse only 64 channels, you can assign the list of channnels to be excluded in the 'outerlayer_channel' variable.    
 s.global_parameters.delete_outerlayer = 1; % 0 = NO (do not delete outer layer), 1 = YES (delete outerlayer);
 % If you want to delete outer layer, make a list of channels to be deleted
-s.global_parameters.outerlayer_channel = {'E17' 'E38' 'E43' 'E44' 'E48' 'E49' 'E113' 'E114' 'E119' 'E120' 'E121' 'E125' 'E126' 'E127' 'E128' 'E56' 'E63' 'E68' 'E73' 'E81' 'E88' 'E94' 'E99' 'E107'}; % list of channels
+s.global_parameters.outerlayer_channel = {'E17' 'E38' 'E43' 'E44' 'E48' 'E49' 'E113' 'E114' 'E119' 'E120' 'E121' 'E56' 'E63' 'E68' 'E73' 'E81' 'E88' 'E94' 'E99' 'E107'}; % list of channels
 % recommended list for EGI 128 chanenl net: {'E17' 'E38' 'E43' 'E44' 'E48' 'E49' 'E113' 'E114' 'E119' 'E120' 'E121' 'E125' 'E126' 'E127' 'E128' 'E56' 'E63' 'E68' 'E73' 'E81' 'E88' 'E94' 'E99' 'E107'}
 
 % 7. Initialize the filters
@@ -80,7 +82,7 @@ s.face.marker_names = {'fix+'};
 
 
 json_contents = jsonencode(s, PrettyPrint=true);
-fid = fopen('/panfs/roc/groups/8/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline/MADE_edits_v104_for_sharing/proc_settings_v2.json', 'w');
+fid = fopen('/panfs/roc/groups/12/midb-ig/shared/repositories/leex6144/HBCD-MADE/testing_settings.json', 'w');
 fprintf(fid, json_contents);
 fclose(fid);
 

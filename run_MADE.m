@@ -89,8 +89,7 @@ for run=1:length(datafile_names)
     temp_split = split(datafile_names{run}, '_task');
     subses = temp_split{end - 1}; %Its okay that this will get updated each iteration
                                   %since it will be the same each time.
-    %EEG = eeg_checkset(EEG); %THIS IS NORMALLY USED = COMMENTED OUT BY
-    %ERIK
+
     
     % Edit this data import function and use appropriate plugin from EEGLAB
     % for non-.mff data. For example, to import biosemi data, use biosig plugin.
@@ -105,21 +104,17 @@ for run=1:length(datafile_names)
     
     %NEW - to cover case where boundary marker changes
     boundary_marker = s.boundary_marker;
+    
+    %NEW - to cover case where EKG channel is present
+    if isfield(s, 'ekg_channels')
+        ekg_channels = s.ekg_channels;
+    else
+        ekg_channels = {};
+    end
 
     % 3. Enter the path of the channel location file
     %channel_locations = ['path to eeglab folder' filesep 'sample_locs' filesep 'GSN128.sfp'];
     channel_locations = s.channel_locations;
-    
-    % 4. Do your data need correction for anti-aliasing filter and/or task related time offset?
-    %adjust_time_offset = s.adjust_time_offset; % 0 = NO (no correction), 1 = YES (correct time offset)
-
-    % If your data need correction for time offset, initialize the offset time (in milliseconds)
-    % YOU NEED TO CHANGE THE "xx" TO A REAL NUMBER WITHOUT QUOTATION MARKS!
-    %filter_timeoffset = s.filter_timeoffset;     % anti-aliasing time offset (in milliseconds). 0 = No time offset
-    %stimulus_timeoffset   = s.stimulus_timeoffset; % stimulus related time offset (in milliseconds). 0 = No time offset
-    %response_timeoffset = s.response_timeoffset;    % response related time offset (in milliseconds). 0 = No time offset
-    %stimulus_markers = s.stimulus_markers;      % enter the stimulus makers that need to be adjusted for time offset
-    %response_markers = s.response_markers;       % enter the response makers that need to be adjusted for time offset
 
     % 5. Do you want to down sample the data?
     down_sample = s.down_sample; % 0 = NO (no down sampling), 1 = YES (down sampling)
@@ -137,44 +132,12 @@ for run=1:length(datafile_names)
     highpass = s.highpass; % High-pass frequency
     lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
 
-    % 8. Are you processing task-related or resting-state EEG data?
-    %task_eeg = s.task_eeg; % 0 = resting, 1 = task
-    %task_event_markers = s.task_event_markers; % enter all the event/condition markers
-
-    % 9. Do you want to epoch/segment your data?
-    %epoch_data = s.epoch_data; % 0 = NO (do not epoch), 1 = YES (epoch data)
-    %task_epoch_length = s.task_epoch_length; % epoch length in second
-    %rest_epoch_length = s.rest_epoch_length; % for resting EEG continuous data will be segmented into consecutive epochs of a specified length (here 2 second) by adding dummy events
-    %overlap_epoch = s.overlap_epoch;     % 0 = NO (do not create overlapping epoch), 1 = YES (50% overlapping epoch)
-    %dummy_events = s.dummy_events; % enter dummy events name
-
-    % 10. Do you want to remove/correct baseline?
-    %remove_baseline = s.remove_baseline; % 0 = NO (no baseline correction), 1 = YES (baseline correction)
-    %baseline_window = s.baseline_window; % baseline period in milliseconds (MS) [] = entire epoch
-
-    % 11. Do you want to remove artifact laden epoch based on voltage threshold?
-    %voltthres_rejection = s.voltthres_rejection; % 0 = NO, 1 = YES
-    %volt_threshold = s.volt_threshold; % lower and upper threshold (in uV)
-
-    % 12. Do you want to perform epoch level channel interpolation for artifact laden epoch? (see manuscript for detail)
-    %interp_epoch = s.interp_epoch; % 0 = NO, 1 = YES.
-    %frontal_channels = s.frontal_channels; % If you set interp_epoch = 1, enter the list of frontal channels to check (see manuscript for detail)
-    % recommended list for EGI 128 channel net: {'E1', 'E8', 'E14', 'E21', 'E25', 'E32', 'E17'}
-
-    %13. Do you want to interpolate the bad channels that were removed from data?
-    %interp_channels = s.interp_channels; % 0 = NO (Do not interpolate), 1 = YES (interpolate missing channels)
-
     % 14. Do you want to rereference your data?
     rerefer_data = s.rerefer_data; % 0 = NO, 1 = YES
     reref=s.reref; % Enter electrode name/s or number/s to be used for rereferencing
     % For channel name/s enter, reref = {'channel_name', 'channel_name'};
     % For channel number/s enter, reref = [channel_number, channel_number];
     % For average rereference enter, reref = []; default is average rereference
-
-    % 15. Do you want to save interim results?
-    %save_interim_result = s.save_interim_result; % 0 = NO (Do not save) 1 = YES (save interim results)
-    %I THINK IF SAVE INTERIM RESULTS ARE SET TO 0, IT TRIES TO SAVE SOMETHING
-    %AT ASSUMED PATH OF 'C:/Users/erikl/Documents/EEG.jpg'.
 
     % 16. How do you want to save your data? .set or .mat
     output_format = s.output_format; % 1 = .set (EEGLAB data structure), 2 = .mat (Matlab data structure)
@@ -227,10 +190,7 @@ for run=1:length(datafile_names)
         EEG = eeg_eegrej( EEG, [1 EEG.event(disconMarkers(1)).latency] ); % remove discontinuous chunk... if not EGI, MODIFY BEFORE USING THIS SECTION
         EEG = eeg_checkset( EEG );
     end
-    % remove data after last trsp (OPTIONAL for EGI files... useful when file has noisy data at the end)
-%    trsp_flags = find(strcmp({EEG.event.type},'TRSP')); % find indices of TRSP flags
-%    EEG = eeg_eegrej( EEG, [(EEG.event(trsp_flags(end)).latency+(1.5*EEG.srate)) EEG.pnts] ); % remove everything 1.5 seconds after the last TRSP
-%    EEG = eeg_checkset( EEG );
+
     
     %% STEP 2: Import channel locations
     EEG=pop_chanedit(EEG, 'load',{channel_locations 'filetype' 'autodetect'});
@@ -239,6 +199,24 @@ for run=1:length(datafile_names)
     % Check whether the channel locations were properly imported. The EEG signals and channel numbers should be same.
     if size(EEG.data, 1) ~= length(EEG.chanlocs)
         error('The size of the data does not match with channel numbers.');
+    end
+    
+    %% STEP 2.5: Delete EKG Channels if they are present
+    
+    %This chunk of code should be good but needs to be tested. Also, need
+    %to be sure the check for the number of electrodes in step 2 isn't
+    %thrown off by having the ekg channels.
+    if size(ekg_channels, 2) > 0
+        nbchans=cell(1,EEG.nbchan);
+        for i=1:EEG.nbchan
+            nbchans{i}= EEG.chanlocs(i).labels;
+        end
+
+        [~,chansidx] = ismember(ekg_channels, nbchans);
+        RemChans_Idx = chansidx(chansidx ~= 0);
+
+        EEG = eeg_checkset( EEG );
+        EEG = pop_select( EEG,'nochannel', RemChans_Idx);
     end
 
     
