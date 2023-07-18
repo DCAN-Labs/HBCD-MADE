@@ -277,6 +277,29 @@ for run=1:length(datafile_names)
         end
     end
     
+    %% STEP 5.5: Get Line Noise Measure
+    % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
+        lineNoiseIn = struct('lineNoiseMethod', 'clean', ...
+            'lineNoiseChannels', 1:EEG.nbchan, 'Fs', EEG.srate, ...
+            'lineFrequencies', [60 120], 'p', 0.01, 'fScanBandWidth', 2, ...
+            'taperBandWidth', 2, 'taperWindowSize', 4, 'taperWindowStep', 4, ...
+            'tau', 100, 'pad', 2, 'fPassBand', [0 EEG.srate/2], ...
+            'maximumIterations', 10);
+        
+        [outEEG, ~]  = cleanLineNoise(EEG, lineNoiseIn);
+        
+        neighbors = [50,55,58,59,60,61,62,65,70];
+        lnParams_harms_frequs = [];
+        lnMeans = [];
+        
+        % LINE NOISE REDUCTION QM: Assesses the performance of line noise reduction.
+        
+        lnMeans = assessPipelineStep('line noise reduction', reshape(EEG.data, ...
+            size(EEG.data, 1), []), reshape(outEEG.data, size(outEEG.data,1), ...
+            []), lnMeans, EEG.srate, [neighbors lnParams_harms_frequs]) ;
+        
+        lineNoise{run,1} = lnMeans(3); %grab only the 60 hz pre/post r value
+    
     %% STEP 6: Filter data
     % Calculate filter order using the formula: m = dF / (df / fs), where m = filter order,
     % df = transition band width, dF = normalized transition width, fs = sampling rate
@@ -866,10 +889,10 @@ for run = 1 : length(event_struct.file_names)
 end % end of run loop
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
-report_table=table(datafile_names', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
+report_table=table(datafile_names', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
     total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',total_channels_interpolated');
 
-report_table.Properties.VariableNames={'datafile_names', 'reference_used_for_faster', 'faster_bad_channels', ...
+report_table.Properties.VariableNames={'datafile_names', 'r 60Hz pre/post linenoise reduction','reference_used_for_faster', 'faster_bad_channels', ...
     'ica_preparation_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_before_artifact_rejection', ...
     'total_epochs_after_artifact_rejection', 'total_channels_interpolated'};
 writetable(report_table, fullfile(output_location, 'MADE_preprocessing_report.csv'));
