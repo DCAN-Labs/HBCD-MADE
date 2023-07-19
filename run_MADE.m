@@ -800,8 +800,13 @@ for run = 1 : length(event_struct.file_names)
                     NumbadChan = badChans(:,ei); % find how many channels are bad in an epoch
                     if sum(NumbadChan) > round((10/100)*EEG.nbchan)% check if more than 10% are bad
                         badepoch (ei)= sum(NumbadChan);
+                    else
+                        goodepoch(ii)= ei; %LY 7/18/2023 for percent interpolated calc
+                        ii=ii+1;
                     end
                 end
+                avginterp = mean(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                avginterp_bysubj(subject,1) = avginterp;%LY 7/18/2023 for percent interpolated calc
                 badepoch=logical(badepoch);
             end
             % If all epochs are artifacted, save the dataset and ignore rest of the preprocessing for this run.
@@ -890,11 +895,11 @@ end % end of run loop
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
 report_table=table(datafile_names', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',total_channels_interpolated');
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',total_channels_interpolated', avginterp_bysubj');
 
 report_table.Properties.VariableNames={'datafile_names', 'r 60Hz pre/post linenoise reduction','reference_used_for_faster', 'faster_bad_channels', ...
     'ica_preparation_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_before_artifact_rejection', ...
-    'total_epochs_after_artifact_rejection', 'total_channels_interpolated'};
+    'total_epochs_after_artifact_rejection', 'total_channels_interpolated', 'avgChannelInterpDuringArtifactRej'};
 writetable(report_table, fullfile(output_location, 'MADE_preprocessing_report.csv'));
 
 end
