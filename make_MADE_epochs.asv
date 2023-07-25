@@ -66,9 +66,8 @@ end
     
 epoch_length=[-1*pre_latency post_latency]; % define Epoch Length
 tEEG = eeg_checkset( tEEG );
-if ~strcmp(task, 'RS')
-    tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
-end
+
+tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
 tEEG = pop_epoch( tEEG, marker_names, epoch_length, 'epochinfo', 'yes');
 tEEG = pop_selectevent( tEEG, 'latency','-.1 <= .1','deleteevents','on');
 

@@ -1,7 +1,8 @@
 function run_MADE(output_dir_name, bids_dir, participant_label, ...
                   session_label, file_extension, ...
                   json_settings_file, save_interim_result)
-
+                          
+              
 % ************************************************************************
 % The Maryland Analysis of Developmental EEG (UMADE) Pipeline
 % Version 1.0
@@ -83,6 +84,7 @@ for run=1:length(datafile_names)
     rawdata_location = datafile_dirs{run}; %update the input path for the given run
     fprintf('\n\n\n*** Processing run %d (%s) ***\n\n\n', run, datafile_names{run});
     
+    sub_id(run) = string(participant_label);
         
     %% STEP 1: Import EGI data file and relevant information
     EEG = pop_loadset('filename',datafile_names{run},'filepath',rawdata_location);
@@ -277,6 +279,27 @@ for run=1:length(datafile_names)
         end
     end
     
+    %% STEP 5.25: Label Task Variable if it is not already labeled
+   % if ~isfield(EEG.event, 'Task')
+    %    EEG = pop_editeventfield( EEG, 'indices',  strcat('1:', int2str(length(EEG.event))),'Task', 'n/a');
+   % end
+    
+    if strcmp(EEG.event(3).Task, 'n/a')
+            if contains(EEG.filename, 'MMN')
+                task = 'MMN';
+            elseif contains(EEG.filename, 'RS')
+                task = 'RS';
+            elseif contains(EEG.filename, 'VEP')
+                task = 'VEP';
+            elseif contains(EEG.filename, 'FACE')
+                task = 'FACE';
+            end
+        for i = 1:length(EEG.event)    
+            EEG.event(i).Task = task;
+        end
+        
+    end
+    
     %% STEP 5.5: Get Line Noise Measure
     % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
         lineNoiseIn = struct('lineNoiseMethod', 'clean', ...
@@ -288,7 +311,7 @@ for run=1:length(datafile_names)
         
         [outEEG, ~]  = cleanLineNoise(EEG, lineNoiseIn);
         
-        neighbors = [50,55,58,59,60,61,62,65,70];
+        neighbors = [59,60,61];
         lnParams_harms_frequs = [];
         lnMeans = [];
         
@@ -583,6 +606,7 @@ for i = 1 : run
     length_ica_data(i)=EEG_copy.trials; % length of data (in second) fed into ICA
 end
 EEG_copy = eeg_checkset(EEG_copy);
+%LY skip ICA for testing
 EEG_copy = pop_runica(EEG_copy, 'icatype', 'runica', 'extended', 1, 'stop', 1E-7, 'interupt','off');
 
 % Find the ICA weights that would be transferred to the original dataset
@@ -716,7 +740,20 @@ for run = 1 : length(event_struct.file_names)
     
     
     %% STEP 12: Segment data into fixed length epochs
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file);
+    
+    if contains(event_struct.file_names{run}, 'MMN')
+        task = 'MMN';
+    elseif contains(event_struct.file_names{run}, 'RS')
+        task = 'RS';
+    elseif contains(event_struct.file_names{run}, 'VEP')
+        task = 'VEP';
+    elseif contains(event_struct.file_names{run}, 'FACE')
+        task = 'FACE';
+    end
+
+    Tasks(run) = string(task);
+    
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
@@ -796,6 +833,8 @@ for run = 1 : length(event_struct.file_names)
                 
                 % If more than 10% of channels in an epoch were interpolated, reject that epoch
                 badepoch=zeros(1, EEG.trials);
+                ii=1;
+                goodepoch = [];
                 for ei=1:EEG.trials
                     NumbadChan = badChans(:,ei); % find how many channels are bad in an epoch
                     if sum(NumbadChan) > round((10/100)*EEG.nbchan)% check if more than 10% are bad
@@ -805,8 +844,10 @@ for run = 1 : length(event_struct.file_names)
                         ii=ii+1;
                     end
                 end
-                avginterp = mean(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
-                avginterp_bysubj(subject,1) = avginterp;%LY 7/18/2023 for percent interpolated calc
+                avginterp(run) = mean(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                stdinterp(run) = std(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                rangeinterp(run) = range(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                %avginterp_byfile(run) = avginterp;%LY 7/18/2023 for percent interpolated calc
                 badepoch=logical(badepoch);
             end
             % If all epochs are artifacted, save the dataset and ignore rest of the preprocessing for this run.
@@ -853,7 +894,34 @@ for run = 1 : length(event_struct.file_names)
         total_channels_interpolated(run)=0;
         continue % ignore rest of the processing and go to next datafile
     else
-        total_epochs_after_artifact_rejection(run)=EEG.trials;
+        if contains(event_struct.file_names{run}, 'FACE')
+            FACE_UpInv(run) = {sum(strcmp({EEG.event.Condition}, '1'))};
+            FACE_Inv(run) = {sum(strcmp({EEG.event.Condition}, '2'))};
+            FACE_Object(run) = {sum(strcmp({EEG.event.Condition}, '3'))};
+            FACE_UpObj(run) = {sum(strcmp({EEG.event.Condition}, '4'))};
+            total_epochs_after_artifact_rejection(run)= EEG.trials;
+            MMN_Standard(run) = {'n/a'};
+            MMN_PreDev(run) = {'n/a'};
+            MMN_Dev(run) = {'n/a'};
+        elseif contains(event_struct.file_names{run}, 'MMN')
+            FACE_UpInv(run) = {'n/a'};
+            FACE_Inv(run) = {'n/a'};
+            FACE_Object(run) = {'n/a'};
+            FACE_UpObj(run) = {'n/a'};
+            MMN_Standard(run) = {sum(strcmp({EEG.event.Condition}, '1'))};
+            MMN_PreDev(run) = {sum(strcmp({EEG.event.Condition}, '2'))};
+            MMN_Dev(run) = {sum(strcmp({EEG.event.Condition}, '3'))};
+            total_epochs_after_artifact_rejection(run)= EEG.trials;
+        else
+            FACE_UpInv(run) = {'n/a'};
+            FACE_Inv(run) = {'n/a'};
+            FACE_Object(run) = {'n/a'};
+            FACE_UpObj(run) = {'n/a'};
+            MMN_Standard(run) = {'n/a'};
+            MMN_PreDev(run) = {'n/a'};
+            MMN_Dev(run) = {'n/a'};
+            total_epochs_after_artifact_rejection(run)=EEG.trials;
+        end
     end
     
     %% STEP 15: Interpolate deleted channels
@@ -893,13 +961,14 @@ for run = 1 : length(event_struct.file_names)
     
 end % end of run loop
 
-%% Create the report table for all the data files with relevant preprocessing outputs.
-report_table=table(datafile_names', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',total_channels_interpolated', avginterp_bysubj');
 
-report_table.Properties.VariableNames={'datafile_names', 'r 60Hz pre/post linenoise reduction','reference_used_for_faster', 'faster_bad_channels', ...
-    'ica_preparation_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_before_artifact_rejection', ...
-    'total_epochs_after_artifact_rejection', 'total_channels_interpolated', 'avgChannelInterpDuringArtifactRej'};
-writetable(report_table, fullfile(output_location, 'MADE_preprocessing_report.csv'));
+%% Create the report table for all the data files with relevant preprocessing outputs.
+report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp');
+
+report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
+    'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
+    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej'};
+writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_MADE_preprocessing_report.csv']));
 
 end
