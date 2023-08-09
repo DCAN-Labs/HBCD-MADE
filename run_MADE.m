@@ -959,6 +959,29 @@ for run = 1 : length(event_struct.file_names)
         save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.mat')], 'EEG'); % save .mat format
     end
     
+    
+    %For plots
+    %name
+    save_name = [name '.mat'];
+    save_name_jpg = [name '.jpeg'];
+    save_path = [output_location filesep 'processed_data' filesep ];
+
+    if contains(event_struct.file_names{run}, 'MMN')
+        MMN_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'RS')
+        RS_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'VEP')
+        VEP_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'FACE')
+        FACE_ERP_Topo_Indv();
+        clear allData;
+    end
+    
+    
+    
 end % end of run loop
 
 
