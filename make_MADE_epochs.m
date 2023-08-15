@@ -72,7 +72,6 @@ if ~strcmp(task, 'RS')
     tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
 end
 
- %% STEP 11.45 %OPTIONAL %Do second filtering at 30Hz (if we did first low pass filtering at 50Hz) %MM & MA
 % This section ONLY does low pass, NOT high pass
 % Remember to change the value of lowpass
 if erp_filter == 1
@@ -113,7 +112,6 @@ if erp_filter == 1
 %     EEG = pop_firws(EEG, 'fcutoff', high_cutoff, 'ftype', 'highpass', 'wtype', 'hamming', 'forder', hp_fl_order, 'minphase', 0);
 %     EEG = eeg_checkset( EEG );
     
-    % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
     
     % pop_firws() - filter window type hamming ('wtype', 'hamming')
     % pop_firws() - applying zero-phase (non-causal) filter ('minphase', 0)
