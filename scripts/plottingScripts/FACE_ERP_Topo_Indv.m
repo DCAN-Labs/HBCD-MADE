@@ -58,26 +58,9 @@ End = (1000*settingsData.FACE.post_latency)-2
 ROIname = settingsData.FACE.ROI_of_interest
 ROI = settingsData.clusters.(ROIname)';
 
-%Before here is to modify
-%%
-    %load the preprocessed file
-%     EEG = pop_loadset('filename', file_name,'filepath', data_path );
-%     EEG = eeg_checkset(EEG);
-
-  
-  
     EEG = pop_selectevent(EEG, 'type', {'DIN3'}, 'deleteevents','on');
 
-%   
-% %BELOW CODE NEEDED FOR OIT MMN
-%     EEG = pop_selectevent( EEG, 'latency','-1<=1','deleteevents','on','deleteepochs','on','invertepochs','off');
-% 
-%     EEG = pop_editeventfield( EEG, 'indices',  strcat('1:', int2str(length(EEG.event))), 'Stim_type','NaN');
-%     events = find(strcmp({EEG.event.type}, 'stm+'));
-%     for t = events
-%         EEG.event(t).Stim_type =  EEG.event(t).codes{1,2};
-%     end
-    
+
     %This small chunk of code would get rid of NaN in Condition and select only the one of interest 
     T = struct2table( EEG.event )
     [R,TF] = rmmissing(T,'DataVariables',{'Condition'})
@@ -154,9 +137,6 @@ ROI = settingsData.clusters.(ROIname)';
 
     meanEpoch_s2 = mean(EEG_s2.data, 3);
     allData(4, :, :) = meanEpoch_s2;
-    
-
-size(allData)
 
 Conditions = {'Upright_1', 'Inverted_2', 'Object_3', 'Upright2_4'};
 %Conditions = {'Standard_1', 'PreDeviant_2', 'Deviant_3'};
@@ -169,16 +149,11 @@ save([save_path filesep save_name], 'Conditions', 'Channels', 'Times', 'allData'
 
 %%
 %%%TOPO BEGIN HERE
-NumberOfConditions = size(allData,1)
-NumberOfChannels = size(allData,2)
-NumberOfPoints = size(allData,3)
-
-
-
+NumberOfConditions = size(allData,1);
+NumberOfChannels = size(allData,2);
+NumberOfPoints = size(allData,3);
 
 PeakRange = find(EEG.times == PeakStart):find(EEG.times == PeakEnd);
-
-%PeakData = squeeze(newData(2,:,PeakRange)- newData(1,:,PeakRange));
 
 PeakData = squeeze(allData(:,:,PeakRange)); % Selecting time of interest
 PeakData = squeeze(mean(PeakData,4)); % Averaging across time of interest
@@ -191,15 +166,15 @@ PeakData_Up2 = squeeze(PeakData(4,:,:)); % Selecting condition Upright2
 
 set(0,'DefaultFigureVisible','off');
 
-PeakStart_n = num2str(PeakStart)
-PeakEnd_n = num2str(PeakEnd)
-%NumberOfSubjects_n = num2str(NumberOfSubjects)
-EEG_s_trials = num2str(EEG_s.trials)
-EEG_d_trials = num2str(EEG_d.trials)
-EEG_n_trials = num2str(EEG_n.trials)
-EEG_s2_trials = num2str(EEG_s2.trials)
+PeakStart_n = num2str(PeakStart);
+PeakEnd_n = num2str(PeakEnd);
 
-infoSafeTitle = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials,',',EEG_d_trials,',',EEG_n_trials,',',EEG_s2_trials)
+EEG_s_trials = num2str(EEG_s.trials);
+EEG_d_trials = num2str(EEG_d.trials);
+EEG_n_trials = num2str(EEG_n.trials);
+EEG_s2_trials = num2str(EEG_s2.trials);
+
+infoSafeTitle = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials,',',EEG_d_trials,',',EEG_n_trials,',',EEG_s2_trials);
 
 
 
@@ -270,7 +245,7 @@ title(strcat('Inverted vs Upright',infoSafeTitle), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '05_DiffTopo__Inv_Vs_Upr_FACE.jpg'
+Plot_Name = '05_DiffTop_Inv_Vs_Upr_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name); 
 %exportgraphics(erp,'05_DiffTopo_InvVsUpr_GA_erp_HAPPE_MMN.pdf')
@@ -284,7 +259,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '06_DiffTopo__Obj_Vs_Up2_FACE.jpg'
+Plot_Name = '06_DiffTopo_Obj_Vs_Up2_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name); 
 %exportgraphics(erp,'06_Topo_ObjVsUp2_GA_erp_HAPPE_MMN.pdf')

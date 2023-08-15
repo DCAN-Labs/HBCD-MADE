@@ -1,18 +1,6 @@
 
-% clear
-% 
-% addpath(genpath('Y:\Toolbox\eeglab13_6_5b'));
-% eeglab
-
-
 
 %%
-% Set the path for the settings file (optional if the file is in the current directory)
-% addpath('R:\Projects\hbcd\EEG\Official_Pilot\testing for CBrain\Cbrain\HBCD-MADE');
-% 
-% % Specify the JSON settings file path
-% json_settings_file = 'R:\Projects\hbcd\EEG\Official_Pilot\testing for CBrain\Cbrain\HBCD-MADE\proc_settings_HBCD_LY_MM_MA.json';
-
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
 
@@ -21,52 +9,18 @@ settingsData = jsondecode(jsonStr);
 
 
 %%
-%Here parameters to modify
 
-% data_path = 'R:\Projects\hbcd\EEG\Official_Pilot\testing for CBrain\processed_data'
-% file_name = 'sub-PIUMX0389_RS_processed_data.set'
-% save_path = 'R:\Projects\hbcd\EEG\Official_Pilot\testing for CBrain\mat files'
-% save_name = 'sub-PIUMX0389_RS_processed_data_RS.mat'
-%
-% save_path = 'R:\Projects\hbcd\EEG\Official_Pilot\testing for CBrain\jpg files'
-% save_name_jpg = 'sub-PIUMX0389_RS_processed_data_RS.jpg'
-%
-%
-% participant_label = 'sub-PIUMX0389';
-subject_ID = participant_label
+subject_ID = participant_label;
 
-% Plot reg topo range
-%PeakStart = 100;
-%PeakEnd = 300;
-%PeakStart = 1000*settingsData.RS.ERP_window_start
-%PeakEnd = 1000*settingsData.RS.ERP_window_end %It crashes if you put the maximum limit, is should be slightly below that %MA
-
-% Range for plotting ERPs
-%Start = -100;
-%End = 698;
-
-Start = -(1000*settingsData.RS.pre_latency)
-End = (1000*settingsData.RS.post_latency)-2 %It crashes if you put the maximum limit, is should be slightly below that %MA
+Start = -(1000*settingsData.RS.pre_latency);
+End = (1000*settingsData.RS.post_latency)-2; %It crashes if you put the maximum limit, is should be slightly below that %MA
 
 
 %ROI for plotting ERPs
-
-%ROI = {'E75', 'E74', 'E82', 'E70', 'E83'}
-%ROIname = 'Oz'
-
-
-ROIname = settingsData.RS.ROI_of_interest
+ROIname = settingsData.RS.ROI_of_interest;
 ROI = settingsData.clusters.(ROIname)';
 
-%Before here is to modify
-%%
-%load the preprocessed file
-%     EEG = pop_loadset('filename', file_name,'filepath', data_path );
-%     EEG = eeg_checkset(EEG);
 
-
-
-%     EEG = pop_selectevent(EEG, 'type', {'o'}, 'deleteevents','on');
 EEG = pop_selectevent(EEG, 'type', {'dummy_marker'}, 'deleteevents','on');
 
 
@@ -93,20 +47,8 @@ cd(save_path)
 IDnum = subject_ID;
 
 
-
-
 %% Get channel location from dataset and save to .mat file
 channel_location = EEG.chanlocs;
-
-%% loop through conditions / in this case only eyes open
-%     for cond=1:length(event_marker)
-%         try
-%             EEGa = pop_selectevent( EEG, 'type', {'o'},'deleteevents','off','deleteepochs','on','invertepochs','off');
-%             sizeEEGa = size(EEGa.data, 3);
-%         catch %if there are no events of this type then catch the empty dataset error and set size(EEG.data,3) to zero
-%             sizeEEGa = 0;
-%         end
-%     end
 
 for cond=1:length(event_marker)
     try
@@ -116,8 +58,6 @@ for cond=1:length(event_marker)
         sizeEEGa = 0;
     end
 end
-
-
 
 n_epochs = size(EEGa.epoch,2);
 
@@ -132,20 +72,16 @@ hold on;
 title(title_figure, 'FontSize', 15);
 hold off;
 
-save_plot_name = strcat(IDnum, ' PSD AllCh',  '.jpg');
+save_plot_name = strcat(IDnum, '_PSD_AllCh',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd, full_save_path);
 close all;
 
 avg_elec_eo_spectra = mean(spectra_eo,1); % get average power at each frequency across all electrodes
 
-
-
 freqs_2_plot = freqs_eo';
 freqs_2_plot = freqs_2_plot(:,2:50);
 globalPSD_eo = avg_elec_eo_spectra(:,2:50);
-
-
 
 % Create the filename with Subject_ID included
 filename = sprintf('%s_RS.mat', subject_ID);
@@ -172,29 +108,10 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, ' PSD AllCh Avg',  '.jpg')
+save_plot_name = strcat(IDnum, '_PSD_AllCh_Avg',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
-
-%     %% Save the power spectrum density to the lists
-%     psd_all_subjects = [psd_all_subjects; globalPSD_eo]; % append the new data to the list of all subjects
-%
-%     % Plot PSD showing average of all electrodes / may also want to plot
-%     % power @ each electrode when looking for noisy channels
-%     title_figure = strcat(IDnum, ' AVG PSD HAPPE', ' N=', num2str(n_epochs));
-%     psd_avg = figure;
-%     plot(freqs_2_plot, globalPSD_eo,'LineWidth', 3)
-%     hold on;
-%     title(title_figure, 'FontSize', 15);
-%     hold off;
-%     %ylim([0, 15]);
-%
-%     save_plot_name = strcat(IDnum, ' N=', num2str(n_epochs), ' AVG PSD HAPPE',  '.jpg')
-%     full_save_path = fullfile(save_path, save_plot_name);
-%     saveas(psd_avg, full_save_path);
-%     close all;
-
 
 %% Do transformation only for the db %Choosing ROI
 %avg_elec_eo_db_spectra = mean(spectra_eo_db,1); % get average power at each frequency across all electrodes
@@ -223,7 +140,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, ' PSD ROI',  '.jpg')
+save_plot_name = strcat(IDnum, '_PSD_ROI',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
