@@ -698,7 +698,7 @@ if all_bad_ICs==1
         total_channels_interpolated(i)=0;
     end
 end
-    
+
 %% STEP 11.5: Now seperate each task for remainder of processing
 mEEG = deal(EEG);
 for run = 1 : length(event_struct.file_names)  
@@ -706,8 +706,6 @@ for run = 1 : length(event_struct.file_names)
     %% Step 11.75: Load task specific settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
     s = grab_settings(event_struct.file_names(run), json_settings_file);
-
-
 
     % 10. Do you want to remove/correct baseline?
     remove_baseline = s.remove_baseline; % 0 = NO (no baseline correction), 1 = YES (baseline correction)

@@ -43,7 +43,7 @@
       "E127",
       "E128"
     ],
-    "channel_locations": "Z:/Projects/hbcd/EEG/Official_Pilot/testing for CBrain/Cbrain/CBrain_Scripts_for_Erik/GSN129.sfp",
+    "channel_locations": "C:/Users/lyoder/Documents/HBCD-MADE/GSN129.sfp",
     "down_sample": 0,
     "sampling_rate": 1000,
     "delete_outerlayer": 1,
@@ -70,7 +70,7 @@
       "E107"
     ],
     "highpass": 0.3,
-    "lowpass": 30,
+    "lowpass": 50,
     "remove_baseline": 1,
     "baseline_window": [
       -100,
@@ -101,6 +101,8 @@
     "make_dummy_events": true,
     "remove_baseline": 0,
     "lowpass": 50,
+    "erp_filter": 0,
+    "erp_lowpass": 0,
     "pre_latency": 1,
     "post_latency": 1,
     "num_dummy_events": 180,
@@ -111,6 +113,8 @@
   },
   "VEP": {
     "ROI_of_interest": "oz", 
+    "erp_filter": 1,
+    "erp_lowpass": 20,
     "pre_latency": 0.1,
     "post_latency": 0.4,
     "ERP_window_start": 0.07,
@@ -125,6 +129,8 @@
     "post_latency": 0.5,
     "ERP_window_start": 0.2,
     "ERP_window_end": 0.4,
+    "erp_filter": 1,
+    "erp_lowpass": 30,
     "marker_names": [
       "DIN2"
     ]
@@ -135,6 +141,8 @@
     "post_latency": 0.7,
     "ERP_window_start": 0.1,
     "ERP_window_end": 0.3,
+    "erp_filter": 1,
+    "erp_lowpass": 40,
     "marker_names": [
       "DIN3"
     ]

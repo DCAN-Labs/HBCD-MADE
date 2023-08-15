@@ -1,4 +1,4 @@
-function [tEEG] = make_MADE_epochs(EEG,eeg_file_name, json_file_name, task)
+function [tEEG] = make_MADE_epochs(tEEG,eeg_file_name, json_file_name, task)
 %MAKE_MADE_EPOCHS Function that epochs EEG data for MADE pipeline
 %   The function takes EEG, which is an EEGLAB structure with data
 %   for one EEG task. The eeg_file_name is the (absolute or relative)
@@ -27,9 +27,11 @@ s = grab_settings(eeg_file_name, json_file_name);
 marker_names = s.marker_names;
 pre_latency = s.pre_latency;
 post_latency = s.post_latency;
+erp_filter = s.erp_filter;
+erp_lowpass = s.erp_lowpass;
 
 %Make copy of EEG file
-tEEG = deal(EEG);
+tEEG = deal(tEEG);
 
 if pre_latency < 0
     error('Error: pre_latency should be defined as a positive value.');
@@ -69,6 +71,64 @@ tEEG = eeg_checkset( tEEG );
 if ~strcmp(task, 'RS')
     tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
 end
+
+ %% STEP 11.45 %OPTIONAL %Do second filtering at 30Hz (if we did first low pass filtering at 50Hz) %MM & MA
+% This section ONLY does low pass, NOT high pass
+% Remember to change the value of lowpass
+if erp_filter == 1
+% 7. Initialize the filters
+  %highpass = s.highpass; % High-pass frequency
+  %lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
+  lowpass  = erp_lowpass;
+  % STEP 6: Filter data
+    % Calculate filter order using the formula: m = dF / (df / fs), where m = filter order,
+    % df = transition band width, dF = normalized transition width, fs = sampling rate
+    % dF is specific for the window type. Hamming window dF = 3.3
+    
+    %high_transband = highpass; % high pass transition band
+    low_transband = 10; % low pass transition band
+    
+    %hp_fl_order = 3.3 / (high_transband / EEG.srate);
+    lp_fl_order = 3.3 / (low_transband / tEEG.srate);
+    
+    % Round filter order to next higher even integer. Filter order is always even integer.
+%     if mod(floor(hp_fl_order),2) == 0
+%         hp_fl_order=floor(hp_fl_order);
+%     elseif mod(floor(hp_fl_order),2) == 1
+%         hp_fl_order=floor(hp_fl_order)+1;
+%     end
+    
+    if mod(floor(lp_fl_order),2) == 0
+        lp_fl_order=floor(lp_fl_order)+2;
+    elseif mod(floor(lp_fl_order),2) == 1
+        lp_fl_order=floor(lp_fl_order)+1;
+    end
+    
+    % Calculate cutoff frequency
+    %high_cutoff = highpass/2;
+    low_cutoff = lowpass + (low_transband/2);
+    
+%     % Performing high pass filtering
+%     EEG = eeg_checkset( EEG );
+%     EEG = pop_firws(EEG, 'fcutoff', high_cutoff, 'ftype', 'highpass', 'wtype', 'hamming', 'forder', hp_fl_order, 'minphase', 0);
+%     EEG = eeg_checkset( EEG );
+    
+    % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+    
+    % pop_firws() - filter window type hamming ('wtype', 'hamming')
+    % pop_firws() - applying zero-phase (non-causal) filter ('minphase', 0)
+    
+    % Performing low pass filtering
+    tEEG = eeg_checkset( tEEG );
+    tEEG = pop_firws(tEEG, 'fcutoff', low_cutoff, 'ftype', 'lowpass', 'wtype', 'hamming', 'forder', lp_fl_order, 'minphase', 0);
+    tEEG = eeg_checkset( tEEG );
+    
+    % pop_firws() - transition band width: 10 Hz
+    % pop_firws() - filter window type hamming ('wtype', 'hamming')
+    % pop_firws() - applying zero-phase (non-causal) filter ('minphase', 0)    
+    
+end %if erp filter is turned on
+
 tEEG = pop_epoch( tEEG, marker_names, epoch_length, 'epochinfo', 'yes');
 tEEG = pop_selectevent( tEEG, 'latency','-.1 <= .1','deleteevents','on');
 
