@@ -8,13 +8,19 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 % Version 1.0
 % Developed at the Child Development Lab, University of Maryland, College Park
 
-% Contributors to MADE pipeline:
+% Original Contributors to MADE pipeline:
 % Ranjan Debnath (rdebnath@umd.edu)
 % George A. Buzzell (gbuzzell@umd.edu)
 % Santiago Morales Pamplona (moraless@umd.edu)
 % Stephanie Leach (sleach12@umd.edu)
 % Maureen Elizabeth Bowers (mbowers1@umd.edu)
 % Nathan A. Fox (fox@umd.edu)
+
+% Ongoing Contributors:
+% Lydia Yoder (lyoder@umd.edu)
+% Erik Lee (eex6144@umn.edu)
+% Martin Antunez Garcia (mantunez@umd.edu )
+% Marco McSweeney (mmcsw1@umd.edu)
 
 % MADE uses EEGLAB toolbox and some of its plugins. Before running the pipeline, you have to install the following:
 % EEGLab:  https://sccn.ucsd.edu/eeglab/downloadtoolbox.php/download.php
