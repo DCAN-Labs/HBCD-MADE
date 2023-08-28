@@ -8,13 +8,19 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 % Version 1.0
 % Developed at the Child Development Lab, University of Maryland, College Park
 
-% Contributors to MADE pipeline:
+% Original Contributors to MADE pipeline:
 % Ranjan Debnath (rdebnath@umd.edu)
 % George A. Buzzell (gbuzzell@umd.edu)
 % Santiago Morales Pamplona (moraless@umd.edu)
 % Stephanie Leach (sleach12@umd.edu)
 % Maureen Elizabeth Bowers (mbowers1@umd.edu)
 % Nathan A. Fox (fox@umd.edu)
+
+% Ongoing Contributors:
+% Lydia Yoder (lyoder@umd.edu)
+% Erik Lee (eex6144@umn.edu)
+% Martin Antunez Garcia (mantunez@umd.edu )
+% Marco McSweeney (mmcsw1@umd.edu)
 
 % MADE uses EEGLAB toolbox and some of its plugins. Before running the pipeline, you have to install the following:
 % EEGLab:  https://sccn.ucsd.edu/eeglab/downloadtoolbox.php/download.php
@@ -84,7 +90,7 @@ for run=1:length(datafile_names)
     rawdata_location = datafile_dirs{run}; %update the input path for the given run
     fprintf('\n\n\n*** Processing run %d (%s) ***\n\n\n', run, datafile_names{run});
     
-    sub_id(run) = participant_label;
+    sub_id(run) = string(participant_label);
         
     %% STEP 1: Import EGI data file and relevant information
     EEG = pop_loadset('filename',datafile_names{run},'filepath',rawdata_location);
@@ -164,14 +170,13 @@ for run=1:length(datafile_names)
         mkdir(output_location);
     end
         
-    if save_interim_result == 1
-        if exist([output_location filesep 'filtered_data'], 'dir') == 0
-            mkdir([output_location filesep 'filtered_data'])
-        end
-        if exist([output_location filesep 'ica_data'], 'dir') == 0
-            mkdir([output_location filesep 'ica_data'])
-        end
+    if exist([output_location filesep 'filtered_data'], 'dir') == 0
+        mkdir([output_location filesep 'filtered_data'])
     end
+    if exist([output_location filesep 'ica_data'], 'dir') == 0
+        mkdir([output_location filesep 'ica_data'])
+    end
+
     if exist([output_location filesep 'processed_data'], 'dir') == 0
         mkdir([output_location filesep 'processed_data'])
     end
@@ -279,25 +284,91 @@ for run=1:length(datafile_names)
         end
     end
     
-    %% STEP 5.25: Label Task Variable if it is not already labeled
-   % if ~isfield(EEG.event, 'Task')
-    %    EEG = pop_editeventfield( EEG, 'indices',  strcat('1:', int2str(length(EEG.event))),'Task', 'n/a');
-   % end
+    %% STEP 5.25: Label Task Variable and DIN conidtions if it is not already labeled
     
-    if strcmp(EEG.event(3).Task, 'n/a')
-            if contains(EEG.filename, 'MMN')
-                task = 'MMN';
-            elseif contains(EEG.filename, 'RS')
-                task = 'RS';
-            elseif contains(EEG.filename, 'VEP')
-                task = 'VEP';
-            elseif contains(EEG.filename, 'FACE')
-                task = 'FACE';
-            end
-        for i = 1:length(EEG.event)    
-            EEG.event(i).Task = task;
-        end
-        
+   if strcmp(EEG.event(3).Task, 'n/a')
+       if contains(EEG.filename, 'MMN')
+           task = 'MMN';
+           din2s = find(strcmp({EEG.event.type}, 'DIN2'));
+           for d =1:length(din2s) %label the DIN condition
+               EEG.event(din2s(d)).Condition = EEG.event(din2s(d)-1).Condition;
+           end
+           
+           num_stm = numel(find(strcmp({EEG.event.type}, 'stms')));
+           num_din = length(din2s);
+           if num_stm  < num_din %remove any extra DINs
+               for w = 1:length(din2s)
+                   if ~(strcmp({EEG.event(din2s(w)-1).type}, 'stms'))
+                       EEG.event(din2s(w)).type = 'EXTRA_DIN';
+                   end
+               end
+           end
+       elseif contains(EEG.filename, 'RS')
+           task = 'RS'; %no labeling needed
+       elseif contains(EEG.filename, 'VEP')
+           task = 'VEP';
+           din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+           if din3s(1) == 1 %if the first flag in a file is a DIN remove it
+               EEG.event(din3s(1)).type = 'EXTRA_DIN';
+           end
+           for d =1:length(din3s) %label the DIN conditions
+               EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
+           end
+           
+       elseif contains(EEG.filename, 'FACE')
+           task = 'FACE';
+           dins = find(strcmp({EEG.event.type}, 'DIN3'));
+           %label Face Blocks
+           if length(dins) >= 100
+               block1 = EEG.event(1:dins(100));
+           else
+               block1 = EEG.event;
+           end
+           searchblock1_inverted = numel(find(strcmp({block1.Condition}, '2')))-1; %subtract 1 bc there is always 1 flag of each condition in the SESS rows
+           if searchblock1_inverted >=1
+               upright_condition_b1 = '1';
+               upright_condition_b2 = '4';
+           else
+               upright_condition_b1 = '4';
+               upright_condition_b2 = '1';
+           end
+           
+           for d =1:length(dins)
+               %The condition for the din is set equal to whatever the condition of preceding flag
+               EEG.event(dins(d)).Condition = EEG.event(dins(d)-1).Condition;
+               if d <=100
+                   EEG.event(dins(d)).Block = 1;
+                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                       EEG.event(dins(d)).Condition = upright_condition_b1;
+                       EEG.event(dins(d)-1).Condition = upright_condition_b1;
+                       EEG.event(dins(d)+1).Condition = upright_condition_b1;
+                   end
+               else
+                   EEG.event(dins(d)).Block = 2;
+                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                       EEG.event(dins(d)).Condition = upright_condition_b2;
+                       EEG.event(dins(d)-1).Condition = upright_condition_b2;
+                       EEG.event(dins(d)-2).Condition = upright_condition_b2;
+                   end
+               end
+               
+           end
+           num_stm = numel(find(strcmp({EEG.event.type}, 'stm+')));
+           num_din = length(dins);
+           if num_stm  < num_din
+               for w = 1:length(dins)
+                   if ~strcmp({EEG.event(dins(w)-1).type}, 'stm+')
+                       EEG.event(dins(w)).type = 'EXTRA_DIN';
+                   end
+               end
+           end
+           
+       end
+       
+       for i = 1:length(EEG.event)
+           EEG.event(i).Task = task; %label task variable
+       end
+       
     end
     
     %% STEP 5.5: Get Line Noise Measure
@@ -698,7 +769,7 @@ if all_bad_ICs==1
         total_channels_interpolated(i)=0;
     end
 end
-    
+
 %% STEP 11.5: Now seperate each task for remainder of processing
 mEEG = deal(EEG);
 for run = 1 : length(event_struct.file_names)  
@@ -706,8 +777,6 @@ for run = 1 : length(event_struct.file_names)
     %% Step 11.75: Load task specific settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
     s = grab_settings(event_struct.file_names(run), json_settings_file);
-
-
 
     % 10. Do you want to remove/correct baseline?
     remove_baseline = s.remove_baseline; % 0 = NO (no baseline correction), 1 = YES (baseline correction)
@@ -751,7 +820,7 @@ for run = 1 : length(event_struct.file_names)
         task = 'FACE';
     end
 
-    Tasks(run) = task;
+    Tasks(run) = string(task);
     
     EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
@@ -844,8 +913,10 @@ for run = 1 : length(event_struct.file_names)
                         ii=ii+1;
                     end
                 end
-                avginterp = mean(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
-                avginterp_byfile(run) = avginterp;%LY 7/18/2023 for percent interpolated calc
+                avginterp(run) = mean(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                stdinterp(run) = std(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                rangeinterp(run) = range(sum(badChans(:,goodepoch),1));%LY 7/18/2023 for percent interpolated calc
+                %avginterp_byfile(run) = avginterp;%LY 7/18/2023 for percent interpolated calc
                 badepoch=logical(badepoch);
             end
             % If all epochs are artifacted, save the dataset and ignore rest of the preprocessing for this run.
@@ -957,16 +1028,48 @@ for run = 1 : length(event_struct.file_names)
         save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.mat')], 'EEG'); % save .mat format
     end
     
+    
+    %For plots
+    %name
+    save_name = [name '.mat'];
+    save_name_jpg = [name '.jpeg'];
+    save_path = [output_location filesep 'processed_data' filesep ];
+
+    if contains(event_struct.file_names{run}, 'MMN')
+        MMN_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'RS')
+        RS_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'VEP')
+        VEP_ERP_Topo_Indv();
+        clear allData;
+    elseif contains(event_struct.file_names{run}, 'FACE')
+        FACE_ERP_Topo_Indv();
+        clear allData;
+    end
+    
+    
+    
 end % end of run loop
 
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
 report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp_byfile');
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_channel_interp_artifact_rej'};
-writetable(report_table, fullfile(output_location, 'MADE_preprocessing_report.csv'));
+    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej'};
+writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_MADE_preprocessing_report.csv']));
+
+if save_interim_result == 0
+    if exist([output_location filesep 'filtered_data'], 'dir') == 0
+        mkdir([output_location filesep 'filtered_data' filesep '*'])
+    end
+    if exist([output_location filesep 'ica_data'], 'dir') == 0
+        mkdir([output_location filesep 'ica_data' filesep '*'])
+    end
+end
 
 end

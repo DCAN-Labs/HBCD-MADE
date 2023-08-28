@@ -170,14 +170,13 @@ for run=1:length(datafile_names)
         mkdir(output_location);
     end
         
-    if save_interim_result == 1
-        if exist([output_location filesep 'filtered_data'], 'dir') == 0
-            mkdir([output_location filesep 'filtered_data'])
-        end
-        if exist([output_location filesep 'ica_data'], 'dir') == 0
-            mkdir([output_location filesep 'ica_data'])
-        end
+    if exist([output_location filesep 'filtered_data'], 'dir') == 0
+        mkdir([output_location filesep 'filtered_data'])
     end
+    if exist([output_location filesep 'ica_data'], 'dir') == 0
+        mkdir([output_location filesep 'ica_data'])
+    end
+
     if exist([output_location filesep 'processed_data'], 'dir') == 0
         mkdir([output_location filesep 'processed_data'])
     end
@@ -1063,5 +1062,21 @@ report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'li
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
     'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej'};
 writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_MADE_preprocessing_report.csv']));
+
+%%% Delete the interem results if the user doesnt want them
+if save_interim_result == 0
+    if exist([output_location filesep 'filtered_data'], 'dir') > 0
+        delete([output_location filesep 'filtered_data' filesep '*'])
+        rmdir([output_location filesep 'filtered_data']);
+    end
+    if exist([output_location filesep 'ica_data'], 'dir') > 0
+        delete([output_location filesep 'ica_data' filesep '*'])
+        rmdir([output_location filesep 'ica_data']);
+    end
+    if exist([output_location filesep 'merged_data'], 'dir') > 0
+        delete([output_location filesep 'merged_data' filesep '*'])
+        rmdir([output_location filesep 'merged_data']);
+    end
+end
 
 end
