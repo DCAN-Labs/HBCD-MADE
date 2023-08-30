@@ -25,19 +25,19 @@ RUN apt-get update && \
 
 RUN pip install numpy
 
-#Setup MCR - this grabs v910 of MCR that was downloaded from the matlab
+#Setup MCR - this grabs v912 of MCR that was downloaded from the matlab
 #website, installed at MSI, and then zipped. If you want to use a
 #different version of matlab then download the corresponding version
 #of MCR, install it, zip it, and upload the new path to a public bucket
 #on S3
 RUN mkdir /mcr_path
-RUN wget https://s3.msi.umn.edu/leex6144-public/v910.zip -O /mcr_path/mcr.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip
 RUN cd /mcr_path && unzip -q ./mcr.zip
 RUN rm /mcr_path/mcr.zip 
 
 #Download the unique code for this project
 RUN mkdir /code
-RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v114.zip -O /code/code.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v120.zip -O /code/code.zip
 RUN cd /code && unzip -q ./code.zip
 RUN rm /code/code.zip
 
