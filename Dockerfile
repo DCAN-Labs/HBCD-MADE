@@ -1,5 +1,5 @@
 #The base image is the latest ubuntu docker image
-FROM ubuntu:latest 
+FROM python:3.9.16-slim-bullseye
 
 # Prepare environment
 RUN apt-get update && \
@@ -23,6 +23,7 @@ RUN apt-get update && \
                     pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
 
+RUN python3 -m pip install --upgrade pip
 RUN pip install numpy
 
 #Setup MCR - this grabs v912 of MCR that was downloaded from the matlab
