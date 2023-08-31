@@ -51,6 +51,8 @@ RUN rm /sample_locs/sample_locs.zip
 #RUN export EXECUTABLE_PATH=/code/run_compiled.sh
 ENV MCR_PATH=/mcr_path
 ENV EXECUTABLE_PATH=/code/run_compiled.sh
+ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/v912/runtime/glnxa64:/mcr_path/v912/bin/glnxa64:/mcr_path/v912/sys/os/glnxa64:/mcr_path/v912/extern/bin/glnxa64"
+
 
 #Change Permissions
 RUN chmod 555 -R /mcr_path /code /sample_locs
