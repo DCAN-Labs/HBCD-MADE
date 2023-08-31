@@ -47,9 +47,8 @@ RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs.zip -O /sample_locs/
 RUN cd /sample_locs && unzip -q ./sample_locs.zip
 RUN rm /sample_locs/sample_locs.zip
 
-#RUN export MCR_PATH=/mcr_path
-#RUN export EXECUTABLE_PATH=/code/run_compiled.sh
-ENV MCR_PATH=/mcr_path
+#Export paths (make sure LD_LIBRARY_PATH is set to the correct version)
+ENV MCR_PATH=/mcr_path/v912
 ENV EXECUTABLE_PATH=/code/run_compiled.sh
 ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/v912/runtime/glnxa64:/mcr_path/v912/bin/glnxa64:/mcr_path/v912/sys/os/glnxa64:/mcr_path/v912/extern/bin/glnxa64"
 
@@ -61,4 +60,4 @@ RUN chmod 555 -R /mcr_path /code /sample_locs
 ENV PATH="${PATH}:/code"
 RUN pipeline_name=made && cp /code/run.py /code/$pipeline_name
 
-ENTRYPOINT ["run.py"]
+ENTRYPOINT ["made"]
