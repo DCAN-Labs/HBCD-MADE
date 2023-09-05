@@ -20,6 +20,7 @@ RUN apt-get update && \
                     wget \
                     xvfb \
                     zlib1g \
+                    default-jre \
                     pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
 
