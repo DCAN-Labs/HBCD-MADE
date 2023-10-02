@@ -144,8 +144,9 @@ Conditions = {'Upright_1', 'Inverted_2', 'Object_3', 'Upright2_4'};
 Channels = EEG.chanlocs;
 Times = EEG.times;
 
-save([save_path filesep save_name], 'Conditions', 'Channels', 'Times', 'allData')
-
+%save([save_path filesep save_name], 'Conditions', 'Channels', 'Times', 'allData')
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')]
+save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
 %%%TOPO BEGIN HERE
