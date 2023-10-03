@@ -87,7 +87,9 @@ globalPSD_eo = avg_elec_eo_spectra(:,2:50);
 filename = sprintf('%s_RS.mat', subject_ID);
 
 % Save the data into a .mat file with the specified filename
-save(filename, 'channel_location', 'freqs_eo', 'spectra_eo_db');
+%save(filename, 'channel_location', 'freqs_eo', 'spectra_eo_db');
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')]
+save([save_path filesep save_name_whole], 'channel_location', 'freqs_eo', 'spectra_eo_db')
 
 %% Do transformation only for the db
 avg_elec_eo_db_spectra = mean(spectra_eo_db,1); % get average power at each frequency across all electrodes
