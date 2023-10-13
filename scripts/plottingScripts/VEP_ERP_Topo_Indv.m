@@ -7,26 +7,26 @@ jsonStr = fileread(json_settings_file);
 
 % Decode the JSON data into a MATLAB struct
 settingsData = jsondecode(jsonStr);
-subject_ID = participant_label
+subject_ID = participant_label;
 
 % Plot reg topo range
-PeakStart = 1000*settingsData.VEP.ERP_window_start
-PeakEnd = 1000*settingsData.VEP.ERP_window_end %It crashes if you put the maximum limit, is should be slightly below that %MA
+PeakStart = 1000*settingsData.VEP.ERP_window_start;
+PeakEnd = 1000*settingsData.VEP.ERP_window_end; %It crashes if you put the maximum limit, is should be slightly below that %MA
 
-Start = -(1000*settingsData.VEP.pre_latency)
-End = (1000*settingsData.VEP.post_latency)-2 %It crashes if you put the maximum limit, is should be slightly below that %MA
+Start = -(1000*settingsData.VEP.pre_latency);
+End = (1000*settingsData.VEP.post_latency)-2 ;%It crashes if you put the maximum limit, is should be slightly below that %MA
 
-ROIname = settingsData.VEP.ROI_of_interest
+ROIname = settingsData.VEP.ROI_of_interest;
 ROI = settingsData.clusters.(ROIname)';
 
 EEG = pop_selectevent(EEG, 'type', {'DIN3'}, 'deleteevents','on');
 
 %This small chunk of code would get rid of NaN in Condition and select only the one of interest
-T = struct2table( EEG.event )
-[R,TF] = rmmissing(T,'DataVariables',{'Condition'})
+T = struct2table( EEG.event );
+[R,TF] = rmmissing(T,'DataVariables',{'Condition'});
 G = table2struct(R);
-Xt = G'
-EEG.event = Xt
+Xt = G';
+EEG.event = Xt;
 
 events = find(strcmp({EEG.event.type}, 'DIN3'));
 
@@ -42,9 +42,9 @@ try
     EEG_s = pop_selectevent(EEG, 'Stim_type', 1, 'deleteevents','on');
     EEG_s = eeg_checkset(EEG_s);
 catch
-    EEG_s = EEG
-    EEG_s.data(EEG_s.data <= 9999999) = 0
-    EEG_s.trials = 0
+    EEG_s = EEG;
+    EEG_s.data(EEG_s.data <= 9999999) = 0;
+    EEG_s.trials = ;
 end
 
 
@@ -58,14 +58,14 @@ Channels = EEG.chanlocs;
 Times = EEG.times;
 
 %save([save_path filesep save_name], 'Conditions', 'Channels', 'Times', 'allData')
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')]
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
 %%%TOPO BEGIN HERE
-NumberOfConditions = size(allData,1)
-NumberOfChannels = size(allData,2)
-NumberOfPoints = size(allData,3)
+NumberOfConditions = size(allData,1);
+NumberOfChannels = size(allData,2);
+NumberOfPoints = size(allData,3);
 
 PeakRange = find(EEG.times == PeakStart):find(EEG.times == PeakEnd);
 
@@ -73,16 +73,16 @@ PeakData = squeeze(allData(:,:,PeakRange)); % Selecting time of interest
 PeakData = squeeze(mean(PeakData,2)); % Averaging across time of interest
 %PeakData = squeeze(mean(PeakData,1)); % Averaging across participants #No participants
 
-PeakData_Stan = PeakData %There are no conditions
+PeakData_Stan = PeakData; %There are no conditions
 
 set(0,'DefaultFigureVisible','off');
 
-PeakStart_n = num2str(PeakStart)
-PeakEnd_n = num2str(PeakEnd)
+PeakStart_n = num2str(PeakStart);
+PeakEnd_n = num2str(PeakEnd);
 
-EEG_s_trials = num2str(EEG_s.trials)
+EEG_s_trials = num2str(EEG_s.trials);
 
-infoSafeTitle = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials)
+infoSafeTitle = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials);
 
 
 
@@ -93,7 +93,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '01_Topo_VEP.jpg'
+Plot_Name = '01_Topo_VEP.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -101,7 +101,7 @@ saveas(erp, merged_Plot_Name);
 %%
 %%Individual ERPs starts here
 
-name = subject_ID
+name = subject_ID;
 
 end_ind = interp1(EEG.times,1:length(EEG.times),End,'nearest');
 start_ind = interp1(EEG.times,1:length(EEG.times),Start,'nearest');
@@ -124,7 +124,7 @@ grey2 = [.2 .2 .2];
 
 set(0,'DefaultFigureVisible','off');
 
-title_figure = strcat(name, '-', ROIname, '- N=', num2str(EEG_s.trials))
+title_figure = strcat(name, '-', ROIname, '- N=', num2str(EEG_s.trials));
 erp = figure;
 hold on
 plot(EEG.times(Range), standard, 'color', grey, 'LineWidth', 1.5);
@@ -138,6 +138,6 @@ hold off;
 
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_VEP.jpg')
+save_plot_name = strcat(name, '_ERP_', ROIname, '_VEP.jpg');
 saveas(erp, save_plot_name);
 

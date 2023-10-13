@@ -2,36 +2,35 @@
 
 EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.set')]);
 
-% Read the JSON file contents
+% % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
-
-% Decode the JSON data into a MATLAB struct
+% 
+% % Decode the JSON data into a MATLAB struct
 settingsData = jsondecode(jsonStr);
 
 %participant_label = 'sub-PIUMD0059';
-subject_ID = participant_label
+subject_ID = participant_label;
 
 % Plot reg topo range
-%PeakStart = 100;
-%PeakEnd = 300;
-PeakStart = 1000*settingsData.FACE.ERP_window_start
-PeakEnd = 1000*settingsData.FACE.ERP_window_end %It crashes if you put the maximum limit, is should be slightly below that %MA
 
-Start = -(1000*settingsData.FACE.pre_latency)
-End = (1000*settingsData.FACE.post_latency)-2
+ PeakStart = 1000*settingsData.FACE.ERP_window_start; %final PeakStart is in MS
+ PeakEnd = 1000*settingsData.FACE.ERP_window_end; %It crashes if you put the maximum limit, is should be slightly below that %MA
 
-ROIname = settingsData.FACE.ROI_of_interest
+Start = -(1000*settingsData.FACE.pre_latency);
+End = (1000*settingsData.FACE.post_latency)-2;
+
+ROIname = settingsData.FACE.ROI_of_interest;
 ROI = settingsData.clusters.(ROIname)';
 
 EEG = pop_selectevent(EEG, 'type', {'DIN3'}, 'deleteevents','on');
 
 
 %This small chunk of code would get rid of NaN in Condition and select only the one of interest
-T = struct2table( EEG.event )
-[R,TF] = rmmissing(T,'DataVariables',{'Condition'})
+T = struct2table( EEG.event );
+[R,TF] = rmmissing(T,'DataVariables',{'Condition'});
 G = table2struct(R);
-Xt = G'
-EEG.event = Xt
+Xt = G';
+EEG.event = Xt;
 
 events = find(strcmp({EEG.event.type}, 'DIN3'));
 
@@ -43,45 +42,41 @@ end
 
 %standard tone
 try
-    %EEG_s = pop_selectevent(EEG, 'mffkey_cel', '1', 'deleteevents','on');
     EEG_s = pop_selectevent(EEG, 'Stim_type', 1, 'deleteevents','on');
     EEG_s = eeg_checkset(EEG_s);
 catch
-    EEG_s = EEG
-    EEG_s.data(EEG_s.data <= 9999999) = 0
-    EEG_s.trials = 0
+    EEG_s = EEG;
+    EEG_s.data(EEG_s.data <= 9999999) = 0;
+    EEG_s.trials = 0;
 end
 
 %deviant tone
 try
-    %EEG_d = pop_selectevent(EEG, 'mffkey_cel', '2', 'deleteevents','on');
     EEG_d = pop_selectevent(EEG, 'Stim_type', 2, 'deleteevents','on');
     EEG_d = eeg_checkset(EEG_d);
 catch
-    EEG_d = EEG
-    EEG_d.data(EEG_d.data <= 9999999) = 0
-    EEG_d.trials = 0
+    EEG_d = EEG;
+    EEG_d.data(EEG_d.data <= 9999999) = 0;
+    EEG_d.trials = 0;
 end
 %novel tone
 try
-    %EEG_n = pop_selectevent(EEG, 'mffkey_cel', '3', 'deleteevents','on');
     EEG_n = pop_selectevent(EEG, 'Stim_type', 3, 'deleteevents','on');
     EEG_n = eeg_checkset(EEG_n);
 catch
-    EEG_n = EEG
-    EEG_n.data(EEG_n.data <= 9999999) = 0
-    EEG_n.trials = 0
+    EEG_n = EEG;
+    EEG_n.data(EEG_n.data <= 9999999) = 0;
+    EEG_n.trials = 0;
 end
 
 %standard2 tone
 try
-    %EEG_s = pop_selectevent(EEG, 'mffkey_cel', '1', 'deleteevents','on');
     EEG_s2 = pop_selectevent(EEG, 'Stim_type', 4, 'deleteevents','on');
     EEG_s2 = eeg_checkset(EEG_s2);
 catch
-    EEG_s2 = EEG
-    EEG_s2.data(EEG_s2.data <= 9999999) = 0
-    EEG_s2.trials = 0
+    EEG_s2 = EEG;
+    EEG_s2.data(EEG_s2.data <= 9999999) = 0;
+    EEG_s2.trials = 0;
 end
 
 
@@ -113,13 +108,13 @@ NumberOfPoints = size(allData,3);
 PeakRange = find(EEG.times == PeakStart):find(EEG.times == PeakEnd);
 
 PeakData = squeeze(allData(:,:,PeakRange)); % Selecting time of interest
-PeakData = squeeze(mean(PeakData,4)); % Averaging across time of interest
-PeakData = squeeze(mean(PeakData,1)); % Averaging across participants
+PeakData = squeeze(mean(PeakData,3)); % Averaging across time of interest 
 
-PeakData_Stan = squeeze(PeakData(1,:,:)); % Selecting condition Upright
-PeakData_Dev = squeeze(PeakData(2,:,:)); % Selecting condition Inverted
-PeakData_Nov = squeeze(PeakData(3,:,:)); % Selecting condition Object
-PeakData_Up2 = squeeze(PeakData(4,:,:)); % Selecting condition Upright2
+
+PeakData_Stan = squeeze(PeakData(1,:)); % Selecting condition Upright 
+PeakData_Dev = squeeze(PeakData(2,:)); % Selecting condition Inverted
+PeakData_Nov = squeeze(PeakData(3,:)); % Selecting condition Object
+PeakData_Up2 = squeeze(PeakData(4,:)); % Selecting condition Upright2
 
 set(0,'DefaultFigureVisible','off');
 
@@ -130,48 +125,51 @@ EEG_s_trials = num2str(EEG_s.trials);
 EEG_d_trials = num2str(EEG_d.trials);
 EEG_n_trials = num2str(EEG_n.trials);
 EEG_s2_trials = num2str(EEG_s2.trials);
-
 infoSafeTitle = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials,',',EEG_d_trials,',',EEG_n_trials,',',EEG_s2_trials);
 
 
 
 erp = figure;
+infoSafeTitle_s = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s_trials);
 topoplot(PeakData_Stan, EEG.chanlocs,'maplimits', [-5 5.0], 'electrodes', 'on', 'gridscale', 100)
-title(strcat('Upright',infoSafeTitle), 'FontSize', 20);
+title(strcat('Upright',infoSafeTitle_s), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '01_Topo_Upright_FACE.jpg'
+Plot_Name = '01_Topo_Upright_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
+infoSafeTitle_d = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_d_trials);
 topoplot(PeakData_Dev, EEG.chanlocs,'maplimits', [-5 5.0], 'electrodes', 'on', 'gridscale', 100)
-title(strcat('Inverted',infoSafeTitle), 'FontSize', 20);
+title(strcat('Inverted',infoSafeTitle_d), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '02_Topo_Inverted_FACE.jpg'
+Plot_Name = '02_Topo_Inverted_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
+infoSafeTitle_n = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_n_trials);
 topoplot(PeakData_Nov, EEG.chanlocs,'maplimits', [-5 5.0], 'electrodes', 'on', 'gridscale', 100)
-title(strcat('Object',infoSafeTitle), 'FontSize', 20);
+title(strcat('Object',infoSafeTitle_n), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '03_Topo_Object_FACE.jpg'
+Plot_Name = '03_Topo_Object_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
+infoSafeTitle_s2 = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_s2_trials);
 topoplot(PeakData_Up2, EEG.chanlocs,'maplimits', [-5 5.0], 'electrodes', 'on', 'gridscale', 100)
-title(strcat('Upright2',infoSafeTitle), 'FontSize', 20);
+title(strcat('Upright2',infoSafeTitle_s2), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '04_Topo_Upright2_FACE.jpg'
+Plot_Name = '04_Topo_Upright2_FACE.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -204,7 +202,7 @@ saveas(erp, merged_Plot_Name);
 %%
 %%Individual ERPs starts here
 
-name = subject_ID
+name = subject_ID;
 
 end_ind = interp1(EEG.times,1:length(EEG.times),End,'nearest');
 start_ind = interp1(EEG.times,1:length(EEG.times),Start,'nearest');
@@ -230,7 +228,7 @@ grey2 = [.2 .2 .2];
 
 set(0,'DefaultFigureVisible','off');
 
-title_figure = strcat(name, ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials), ',',  num2str(EEG_s2.trials), ' ')
+title_figure = strcat(name, ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials), ',',  num2str(EEG_s2.trials), ' ');
 erp = figure;
 hold on
 plot(EEG.times(Range), standard, 'color', grey, 'LineWidth', 1.5);
@@ -245,7 +243,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_FACE.jpg')
+save_plot_name = strcat(name, '_ERP_', ROIname, '_FACE.jpg');
 saveas(erp, save_plot_name);
 
 %Diference
@@ -269,7 +267,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_DiffERP_', ROIname, '_FACE.jpg')
+save_plot_name = strcat(name, '_DiffERP_', ROIname, '_FACE.jpg');
 saveas(erp, save_plot_name);
 
 
