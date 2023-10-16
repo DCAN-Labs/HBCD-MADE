@@ -44,7 +44,7 @@ try
 catch
     EEG_s = EEG;
     EEG_s.data(EEG_s.data <= 9999999) = 0;
-    EEG_s.trials = ;
+    EEG_s.trials = 0;
 end
 
 
