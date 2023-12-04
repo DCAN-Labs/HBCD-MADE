@@ -158,29 +158,30 @@ end
 % combine the components with bumps matrix and the plateau matrix
 features = unique([features features_2]); %output matrix (list of components with bumps)
 
+%%%LY don't save out plot
 % plot componetns with bumps and components w/o bumps
-figure; hold on;
-bumps=subplot(2,1,1);
-for jj=1:length(features)
-    plot(bumps,1:50,resids_pxx_matrix(features(jj),:))
-    hold on
-end
-title(bumps,'ICs with Bumps')
-
-good_ics=1:EEG.nbchan;
-good_ics(features)=[];
-nobumps=subplot(2,1,2);
-for gg=1:length(good_ics)
-    plot(nobumps,1:50,resids_pxx_matrix(good_ics(gg),:))
-    hold on
-end
-title(nobumps,'ICs without Bumps')
-
-par_id=strsplit(EEG.setname,'_')
-saveas(gcf,[par_id{1} '.jpg'])
+% figure; hold on;
+% bumps=subplot(2,1,1);
+% for jj=1:length(features)
+%     plot(bumps,1:50,resids_pxx_matrix(features(jj),:))
+%     hold on
+% end
+% title(bumps,'ICs with Bumps')
+% 
+% good_ics=1:EEG.nbchan;
+% good_ics(features)=[];
+% nobumps=subplot(2,1,2);
+% for gg=1:length(good_ics)
+%     plot(nobumps,1:50,resids_pxx_matrix(good_ics(gg),:))
+%     hold on
+% end
+% title(nobumps,'ICs without Bumps')
+% 
+% par_id=strsplit(EEG.setname,'_')
+% saveas(gcf,[par_id{1} '.jpg']) 
 
 %open a new figure for the spectopo output
-hold off; figure;
+% hold off; figure;
 
 % features = unique(components_with_bumps);
 disp('.');

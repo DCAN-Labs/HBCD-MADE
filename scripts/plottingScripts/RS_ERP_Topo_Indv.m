@@ -1,15 +1,12 @@
+%% RS Plot PSD
 
-
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.set')]);
 %%
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
 
 % Decode the JSON data into a MATLAB struct
 settingsData = jsondecode(jsonStr);
-
-
-%%
-
 subject_ID = participant_label;
 
 Start = -(1000*settingsData.RS.pre_latency);
@@ -87,7 +84,8 @@ globalPSD_eo = avg_elec_eo_spectra(:,2:50);
 filename = sprintf('%s_RS.mat', subject_ID);
 
 % Save the data into a .mat file with the specified filename
-save(filename, 'channel_location', 'freqs_eo', 'spectra_eo_db');
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')]
+save([save_path filesep save_name_whole], 'channel_location', 'freqs_eo', 'spectra_eo_db')
 
 %% Do transformation only for the db
 avg_elec_eo_db_spectra = mean(spectra_eo_db,1); % get average power at each frequency across all electrodes
@@ -114,11 +112,7 @@ saveas(psd_avg, full_save_path);
 close all;
 
 %% Do transformation only for the db %Choosing ROI
-%avg_elec_eo_db_spectra = mean(spectra_eo_db,1); % get average power at each frequency across all electrodes
 
-
-%ch = allData(:,:,1:length(Range)); %1:length(Range) instead of Range
-%p8_ind=find(ismember({EEG.chanlocs.labels},{'E75', 'E83', 'E70', 'E71', 'E76'})); %{'E75', 'E83', 'E70', 'E71', 'E76'}
 p8_ind=find(ismember({EEG.chanlocs.labels},ROI));
 ch = (spectra_eo_db(p8_ind,:));%64 FCz = 4, FZ = 6 %128 FCz = 6, Fz = 11 select channel(s) of interest Oz=75
 avg_elec_eo_db_spectra = mean(ch,1)

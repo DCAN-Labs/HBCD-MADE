@@ -68,9 +68,9 @@ end
     
 epoch_length=[-1*pre_latency post_latency]; % define Epoch Length
 tEEG = eeg_checkset( tEEG );
-if ~strcmp(task, 'RS')
-    tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
-end
+%if ~strcmp(task, 'RS')
+%    tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
+%end
 
 % This section ONLY does low pass, NOT high pass
 % Remember to change the value of lowpass
