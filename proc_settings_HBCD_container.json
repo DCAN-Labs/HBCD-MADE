@@ -1,7 +1,7 @@
 {
   "global_parameters": {
     "boundary_marker": "boundary",
-    "channel_locations": "/sample_locs/GSN129.sfp",
+    "channel_locations": "/sample_locs/0_2AverageNet128_v1.sfp",
     "down_sample": 0,
     "ekg_channels": [
       "E125",
