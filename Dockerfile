@@ -33,21 +33,21 @@ RUN pip install numpy
 #of MCR, install it, zip it, and upload the new path to a public bucket
 #on S3
 RUN mkdir /mcr_path
-RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip
-RUN cd /mcr_path && unzip -q ./mcr.zip
-RUN rm /mcr_path/mcr.zip 
+RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip \
+    && cd /mcr_path && unzip -q ./mcr.zip \
+    && rm /mcr_path/mcr.zip 
 
 #Download the unique code for this project
 RUN mkdir /code
-RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v130.zip -O /code/code.zip
-RUN cd /code && unzip -q ./code.zip
-RUN rm /code/code.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v130.zip -O /code/code.zip \
+    && cd /code && unzip -q ./code.zip \
+    && rm /code/code.zip
 
 #Download the sample locations/electrode files
 RUN mkdir /sample_locs
-RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_march29_24.zip -O /sample_locs/sample_locs.zip
-RUN cd /sample_locs && unzip -q ./sample_locs.zip
-RUN rm /sample_locs/sample_locs.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_march29_24.zip -O /sample_locs/sample_locs.zip \
+    && cd /sample_locs && unzip -q ./sample_locs.zip \
+    && rm /sample_locs/sample_locs.zip
 
 #Export paths (make sure LD_LIBRARY_PATH is set to the correct version)
 ENV MCR_PATH=/mcr_path/v912
