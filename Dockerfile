@@ -45,7 +45,7 @@ RUN rm /code/code.zip
 
 #Download the sample locations/electrode files
 RUN mkdir /sample_locs
-RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs.zip -O /sample_locs/sample_locs.zip
+RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_march29_24.zip -O /sample_locs/sample_locs.zip
 RUN cd /sample_locs && unzip -q ./sample_locs.zip
 RUN rm /sample_locs/sample_locs.zip
 
