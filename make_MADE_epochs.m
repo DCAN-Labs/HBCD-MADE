@@ -127,6 +127,7 @@ if erp_filter == 1
     
 end %if erp filter is turned on
 
+tEEG = pop_selectevent(tEEG, 'type', marker_names, 'deleteevents', 'on'); %LY TEMP
 tEEG = pop_epoch( tEEG, marker_names, epoch_length, 'epochinfo', 'yes');
 tEEG = pop_selectevent( tEEG, 'latency','-.1 <= .1','deleteevents','on');
 
