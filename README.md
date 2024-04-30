@@ -20,8 +20,8 @@ Selects the ROI for the ERP. The channels in the coded name are in “clusters�
 ### marker_names:
   The “event” code name where the data is epoched around (e.g. “DIN3”)
 ### score_times:
-  The time ranges in seconds which will be used for SME and meanAmplitude computation.
+  The time ranges in seconds which will be used for SME and meanAmplitude computation. There have to be the same number of score_times and score_ROIs.
 ### score_ROIs:
-  The ROIs to be used for computing SME and meanAmplitude.
+  The ROIs to be used for computing SME and meanAmplitude. There have to be the same number of score_times and score_ROIs.
 
 
