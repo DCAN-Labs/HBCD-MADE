@@ -4,7 +4,7 @@ HBCD branch of the MADE pipeline for EEG preprocessing
 ## HBCD-specific Parameters
 
 ### ROI_of_Interest:
-Selects the ROI for the ERP. The channels in the coded name are in “clusters” (e.g. “oz”, “p8”, “user_defined”). The researcher can feel free to add more ROIs in the “clusters” section and then indicate them in the FACE.ROI_of_Interest section (or MMN, RS, VEP, depending on the task of interest). 
+Selects the ROI for the ERP. The channels in the coded name are in “clusters” (e.g. “oz”, “p8”, “user_defined”). The researcher can feel free to add more ROIs in the “clusters” section and then indicate them in the FACE.ROI_of_Interest section (or MMN, RS, VEP, depending on the task of interest). The "all" cluster is specified with [] and will result in selecting all channels.
 ### pre_latency:
   Time of start of the epoch. Please consider that the value will turn negative in the script. (E.g. 0.1 will be -100 ms). This is also the time where the range for the ERP will start.
 ### post_latency:
@@ -19,5 +19,9 @@ Selects the ROI for the ERP. The channels in the coded name are in “clusters�
   In case we apply a second filter right before epoching, this will determine the lowpass filter used (e.g. 30).
 ### marker_names:
   The “event” code name where the data is epoched around (e.g. “DIN3”)
+### score_times:
+  The time ranges in seconds which will be used for SME and meanAmplitude computation. There have to be the same number of score_times and score_ROIs.
+### score_ROIs:
+  The ROIs to be used for computing SME and meanAmplitude. There have to be the same number of score_times and score_ROIs.
 
 

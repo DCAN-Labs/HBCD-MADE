@@ -529,7 +529,11 @@ if numel(FASTbadChans)==0
     end
 else
     for i = 1 : run
-        faster_bad_channels{i}=num2str(FASTbadChans');
+        %LY change from using indexes to channel names 4/15/2024     
+        bad_chan_labels = strjoin({EEG.chanlocs(FASTbadChans).labels}, ' ');
+        %bad_chan_labels = strrep(bad_chan_labels, 'E', '');
+        %faster_bad_channels{i}=num2str(FASTbadChans');
+        faster_bad_channels{i}= bad_chan_labels;
     end
 end
 
@@ -706,7 +710,7 @@ EEG_copy = eeg_checkset(EEG_copy);
 
 if size(EEG_copy.icaweights,1) == size(EEG_copy.icaweights,2)
     if save_interim_result==1
-        badICs = adjusted_ADJUST(EEG_copy, [[output_location filesep 'ica_data' filesep] strrep(datafile_names{run}, ext, '_adjust_report')]);
+        badICs = adjusted_ADJUST(EEG_copy, [[output_location filesep 'ica_data' filesep] subses '_adjust_report']);
     else
         badICs = adjusted_ADJUST(EEG_copy, [[output_location filesep 'processed_data' filesep] strrep(datafile_names{run}, ext, '_adjust_report')]);
     end
@@ -1036,15 +1040,18 @@ for run = 1 : length(event_struct.file_names)
     save_path = [output_location filesep 'processed_data' filesep ];
 
     if contains(event_struct.file_names{run}, 'MMN')
+        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'MMN', output_location, participant_label, session_label)
         MMN_ERP_Topo_Indv();
         clear allData;
     elseif contains(event_struct.file_names{run}, 'RS')
         RS_ERP_Topo_Indv();
         clear allData;
     elseif contains(event_struct.file_names{run}, 'VEP')
+        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label)
         VEP_ERP_Topo_Indv();
         clear allData;
     elseif contains(event_struct.file_names{run}, 'FACE')
+        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label)
         FACE_ERP_Topo_Indv();
         clear allData;
     end

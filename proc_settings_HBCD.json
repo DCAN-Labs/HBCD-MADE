@@ -11,8 +11,6 @@
       ],
       "oz": [
         "E75",
-        "E74",
-        "E82",
         "E70",
         "E83"
       ],
@@ -28,12 +26,44 @@
         "E64",
         "E65"
       ],
+      "f7f8": [
+        "E33",
+        "E34",
+        "E116",
+        "E122"
+      ],
+      "f3f4": [
+        "E3",
+        "E4",
+        "E19",
+        "E20",
+        "E23",
+        "E24",
+        "E27",
+        "E28",
+        "E117",
+        "E118",
+        "E123",
+        "E124"
+      ],
       "fcz": [
-        "E11",
-        "E12",
         "E5",
-        "E6"
-      ]
+        "E6",
+        "E7",
+        "E12",
+        "E13",
+        "E106",
+        "E112"
+      ],
+      "t7t8": [
+        "E40",
+        "E45",
+        "E46",
+        "E102",
+        "E108",
+        "E109"
+      ],
+	"all": []
     },
   "global_parameters": {
     "boundary_marker": "boundary",
@@ -97,16 +127,16 @@
     "output_format": 1
   },
   "RS": {
-    "ROI_of_interest": "user_defined", 
+    "ROI_of_interest": "oz", 
     "make_dummy_events": true,
     "remove_baseline": 0,
     "lowpass": 50,
     "erp_filter": 0,
     "erp_lowpass": 0,
-    "pre_latency": 1,
-    "post_latency": 1,
-    "num_dummy_events": 180,
-    "dummy_event_spacing": 1,
+    "pre_latency": 0.5,
+    "post_latency": 0.5,
+    "num_dummy_events": 360,
+    "dummy_event_spacing": 0.5,
     "marker_names": [
       "DIN3"
     ]
@@ -121,10 +151,14 @@
     "ERP_window_end": 0.15,
     "marker_names": [
       "DIN3"
-    ]
+    ],
+    "score_times":[[40, 79], [80,140], [141, 300]],
+    "score_ROIs": ["oz", "oz", "oz"]
+
+
   },
   "MMN": {
-    "ROI_of_interest": "fcz", 
+    "ROI_of_interest": "t7t8", 
     "pre_latency": 0.1,
     "post_latency": 0.5,
     "ERP_window_start": 0.2,
@@ -133,8 +167,11 @@
     "erp_lowpass": 30,
     "marker_names": [
       "DIN2"
-    ]
+    ],
+    "score_times":[[200, 400], [200, 400], [200, 400]],
+    "score_ROIs": ["t7t8", "f7f8", "fcz"]
   },
+
   "FACE": {
     "ROI_of_interest": "oz", 
     "pre_latency": 0.1,
@@ -145,6 +182,8 @@
     "erp_lowpass": 30,
     "marker_names": [
       "DIN3"
-    ]
+    ],
+    "score_times":[[200, 300], [75,125], [200, 300], [325, 625]],
+    "score_ROIs": ["p8", "oz", "oz", "oz"]
   }
 }
