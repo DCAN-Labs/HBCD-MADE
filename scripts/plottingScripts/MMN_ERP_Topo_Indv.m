@@ -159,7 +159,7 @@ title(strcat('Deviant vs Standard',infoSafeTitle), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '04_DiffTopo__Dev_Vs_Sta_MMN.jpg';
+Plot_Name = '04_DiffTopo_Dev_Vs_Sta_MMN.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -170,7 +170,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '05_DiffTopo__Dev_Vs_Pre_MMN.jpg';
+Plot_Name = '05_DiffTopo_Dev_Vs_Pre_MMN.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -207,7 +207,7 @@ grey2 = [.2 .2 .2];
 
 set(0,'DefaultFigureVisible','off');
 
-title_figure = strcat(name, '-', ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials));
+title_figure = strcat(ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials)); %name, '-', 
 erp = figure;
 hold on
 plot(EEG.times(Range), standard, 'color', grey, 'LineWidth', 1.5);
@@ -243,7 +243,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_DiffERP_', ROIname, '_MMN.jpg')
+save_plot_name = strcat(name, '_DiffERP_', ROIname, '_MMN.jpg');
 saveas(erp, save_plot_name);
 
 

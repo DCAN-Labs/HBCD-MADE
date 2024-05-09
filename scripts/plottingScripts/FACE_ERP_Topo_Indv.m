@@ -13,8 +13,8 @@ subject_ID = participant_label;
 
 % Plot reg topo range
 
- PeakStart = 1000*settingsData.FACE.ERP_window_start; %final PeakStart is in MS
- PeakEnd = 1000*settingsData.FACE.ERP_window_end; %It crashes if you put the maximum limit, is should be slightly below that %MA
+PeakStart = 1000*settingsData.FACE.ERP_window_start; %final PeakStart is in MS
+PeakEnd = 1000*settingsData.FACE.ERP_window_end; %It crashes if you put the maximum limit, is should be slightly below that %MA
 
 Start = -(1000*settingsData.FACE.pre_latency);
 End = (1000*settingsData.FACE.post_latency)-2;
@@ -228,7 +228,7 @@ grey2 = [.2 .2 .2];
 
 set(0,'DefaultFigureVisible','off');
 
-title_figure = strcat(name, ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials), ',',  num2str(EEG_s2.trials), ' ');
+title_figure = strcat(ROIname, '- N=', num2str(EEG_s.trials), ',',  num2str(EEG_d.trials), ',', num2str(EEG_n.trials), ',',  num2str(EEG_s2.trials), ' '); %name, 
 erp = figure;
 hold on
 plot(EEG.times(Range), standard, 'color', grey, 'LineWidth', 1.5);
