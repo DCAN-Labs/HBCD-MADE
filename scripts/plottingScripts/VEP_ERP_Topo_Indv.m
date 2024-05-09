@@ -94,7 +94,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = '01_Topo_VEP.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_',Plot_Name]; % 
 saveas(erp, merged_Plot_Name);
 
 
@@ -124,7 +124,7 @@ grey2 = [.2 .2 .2];
 
 set(0,'DefaultFigureVisible','off');
 
-title_figure = strcat(name, '-', ROIname, '- N=', num2str(EEG_s.trials));
+title_figure = strcat(ROIname, '- N=', num2str(EEG_s.trials)); %name, '-', 
 erp = figure;
 hold on
 plot(EEG.times(Range), standard, 'color', grey, 'LineWidth', 1.5);
@@ -138,6 +138,6 @@ hold off;
 
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_VEP.jpg');
+save_plot_name = strcat(name, '_ERP_', ROIname, '_VEP.jpg'); %name, '_
 saveas(erp, save_plot_name);
 

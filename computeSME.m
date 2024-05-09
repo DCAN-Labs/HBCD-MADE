@@ -178,6 +178,7 @@ for i=1:length(scoreTimes)
     end
     
 end
+smeWide.Properties.VariableNames{2} = 'NTrials';
 writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-summaryStats.csv']);
 writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-trialMeasures.csv']);
 
