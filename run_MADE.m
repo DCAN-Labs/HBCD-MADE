@@ -500,6 +500,20 @@ elseif numel(ref_chan)==0
     end
 end
 
+if numel(FASTbadChans)==0 %LY moved this if statement to occur prior to channel rejection 6/5/2024
+    for i = 1 : run
+        faster_bad_channels{i}='0';
+    end
+else
+    for i = 1 : run
+        %LY change from using indexes to channel names 4/15/2024     
+        bad_chan_labels = strjoin({EEG.chanlocs(FASTbadChans).labels}, ' ');
+        %bad_chan_labels = strrep(bad_chan_labels, 'E', '');
+        %faster_bad_channels{i}=num2str(FASTbadChans');
+        faster_bad_channels{i}= bad_chan_labels;
+    end
+end
+
 
 % If FASTER identifies all channels as bad channels, save the dataset
 % at this stage and ignore the remaining of the preprocessing.
@@ -523,19 +537,19 @@ else
     end
 end
 
-if numel(FASTbadChans)==0
-    for i = 1 : run
-        faster_bad_channels{i}='0';
-    end
-else
-    for i = 1 : run
-        %LY change from using indexes to channel names 4/15/2024     
-        bad_chan_labels = strjoin({EEG.chanlocs(FASTbadChans).labels}, ' ');
-        %bad_chan_labels = strrep(bad_chan_labels, 'E', '');
-        %faster_bad_channels{i}=num2str(FASTbadChans');
-        faster_bad_channels{i}= bad_chan_labels;
-    end
-end
+% if numel(FASTbadChans)==0 %TEMP
+%     for i = 1 : run
+%         faster_bad_channels{i}='0';
+%     end
+% else
+%     for i = 1 : run
+%         %LY change from using indexes to channel names 4/15/2024     
+%         bad_chan_labels = strjoin({EEG.chanlocs(FASTbadChans).labels}, ' ');
+%         %bad_chan_labels = strrep(bad_chan_labels, 'E', '');
+%         %faster_bad_channels{i}=num2str(FASTbadChans');
+%         faster_bad_channels{i}= bad_chan_labels;
+%     end
+% end
 
 if all_chan_bad_FAST==1
     for i = 1 : run
