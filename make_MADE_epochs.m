@@ -47,11 +47,26 @@ if isfield(s,'make_dummy_events')
             error('Error: there should be exactly one marker name for rest-like files, made to indicate the point to start creating dummy events.');
         end
 
+        if strcmp(marker_names(1), 'DIN3') %add code to address error where there are multiple DIN3 in RS
+            if numel(find(strcmp({tEEG.event.type}, 'DIN3')))>1
+                bas_lat = find(strcmp({tEEG.event.type}, 'bas+'));
+                din_lat = find(strcmp({tEEG.event.type}, 'DIN3'));
+                if numel(bas_lat) == 1
+                    for i=din_lat
+                        if i < bas_lat
+                            tEEG.event(i).type = 'EXTRA DIN';
+                        end
+                    end
+                end
+            end
+        end
+        
         start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
-        start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
         if length(start_index) > 1
             error(['Error: there should only be one instance of ' marker_names(1) ' event in EEG file']);
         end
+        start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
+
 
         num_dummy_events = s.num_dummy_events;
         dummy_event_spacing = s.dummy_event_spacing;
