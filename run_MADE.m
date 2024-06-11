@@ -1052,22 +1052,38 @@ for run = 1 : length(event_struct.file_names)
     save_name = [name '.mat'];
     save_name_jpg = [name '.jpeg'];
     save_path = [output_location filesep 'processed_data' filesep ];
-
+    
     if contains(event_struct.file_names{run}, 'MMN')
-        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'MMN', output_location, participant_label, session_label)
-        MMN_ERP_Topo_Indv();
-        clear allData;
+        try
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'MMN', output_location, participant_label, session_label)
+            MMN_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
     elseif contains(event_struct.file_names{run}, 'RS')
-        RS_ERP_Topo_Indv();
-        clear allData;
+        try
+            RS_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
     elseif contains(event_struct.file_names{run}, 'VEP')
-        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label)
-        VEP_ERP_Topo_Indv();
-        clear allData;
+        try
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label)
+            VEP_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
     elseif contains(event_struct.file_names{run}, 'FACE')
-        computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label)
-        FACE_ERP_Topo_Indv();
-        clear allData;
+        try
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label)
+            FACE_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
     end
     
     
