@@ -50,53 +50,97 @@ for i=1:length(scoreTimes)
         if sum(contains(conditions, '1'))==1
             EEG_ui = pop_selectevent(EEG, 'Condition', '1', 'deleteevents','on'); %select only uprightInv trials
             EEG_ui = eeg_checkset(EEG_ui);
-            EEG_ui_trialnums = {EEG_ui.event.TrialNum}';
-            EEG_ui_roi = squeeze(mean(EEG_ui.data(roi_ind, :,:),1)); %select and average across channels of interest
-            EEG_ui_peak = squeeze(mean(EEG_ui_roi(PeakRange, :),1)); %select and average across timerange of interest
-            Scores = EEG_ui_peak';
-            tab = array2table(Scores); %make table
-            tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-            tab.Condition(:) = "uprightInv"; %add condition variable
-            tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
+            if EEG_ui.trials == 1 %exception for when there is only one trial retained for this condition
+                EEG_ui_trialnums = {EEG_ui.event.TrialNum}';
+                EEG_ui_roi = squeeze(mean(EEG_ui.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_ui_peak = squeeze(mean(EEG_ui_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_ui_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "uprightInv"; %add condition variable
+                tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
+            else
+                EEG_ui_trialnums = {EEG_ui.event.TrialNum}';
+                EEG_ui_roi = squeeze(mean(EEG_ui.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_ui_peak = squeeze(mean(EEG_ui_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_ui_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "uprightInv"; %add condition variable
+                tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
+            end
         end
         
         if sum(contains(conditions, '2'))==1
             EEG_i = pop_selectevent(EEG, 'Condition', '2', 'deleteevents','on'); %select only inverted trials
             EEG_i = eeg_checkset(EEG_i);
-            EEG_i_trialnums = {EEG_i.event.TrialNum}';
-            EEG_i_roi = squeeze(mean(EEG_i.data(roi_ind, :,:),1)); %select and average across channels of interest
-            EEG_i_peak = squeeze(mean(EEG_i_roi(PeakRange, :),1)); %select and average across timerange of interest
-            Scores = EEG_i_peak';
-            tab2 = array2table(Scores); %make table
-            tab2 = renamevars(tab2,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-            tab2.Condition(:) = "inverted"; %add condition variable
-            tab2.("TrialNum") = EEG_i_trialnums;
+            if EEG_i.trials == 1
+                EEG_i_trialnums = {EEG_i.event.TrialNum}';
+                EEG_i_roi = squeeze(mean(EEG_i.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_i_peak = squeeze(mean(EEG_i_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_i_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "uprightInv"; %add condition variable
+                tab.("TrialNum") = EEG_i_trialnums; %add trial num variable
+            else
+                EEG_i_trialnums = {EEG_i.event.TrialNum}';
+                EEG_i_roi = squeeze(mean(EEG_i.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_i_peak = squeeze(mean(EEG_i_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_i_peak';
+                tab2 = array2table(Scores); %make table
+                tab2 = renamevars(tab2,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab2.Condition(:) = "inverted"; %add condition variable
+                tab2.("TrialNum") = EEG_i_trialnums;
+            end
         end
         
         if sum(contains(conditions, '3'))==1
             EEG_o = pop_selectevent(EEG, 'Condition', '3', 'deleteevents','on'); %select only object trials
             EEG_o = eeg_checkset(EEG_o);
-            EEG_o_trialnums = {EEG_o.event.TrialNum}';
-            EEG_o_roi = squeeze(mean(EEG_o.data(roi_ind, :,:),1)); %select and average across channels of interest
-            EEG_o_peak = squeeze(mean(EEG_o_roi(PeakRange, :),1)); %select and average across timerange of interest
-            Scores = EEG_o_peak';
-            tab3 = array2table(Scores); %make table
-            tab3 = renamevars(tab3,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-            tab3.Condition(:) = "object"; %add condition variable
-            tab3.("TrialNum") = EEG_o_trialnums;
+            if EEG_o.trials == 1
+                EEG_o_trialnums = {EEG_o.event.TrialNum}';
+                EEG_o_roi = squeeze(mean(EEG_o.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_o_peak = squeeze(mean(EEG_o_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_o_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "uprightInv"; %add condition variable
+                tab.("TrialNum") = EEG_o_trialnums; %add trial num variable
+            else
+                EEG_o_trialnums = {EEG_o.event.TrialNum}';
+                EEG_o_roi = squeeze(mean(EEG_o.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_o_peak = squeeze(mean(EEG_o_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_o_peak';
+                tab3 = array2table(Scores); %make table
+                tab3 = renamevars(tab3,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab3.Condition(:) = "object"; %add condition variable
+                tab3.("TrialNum") = EEG_o_trialnums;
+            end
         end
         
         if sum(contains(conditions, '4'))==1
             EEG_uo = pop_selectevent(EEG, 'Condition', '4', 'deleteevents','on'); %select only uprightObj trials
             EEG_uo = eeg_checkset(EEG_uo);
-            EEG_uo_trialnums = {EEG_uo.event.TrialNum}';
-            EEG_uo_roi = squeeze(mean(EEG_uo.data(roi_ind, :,:),1)); %select and average across channels of interest
-            EEG_uo_peak = squeeze(mean(EEG_uo_roi(PeakRange, :),1)); %select and average across timerange of interest
-            Scores = EEG_uo_peak';
-            tab4 = array2table(Scores); %make table
-            tab4 = renamevars(tab4,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-            tab4.Condition(:) = "uprightObj"; %add condition variable
-            tab4.("TrialNum") = EEG_uo_trialnums;
+            if EEG_uo.trials == 1
+                EEG_uo_trialnums = {EEG_uo.event.TrialNum}';
+                EEG_uo_roi = squeeze(mean(EEG_uo.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_uo_peak = squeeze(mean(EEG_uo_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_uo_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "uprightInv"; %add condition variable
+                tab.("TrialNum") = EEG_uo_trialnums; %add trial num variable
+            else
+                EEG_uo_trialnums = {EEG_uo.event.TrialNum}';
+                EEG_uo_roi = squeeze(mean(EEG_uo.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_uo_peak = squeeze(mean(EEG_uo_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_uo_peak';
+                tab4 = array2table(Scores); %make table
+                tab4 = renamevars(tab4,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab4.Condition(:) = "uprightObj"; %add condition variable
+                tab4.("TrialNum") = EEG_uo_trialnums;
+            end
         end
         
         tabFull = [tab; tab2; tab3; tab4;];
@@ -107,38 +151,79 @@ for i=1:length(scoreTimes)
         tab2=[];
         tab3=[];
 
-        EEG_s = pop_selectevent(EEG, 'Condition', '1', 'deleteevents','on'); %select only standard trials
-        EEG_s = eeg_checkset(EEG_s);
-        EEG_s_trialnums = {EEG_s.event.TrialNum}';
-        EEG_s_roi = squeeze(mean(EEG_s.data(roi_ind, :,:),1)); %select and average across channels of interest
-        EEG_s_peak = squeeze(mean(EEG_s_roi(PeakRange, :),1)); %select and average across timerange of interest
-        Scores = EEG_s_peak';
-        tab = array2table(Scores); %make table
-        tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-        tab.Condition(:) = "standard"; %add condition variable
-        tab.("TrialNum") = EEG_s_trialnums;
+        conditions = unique({EEG.event.Condition}); %check which conditions exist
         
-        EEG_p = pop_selectevent(EEG, 'Condition', '2', 'deleteevents','on'); %select only predeviant trials
-        EEG_p = eeg_checkset(EEG_p);
-        EEG_p_trialnums = {EEG_p.event.TrialNum}';
-        EEG_p_roi = squeeze(mean(EEG_p.data(roi_ind, :,:),1)); %select and average across channels of interest
-        EEG_p_peak = squeeze(mean(EEG_p_roi(PeakRange, :),1)); %select and average across timerange of interest
-        Scores = EEG_p_peak';
-        tab2 = array2table(Scores); %make table
-        tab2 = renamevars(tab2,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-        tab2.Condition(:) = "predeviant"; %add condition variable
-        tab2.("TrialNum") = EEG_p_trialnums;
+        if sum(contains(conditions, '1'))==1
+            EEG_s = pop_selectevent(EEG, 'Condition', '1', 'deleteevents','on'); %select only standard trials
+            EEG_s = eeg_checkset(EEG_s);
+            if EEG_s.trials == 1 %exception for when there is only one trial retained for this condition
+                EEG_s_trialnums = {EEG_s.event.TrialNum}';
+                EEG_s_roi = squeeze(mean(EEG_s.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_s_peak = squeeze(mean(EEG_s_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_s_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "standard"; %add condition variable
+                tab.("TrialNum") = EEG_s_trialnums;
+            else
+                EEG_s_trialnums = {EEG_s.event.TrialNum}';
+                EEG_s_roi = squeeze(mean(EEG_s.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_s_peak = squeeze(mean(EEG_s_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_s_peak';
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab.Condition(:) = "standard"; %add condition variable
+                tab.("TrialNum") = EEG_s_trialnums;
+            end
+        end
         
-        EEG_d = pop_selectevent(EEG, 'Condition', '3', 'deleteevents','on'); %select only deviant trials
-        EEG_d = eeg_checkset(EEG_d);
-        EEG_d_trialnums = {EEG_d.event.TrialNum}';
-        EEG_d_roi = squeeze(mean(EEG_d.data(roi_ind, :,:),1)); %select and average across channels of interest
-        EEG_d_peak = squeeze(mean(EEG_d_roi(PeakRange, :),1)); %select and average across timerange of interest
-        Scores = EEG_d_peak';
-        tab3 = array2table(Scores); %make table
-        tab3 = renamevars(tab3,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-        tab3.Condition(:) = "deviant"; %add condition variable 
-        tab3.("TrialNum") = EEG_d_trialnums;
+        if sum(contains(conditions, '2'))==1
+            EEG_p = pop_selectevent(EEG, 'Condition', '2', 'deleteevents','on'); %select only predeviant trials
+            EEG_p = eeg_checkset(EEG_p);
+            if EEG_p.trials == 1
+                EEG_p_trialnums = {EEG_p.event.TrialNum}';
+                EEG_p_roi = squeeze(mean(EEG_p.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_p_peak = squeeze(mean(EEG_p_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_p_peak';
+                tab2 = array2table(Scores); %make table
+                tab2 = renamevars(tab2,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab2.Condition(:) = "predeviant"; %add condition variable
+                tab2.("TrialNum") = EEG_p_trialnums;
+            else
+                EEG_p_trialnums = {EEG_p.event.TrialNum}';
+                EEG_p_roi = squeeze(mean(EEG_p.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_p_peak = squeeze(mean(EEG_p_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_p_peak';
+                tab2 = array2table(Scores); %make table
+                tab2 = renamevars(tab2,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab2.Condition(:) = "predeviant"; %add condition variable
+                tab2.("TrialNum") = EEG_p_trialnums;
+            end
+        end
+        
+        if sum(contains(conditions, '3'))==1
+            EEG_d = pop_selectevent(EEG, 'Condition', '3', 'deleteevents','on'); %select only deviant trials
+            EEG_d = eeg_checkset(EEG_d);
+            if EEG_d.trials == 1
+                EEG_d_trialnums = {EEG_d.event.TrialNum}';
+                EEG_d_roi = squeeze(mean(EEG_d.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_d_peak = squeeze(mean(EEG_d_roi(PeakRange))); %select and average across timerange of interest
+                Scores = EEG_d_peak';
+                tab3 = array2table(Scores); %make table
+                tab3 = renamevars(tab3,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab3.Condition(:) = "deviant"; %add condition variable
+                tab3.("TrialNum") = EEG_d_trialnums;
+            else
+                EEG_d_trialnums = {EEG_d.event.TrialNum}';
+                EEG_d_roi = squeeze(mean(EEG_d.data(roi_ind, :,:),1)); %select and average across channels of interest
+                EEG_d_peak = squeeze(mean(EEG_d_roi(PeakRange, :),1)); %select and average across timerange of interest
+                Scores = EEG_d_peak';
+                tab3 = array2table(Scores); %make table
+                tab3 = renamevars(tab3,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab3.Condition(:) = "deviant"; %add condition variable
+                tab3.("TrialNum") = EEG_d_trialnums;
+            end
+        end
         
         tabFull = [tab; tab2; tab3];
         tabFull.ID(:) = convertCharsToStrings(participant_label);
@@ -146,16 +231,30 @@ for i=1:length(scoreTimes)
     elseif strcmp(task, 'VEP')
         EEG_v = pop_selectevent(EEG, 'Condition', '1', 'deleteevents','on');
         EEG_v = eeg_checkset(EEG_v);
-        EEG_v_trialnums = {EEG_v.event.TrialNum}';
-        EEG_v_roi = squeeze(mean(EEG_v.data(roi_ind, :,:),1)); %select and average across channels of interest
-        EEG_v_peak = squeeze(mean(EEG_v_roi(PeakRange, :),1)); %select and average across timerange of interest
-        Scores = EEG_v_peak';
-        tab = array2table(Scores); %make table
-        tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
-        tab.("TrialNum") = EEG_v_trialnums;
-        tab.Condition(:) = "vep";
-        tabFull = tab;
-        tabFull.ID(:) = convertCharsToStrings(participant_label);
+        if EEG_v.trials == 1
+            EEG_v_trialnums = {EEG_v.event.TrialNum}';
+            EEG_v_roi = squeeze(mean(EEG_v.data(roi_ind, :,:),1)); %select and average across channels of interest
+            EEG_v_peak = squeeze(mean(EEG_v_roi(PeakRange))); %select and average across timerange of interest
+            Scores = EEG_v_peak';
+            tab = array2table(Scores); %make table
+            tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+            tab.("TrialNum") = EEG_v_trialnums;
+            tab.Condition(:) = "vep";
+            tabFull = tab;
+            tabFull.ID(:) = convertCharsToStrings(participant_label);
+        else
+            EEG_v_trialnums = {EEG_v.event.TrialNum}';
+            EEG_v_roi = squeeze(mean(EEG_v.data(roi_ind, :,:),1)); %select and average across channels of interest
+            EEG_v_peak = squeeze(mean(EEG_v_roi(PeakRange, :),1)); %select and average across timerange of interest
+            Scores = EEG_v_peak';
+            tab = array2table(Scores); %make table
+            tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+            tab.("TrialNum") = EEG_v_trialnums;
+            tab.Condition(:) = "vep";
+            tabFull = tab;
+            tabFull.ID(:) = convertCharsToStrings(participant_label);
+        end
+        
     else
         error("Not a scoreable task!")
     end
