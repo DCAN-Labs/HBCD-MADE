@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "HBCD_MADE"
+version = "1.0"
+description = "TBD"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name", email = "your.email@example.com" }
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "antspyx",
+    "nibabel"
+]
+
+[project.optional-dependencies]
+doc = [
+    "pydot >= 1.2.3",
+    "sphinx >= 7.3",
+    "sphinx-argparse",
+    "sphinx_rtd_theme>=0.5.2",
+]
+
+[project.urls]
+"Homepage" = "https://example.com"
+"Documentation" = "https://example.com/docs"
+"Source Code" = "https://github.com/yourname/yourproject"
+"Issue Tracker" = "https://github.com/yourname/yourproject/issues"

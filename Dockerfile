@@ -61,7 +61,7 @@ RUN chmod 555 -R /mcr_path /code /sample_locs
 #Add code dir to path
 ENV PATH="${PATH}:/code"
 ENV pipeline_name=made
-COPY run.py /code/$pipeline_name
-COPY run.py /code/run.py
+COPY ./python_code/run.py /code/$pipeline_name
+COPY ./python_code/run.py /code/run.py
 
 ENTRYPOINT ["made"]
