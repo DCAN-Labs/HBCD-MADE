@@ -24,13 +24,12 @@ singularity image: ::
         settings_file=/path/to/settings.json
         singularity run -B $bids_dir:/bids \
          -B $output_dir:/output \
-         -B $bibsnet_dir:/bibsnet \
          -B $settings_file:/settings_file/file.json \
          $container_path /bids /output participant /settings_file/file.json
 
 To see more specific information about how this tool expects
 the inputs to be formatted (i.e. file naming conventions), 
-see the inputs formatting page.
+see the data requirements page.
 
 
 Command-Line Arguments
