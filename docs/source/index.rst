@@ -59,3 +59,4 @@ Contents
    expected_outputs
    data_requirements
    getting_the_container
+   usage
