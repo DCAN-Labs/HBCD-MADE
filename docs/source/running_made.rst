@@ -1,7 +1,7 @@
 Running HBCD-MADE
 #################
 
-The intended workflow of running HBCD-MADE involves
+HBCD-MADE is an adapted version of the Maryland Analysis of Developmental EEG (MADE) pipeline (Debnath et al., 2020) for use with data from the Healthy Brain and Child Development (HBCD) study. The intended workflow of running HBCD-MADE involves
 utilizing a containerized version of the pipeline
 in singularity. If the container is being used
 to run the pipeline, the inputs will be formatted
