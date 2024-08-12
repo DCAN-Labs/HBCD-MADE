@@ -67,6 +67,27 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 %addpath(genpath('/home/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline'))
 %addpath(genpath('/home/faird/shared/data/TOTS_UMD_collab/code/cdl-eeg-processing/MADE-EEG-preprocessing-pipeline/eeglab2021.0'));% enter the path of the EEGLAB folder in this line
 
+%% TM - move corrupted/unusable files out of raw data location into new folder - 8/9/2024
+% In future updates, this section will be moved to a separate script
+% Participants CHPUP0024 and CHNWU0021 -- unusable RS run 1 data
+% move bad files to separate folder and do not process
+% code can be modified and copied for other participants, please run this
+% code only in this section (before reading datafile_names)
+if (participant_label == 'sub-856295') | (participant_label == 'sub-676980')
+    newfolder = strcat(bids_dir,'\', participant_label, '\', session_label, '\eeg', '\unusedRawData');
+    if exist(newfolder, 'dir') == 0
+        mkdir(newfolder);
+    end
+    filesList = dir(strcat(bids_dir,'\', participant_label, '\', session_label, '\eeg')); % get list of all files in directory
+    for i = 1:length(filesList)
+        if contains(filesList(i).name, 'RS_acq-eeg_run-01') %move RS run 1
+            name = filesList(i).name;
+            movefile(strcat(bids_dir,'\', participant_label, '\', session_label, '\eeg\', name), strcat(newfolder, '\', name));
+        end
+    end
+    cd(output_dir_name); %go back to the right folder
+end
+
 %% Read files to analyses
 %datafile_names=dir(rawdata_location);
 
@@ -105,6 +126,63 @@ for run=1:length(datafile_names)
 %     EEG = pop_biosig([rawdata_location, filesep, datafile_names{run}]);
 %     EEG = eeg_checkset(EEG);
 %     EEG = pop_select( EEG,'nochannel', 65:72); % delete redundant channels
+
+    %% TM - individual files raw data fixes 8/8/2024
+    % CHPHI0011 -- remove corrupted data marked by DrpS flag and add boundary
+    % markers in each task
+    if sub_id == 'sub-447585' 
+        % check what task we're on, add boundary marker per task if not
+        % already there (will just replace if it is already there)
+        if numel(find(strcmp({EEG.event.type}, 'bas+')))>0 %RS
+            EEG = pop_editeventvals(EEG,'add',{1 [] [] []},'changefield',{1 'latency' 2.189}, 'changefield', {1, 'sample' 2189}, 'changefield', {1, 'onset' 2.189},'changefield',{1 'type' 'boundary'}); 
+        end
+        if numel(find(strcmp({EEG.event.type}, 'stm+')))>0 %FACE
+            EEG = pop_editeventvals(EEG,'add',{1 [] [] []},'changefield',{1 'latency' 4.763}, 'changefield', {1, 'sample' 4763}, 'changefield', {1, 'onset' 4.763},'changefield',{1 'type' 'boundary'}); 
+        end
+        if numel(find(strcmp({EEG.event.type}, 'ch1+')))>0 %VEP
+            EEG = pop_editeventvals(EEG,'add',{1 [] [] []},'changefield',{1 'latency' 4.660}, 'changefield', {1, 'sample' 30724}, 'changefield', {1, 'onset' 3.724},'changefield',{1 'type' 'boundary'}); 
+        end
+        %remove corrupted data around DrpS flag
+        if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
+            EEG = pop_select(EEG, 'rmtime', [51 72]);
+            EEG = eeg_checkset( EEG );
+        end
+    end
+
+    % CHCHL0083 -- delete extra DIN3s out of raw data, only keep DIN3 at
+    % ~80ms, hardware error where extra dins were inserted and eprime flags
+    % were missing
+    % this DIN3 was chosen after watching the recorded video and estimating which
+    % DIN3 is closest to the start of the task
+    if sub_id == 'sub-437500'
+        if numel(find(strcmp(EEG.event(1).Task, 'RS')))>0 %find RS using task label
+            EEG = pop_editeventvals(EEG, 'delete', [18, 16, 15, 14, 12, 11]);
+        end
+    end
+
+    %% TM - 8/6/2024: Impedances catch
+    % Check if impedances were turned on and off -- if so pop out the
+    % section with impedances and save
+    % will not catch if impdances was turned on before task was
+    % started or aff after task was finished
+
+    if numel(find(strcmp({EEG.event.type}, 'IBEG')))>0 && numel(find(strcmp({EEG.event.type}, 'IEND')))>0
+        startidx = find(strcmp({EEG.event.type}, 'IBEG'));
+        endidx = find(strcmp({EEG.event.type}, 'IEND'));
+        if length(startidx) == 1 && length(endidx) == 1
+            impstart = EEG.event(startidx).onset - 0.1;
+            impend = EEG.event(endidx).onset;
+        else
+            error('multiple Impedance flags, check raw data and fix manually please');
+        end
+
+        EEG = pop_select(EEG, 'rmtime', [impstart impend]);
+    end
+
+    %% TM - 8/6/2024 Catch DRPS flag and throw error
+    if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
+        error('DrpS flag found, check raw data and fix manually please');
+    end
 
     %% Step 1.25: Load settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
@@ -840,7 +918,9 @@ for run = 1 : length(event_struct.file_names)
 
     Tasks(run) = string(task);
     
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task);
+    %In future changes, pull site information from participants.tsv (site)
+    outEEGname = outEEG.setname;
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, outEEGname);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
