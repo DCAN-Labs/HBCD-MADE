@@ -1,15 +1,45 @@
 Expected Outputs
-----------------
+================
 
-The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under "/bids_dir/sub-1/ses-1/eeg/", then the output of HBCD-MADE will fall under "output_dir/sub-1/ses-1/eeg/". 
+The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under ``/bids_dir/sub-1/ses-1/eeg/``, then the output of HBCD-MADE will fall under ``output_dir/sub-1/ses-1/eeg/``. The following output folders and files are created throughout processing within each subject’s output directory:
 
-The output of HBCD-MADE will primarily be found in *.set `EEGLAB <https://eeglab.org/>`_ formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the 'processed_data' folder. Each file found under this folder will have a corresponding json file in the parent directory that specifies the settings that were used for the specific task. If you load an EEG file, from the processed_data folder, it's 'data' field will have dimensions <num_electrodes, num_samples, num_epochs>, with the epochs placed around the events specified in the json file.
+- ``./filtered_data``
+- ``./merged_data``
+- ``./ica_data``
+- ``./processed_data``
+- ``./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv``
 
-The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB's pop_loadset function, or loaded in python using `MNE <https://mne.tools/stable/install/manual_install.html>`_
+``/filtered_data`` folder
+-------------------------
 
-The file MADE_preprocessing_report.csv will contain summary level statistics related to the processing of your data. Because the EEG data is merged across tasks for portions of the pre-processing, some of these entries will be the same for all tasks.
+**Description**
+
+This folder contains all data saved early in the processing pipeline after filtering but prior to bad channel detection. These data have been subjected to the following operations:
+
+- deletion of discontinuous data
+- deletion of EKG channel(s) if present
+- downsampling
+- deletion of outer electrode ring
+- filtering with 0.3 Hz high-pass with stopband of 0.1
+- 60Hz low-pass with 10 Hz transition band using a noncausal FIR filter
+
+**Contents**
+
+Each EEG task administered will have a corresponding ``.set`` and ``.fdt`` file stored within this folder.
+
+``/merged_data`` folder
+-----------------------
+
+**Description**
+
+Immediately after filtering tasks are merged together into one file and re-saved into this folder.
+
+**Contents**
+
+Tasks present in the merged ``.fdt`` file are listed in the corresponding ``.json`` file.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+      
       
