@@ -1,24 +1,20 @@
 Running HBCD-MADE
 #################
 
- The intended workflow of running HBCD-MADE involves
-utilizing a containerized version of the pipeline
-in Singularity. If the container is being used
-to run the pipeline, the inputs will be formatted
-as follows:
+The intended workflow of running HBCD-MADE involves utilizing a containerized version of the pipeline in Singularity. If the container is being used to run the pipeline, the inputs will be formatted as follows:
 
   * A json file with the configurations for processing the data for the current run.
   * The output directory to store the results (this will be the same for all subjects in a study).
   * The BIDS directory with the input data.
   * The participant label whose EEG data you want to process.
-  * The session label to process for the given participant. (V03 is the only session label available as of September 2024). 
+  * The session label to process for the given participant. (**V03** is the only session label available as of September 2024). 
   
 
 An example command to run HBCD-MADE
 -----------------------------------
 
 This example will run processing for the test file available `here <https://osf.io/wg46a/>`_,
-using the configuration file proc_settings_HBCD.json.
+using the configuration file ``proc_settings_HBCD.json.``
 Note that the path to the electrode
 positioning files is determined in the json and not as an
 input parameter to Singularity, but we still need to bind

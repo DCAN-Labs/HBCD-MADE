@@ -14,6 +14,21 @@ Global Setting Parameters
 
 These supported global settings are specified in the ``proc_settings_HBCD_container.json``:
 
+.. list-table:: Table Title
+   :widths: 20 10 50
+   :header-rows: 1
+
+   * - Header 1
+     - Header 2
+     - Header 3
+   * - ``boundary_marker``
+     - string
+     - If this marker is present in the EEG file, data from before this marker will be removed prior to analysis.
+   * - ``ekg_channels``
+     - string
+     - The path to the ``*.sfp`` file with electrode channel locations. The sample_locs folder from EEGLAB is placed under ``/sample_locs`` in the container so these files can be directly referenced from within the container (i.e., ``/sample_locs/GSN129.sfp``). Alternatively, an external path can be provided to a custom file, but the path to this folder will then need to be bound to Singularity.
+
+
 - **boundary_marker**: (string) If this marker is present in the EEG file, data from before this marker will be removed prior to analysis.
 - **ekg_channels**: (string) Non-cortical electrode measuring the electrocardiogram.
 - **channel_locations**: (string) The path to the ``*.sfp`` file with electrode channel locations. The sample_locs folder from EEGLAB is placed under ``/sample_locs`` in the container so these files can be directly referenced from within the container (i.e., ``/sample_locs/GSN129.sfp``). Alternatively, an external path can be provided to a custom file, but the path to this folder will then need to be bound to Singularity.
