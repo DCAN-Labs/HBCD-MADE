@@ -2,7 +2,8 @@ Expected Outputs
 ================
 
 The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under ``/bids_dir/sub-1/ses-1/eeg/``, then the output of HBCD-MADE will fall under ``output_dir/sub-1/ses-1/eeg/``. The output of HBCD-MADE will primarily be found in *.set EEGLAB formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the ‘processed_data’ folder. If you load an EEG file, from the processed_data folder, it’s ‘data’ field will have dimensions <num_electrodes, num_samples, num_epochs>, with the epochs placed around the events specified in the json file. The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
- The following output folders and files are created throughout processing within each subject’s output directory:
+
+The following output folders and files are created throughout processing within each subject’s output directory:
 
 - ``./filtered_data``
 - ``./merged_data``
@@ -89,11 +90,11 @@ Each file found under this folder will have a corresponding json file in the par
 
 This folder contains all processed data and MADE output, described in detail below:
 
-a. **EEG Data (``.fdt``, ``.set``)**
+a. **EEG Data** (``.fdt``, ``.set``)
 
 There is one .fdt and one corresponding .set file for each task containing fully processed data.
 
-b. **Figures (``.jpeg``)**
+b. **Figures** (``.jpeg``)
 
   Several images containing plots and figures automatically produced by MADE:
 
@@ -114,14 +115,14 @@ b. **Figures (``.jpeg``)**
 - DiffERP plots display the difference in the ERP waveform between specified conditions.
 
 
-c. **MATLAB Data files (``.mat``)**
+c. **MATLAB Data files** (``.mat``)
 .mat files contain processing output.
 
 - Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
 
 - Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS .mat output does not contain the time dimension.
 
-d. **CSV data files (``.csv``)**
+d. **CSV data files** (``.csv``)
 
 For each task, two .csv files are automatically produced by MADE: a summary statistics file and a trial measures file.
 

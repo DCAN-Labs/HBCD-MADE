@@ -6,12 +6,12 @@
 HBCD-MADE Introduction
 ======================
 
-This page serves as documentation for the Healthy Brain and Child Development Study's branch of the Maryland Analysis of Developmental EEG (MADE) pipeline. The github repository for the MADE pipeline upon which HBCD-MADE is based, can be found `here <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_, and a publication describing the original pipeline can be found `here <https://onlinelibrary.wiley.com/doi/full/10.1111/psyp.13580>`_.
+This page serves as documentation for the HBCD-MADE pipeline, an adapted version of the Maryland Analysis of Developmental EEG (MADE) pipeline (Debnath et al., 2020) for use with data from the Healthy Brain and Child Development (HBCD) study. The github repository for the MADE pipeline upon which HBCD-MADE is based, can be found `here <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_, and a publication describing the original pipeline can be found `here <https://onlinelibrary.wiley.com/doi/full/10.1111/psyp.13580>`_.
 
 The HBCD-MADE pipeline will run preprocessing on BIDS formatted data in the .set file format. All metadata required for running the HBCD-MADE pipeline is present within the .set files themselves, and other BIDS metadata will not be referenced during processing. In general, HBCD-MADE's functionality is roughly as follows:
 
 #. **Identify all session level EEG data for a given
-   subject/session pair.**
+   recording session.**
 #. **Iterate through all EEG files for the identified session,
    downsample the data, delete the outer layer of channels,
    and filter each file with the desired high-pass/low-pass settings.**

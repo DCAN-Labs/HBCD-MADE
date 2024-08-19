@@ -1,9 +1,9 @@
 Running HBCD-MADE
 #################
 
-HBCD-MADE is an adapted version of the Maryland Analysis of Developmental EEG (MADE) pipeline (Debnath et al., 2020) for use with data from the Healthy Brain and Child Development (HBCD) study. The intended workflow of running HBCD-MADE involves
+ The intended workflow of running HBCD-MADE involves
 utilizing a containerized version of the pipeline
-in singularity. If the container is being used
+in Singularity. If the container is being used
 to run the pipeline, the inputs will be formatted
 as follows:
 
@@ -11,19 +11,19 @@ as follows:
   * The output directory to store the results (this will be the same for all subjects in a study).
   * The BIDS directory with the input data.
   * The participant label whose EEG data you want to process.
-  * The session label to process for the given participant (this is optional if the subject only has one session).
+  * The session label to process for the given participant. (V03 is the only session label available as of September 2024). 
   
 
 An example command to run HBCD-MADE
 -----------------------------------
 
-This example will run processing for sub-1's ses-1,
+This example will run processing for the test file available `here <https://osf.io/wg46a/>`_,
 using the configuration file proc_settings_HBCD.json.
-One thing to be aware of is that the path to the electrode
+Note that the path to the electrode
 positioning files is determined in the json and not as an
-input parameter to singularity, but we still need to bind
+input parameter to Singularity, but we still need to bind
 the folder where the electrode positioning files are stored
-so that singularity can access it.
+so that Singularity can access it.
 
 
 .. code-block:: console
@@ -39,14 +39,10 @@ so that singularity can access it.
    /json_folder/proc_settings_HBCD.json \
    /output_dir \
    /bids_dir \
-   sub-1 \
-   ses-1
+   sub-144696 \
+   ses-V03
    
   
-  
-An example json file used for processing data can be
-found :download:`here <proc_settings.json>`.
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
