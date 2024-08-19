@@ -15,7 +15,7 @@ Global Setting Parameters
 These supported global settings are specified in the ``proc_settings_HBCD_container.json``:
 
 .. list-table:: Table Title
-   :widths: 20 10 50
+   :widths: 20 10 100
    :header-rows: 1
 
    * - Header 1
