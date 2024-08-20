@@ -11,7 +11,7 @@ found :download:`here <proc_settings.json>`. The settings specified in the JSON 
 1. :ref:`Global settings <Global_settings>` : These settings fall under the JSON key ``global_settings`` and serve as the default settings across tasks.
 2. :ref:`Unique task settings <Unique_task_settings>` : If you are processing all four HBCD tasks, you will have four unique JSON keys titled accordingly. It is important that the name of your files follows BIDS formatting for the pipeline to correctly identify the task name for a given EEG file. For example, if you have a file named ``sub-1_ses-1_task-MMN_run-2_acq-eeg_eeg.set``, you should have a field in your JSON file named ``MMN`` to denote the processing settings used for this task.
 
-Parameters can be set in both ``global_settings`` and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings such as high and low-pass filter cutoffs should be the same across all tasks.
+Parameters can be set in both global and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings such as high and low-pass filter cutoffs should be the same across all tasks.
 
 .. _Global_settings:
 
@@ -58,8 +58,8 @@ Task-specific parameters are defined in the task's corresponding .json key endin
 - **ERP_window_end**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
 - **erp_filter**: Boolean variable indicating whether to apply a second low-pass filter before creating ERPs.
 - **erp_lowpass**: Hz at which to apply the second low-pass filter.
-- **score_times**: Time ranges in seconds used for SME and mean amplitude computation. There have to be the same number of score_times and score_ROIs.
-- **score_ROIs**: ROIs to be used for computing SME and mean amplitude. There have to be the same number of score_times and score_ROIs.
+- **score_times**: Time ranges in seconds used for SME and mean amplitude computation. There have to be the same number of ``score_times`` and ``score_ROIs``.
+- **score_ROIs**: ROIs to be used for computing SME and mean amplitude. There have to be the same number of ``score_times`` and ``score_ROIs``.
 
       
 .. toctree::
