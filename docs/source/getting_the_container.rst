@@ -1,7 +1,7 @@
-Getting the HBCD-MADE Container
+Installation
 -------------------------------
 
-The container for HBCD-MADE can be found on Docker Hub. It can be downloaded with singularity as follows:
+The container for HBCD-MADE can be found on Docker Hub. It can be downloaded with Singularity as follows:
 
 .. code-block:: console
 
