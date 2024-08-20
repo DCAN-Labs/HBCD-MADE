@@ -12,7 +12,7 @@ found :download:`here <proc_settings.json>`. The settings specified in the JSON 
 
 Parameters can be set in both ``global_settings`` and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings such as high and low-pass filter cutoffs should be the same across all tasks.
 
-.._Global_settings:
+.. _Global_settings:
 
 Global Setting Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -45,7 +45,7 @@ These supported global settings are specified in the ``proc_settings_HBCD_contai
 - **pre_latency**: (float) The amount of time (in seconds) to include in an epoch prior to the event specified by the entries in ``marker_names``.
 - **post_latency**: (float) The amount of time (in seconds) to include in an epoch following the event specified by the entries in ``marker_names``.
 
-.._Unique_task_settings:
+.. _Unique_task_settings:
 
 Task Specific Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
