@@ -6,8 +6,9 @@ Processing Settings and Configuration
 Selections of HBCD-MADE processing parameters are made in .json keys rather than in the MATLAB preprocesing scripts. An example json file used for processing data can be
 found :download:`here <proc_settings.json>`. The settings specified in the JSON file fall under two general categories:
 
-1. :ref:`Global_settings` : These settings fall under the JSON key ``global_settings`` and serve as the default settings across tasks.
-2. :ref:`Unique_task_settings` : If you are processing all four HBCD tasks, you will have four unique JSON keys titled accordingly. It is important that the name of your files follows BIDS formatting for the pipeline to correctly identify the task name for a given EEG file. For example, if you have a file named ``sub-1_ses-1_task-MMN_run-2_acq-eeg_eeg.set``, you should have a field in your JSON file named ``MMN`` to denote the processing settings used for this task.
+
+1. :ref:`Global settings <Global_settings>` : These settings fall under the JSON key ``global_settings`` and serve as the default settings across tasks.
+2. :ref:`Unique task settings <Unique_task_settings>` : If you are processing all four HBCD tasks, you will have four unique JSON keys titled accordingly. It is important that the name of your files follows BIDS formatting for the pipeline to correctly identify the task name for a given EEG file. For example, if you have a file named ``sub-1_ses-1_task-MMN_run-2_acq-eeg_eeg.set``, you should have a field in your JSON file named ``MMN`` to denote the processing settings used for this task.
 
 Parameters can be set in both ``global_settings`` and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings such as high and low-pass filter cutoffs should be the same across all tasks.
 
