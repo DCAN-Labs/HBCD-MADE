@@ -1,15 +1,3 @@
-.. toctree::
-   :maxdepth: 2
-   :caption: Table of Contents
-   
-   computational_requirements
-   installation
-   usage
-   running_made
-   data_requirements
-   json_configuration
-   expected_outputs
-   resources
 
 .. HBCD_MADE documentation master file, created by
    sphinx-quickstart on Wed Jun  5 10:48:12 2024.

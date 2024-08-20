@@ -1,16 +1,3 @@
-.. toctree::
-   :maxdepth: 2
-   :caption: Table of Contents
-   
-   computational_requirements
-   installation
-   usage
-   running_made
-   data_requirements
-   json_configuration
-   expected_outputs
-   resources
-   
 
 Input Data Requirements
 ========================
