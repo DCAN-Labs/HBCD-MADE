@@ -69,10 +69,14 @@ Contents
 
 .. toctree::
 
-   running_made
-   json_configuration
    computational_requirements
-   expected_outputs
-   data_requirements
    getting_the_container
    usage
+   running_made
+   data_requirements
+   json_configuration
+   expected_outputs
+   resources
+
+
+
