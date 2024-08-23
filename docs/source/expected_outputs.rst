@@ -119,13 +119,18 @@ b. Figures (``.jpeg``)
 
 .. note:: These plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
 
-.. figure:: Topo_Standard_MMN.jpg
-   :height: 100px
-   jpeg image above
+test images below 
 
-.. figure:: Topo_Standard_MMN.png
-   :height: 150px
-   png image above
+.. figure:: images/Topo_Standard_MMN.jpg
+   :width: 400px
+   :alt: jpg image above
+
+text here xyz
+	indented text? 
+
+.. figure:: images/Topo_Standard_MMN.png
+   :width: 800px
+   :alt: png image above
 
 - Each plot’s title will contain N values for the number of trials retained for each condition of each task.
 

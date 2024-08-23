@@ -1,45 +1,32 @@
 
-.. HBCD_MADE documentation master file, created by
-   sphinx-quickstart on Wed Jun  5 10:48:12 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Usage
-=====
+.. include:: links.rst
 
-The design of the application is meant to follow general 
-`BIDS-App guidelines <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005209>`_.
-For more details on general usage principles of BIDS-Apps, see the linked documentation.
+.. _citation:
 
-As described in the installation section, this tool is meant to be
-interacted with in containerized form. The example below shows the
-general layout for how you may want to interact with the container
-to conduct processing if you have the container downloaded as a
-singularity image: ::
+=============================================
+HBCD-MADE Local Processing Tutorial
+=============================================
 
+.. note:: This tutorial will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
 
-        container_path=/path/to/container.sif
-        bids_dir=/path/to/bids
-        output_dir=/path/to/output
-        bibsnet_dir=/path/to/bibsnet
-        settings_file=/path/to/settings.json
-        singularity run -B $bids_dir:/bids \
-         -B $output_dir:/output \
-         -B $settings_file:/settings_file/file.json \
-         $container_path /bids /output participant /settings_file/file.json
+1. Download example data
+Click `here <https://osf.io/wg46a/files/osfstorage>`_ to download the raw and fully processed EEG file for one session. 
 
-To see more specific information about how this tool expects
-the inputs to be formatted (i.e. file naming conventions), 
-see the data requirements page.
+Step 2- Install HBCD-MADE
+Visit https://github.com/ChildDevLab/HBCD-MADE to download the HBCD-MADE Pipeline.
 
+Step 3- Install dependencies
+Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for information about necessary software and toolboxes to run HBCD-MADE.
 
-Command-Line Arguments
-----------------------
-.. argparse::
-   :ref: python_code.run.build_parser
-   :prog: made
-   :nodefaultconst:
+Step 4- Initialize ‘test_HBCD_MADE.m’
+Change file paths to where MADE is stored on your computer.
+Set output_dir_name to your preferred output directory (we usually place the output directly into the subject’s data folder).
+Set bids_dir to the location of the data folder downloaded from OSF.
+Set participant_label to the subject’s ID: (e.g. sub-123456).
+Set session_label to the visit number for that file: (e.g. ses-V03).
+Set json_settings_file to the filepath where ‘proc_settings_HBCD.json’ is stored on your computer. This will be the same directory as the entire HBCD-MADE folder.
+Open ‘proc_settings_HBCD.json’ and set the channel_locations path to where HBCD-MADE is stored on your computer.
+Step 5- Run ‘test_HBCD_MADE.m’
+Once complete, output will be available in the user-selected output directory.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
