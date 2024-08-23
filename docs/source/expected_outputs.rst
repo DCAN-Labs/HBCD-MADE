@@ -142,7 +142,7 @@ Topo_Standard_MMN
 Example: PSD_AllCh
 	Power spectral density plot for all channels across 295 retained epochs (1s each).
 
-*ERP plots show the event-related potential wave across N trials at a specified ROI.*
+**ERP plots show the event-related potential wave across N trials at a specified ROI.**
 
 .. image:: images/ERP_oz_VEP.jpg
    :width: 500px
@@ -151,7 +151,7 @@ Example: PSD_AllCh
 Example: ERP_oz_VEP
 	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
-*Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.*
+**Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
 
 .. image:: images/Topo_Standard_MMN.jpg
    :width: 500px
@@ -160,18 +160,18 @@ Example: ERP_oz_VEP
 Example: Topo_Standard_MMN
 	Topographic plot of EEG between 200-400ms after presentation of standard stimulus during mismatch negativity task.
 	
-*DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.*
+**DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
 
- image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
+image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
    :width: 500px
    :alt: NA
 
 Example: DiffTop_Inv_Vs_Upr_FACE
 	Average difference in scalp distribution between 100-300ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
 
-*DiffERP plots display the difference in the ERP waveform between specified conditions.*
+**DiffERP plots display the difference in the ERP waveform between specified conditions.**
 
- image:: images/DiffERP_t7t8_MMN.jpg
+image:: images/DiffERP_t7t8_MMN.jpg
    :width: 500px
    :alt: NA
 
