@@ -114,10 +114,11 @@ There is one .fdt and one corresponding .set file for each task containing fully
 
 b. Figures (``.jpeg``)
 
+
+.. note:: The following plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
+
+
   Several images containing plots and figures automatically produced by MADE:
-
-
-.. note:: These plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
 
 test images below 
 
@@ -125,12 +126,7 @@ test images below
    :width: 400px
    :alt: jpg image above
 
-text here xyz
-	indented text? 
 
-.. image:: images/Topo_Standard_MMN.png
-   :width: 800px
-   :alt: png image above
 
 - Each plot’s title will contain N values for the number of trials retained for each condition of each task.
 
@@ -141,10 +137,31 @@ text here xyz
 
 - PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.
 
+.. image:: images/PSD_AllCh.jpg
+   :width: 500px
+   :alt: NA
+
+Example: PSD_AllCh
+	Power spectral density plot for all channels across 295 retained epochs (1s each).
+
 - ERP plots show the event-related potential wave across N trials at a specified ROI.
+
+.. image:: images/ERP_oz_VEP.jpg
+   :width: 500px
+   :alt: NA
+
+Example: ERP_oz_VEP
+	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
 - Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.
 
+.. image:: images/Topo_Standard_MMN.jpg
+   :width: 500px
+   :alt: NA
+
+Example: Topo_Standard_MMN
+	Topographic plot of EEG between 200-400ms after presentation of standard stimulus during mismatch negativity task.
+	
 - DiffTopo plots represent the difference in mean voltage between two conditions during a specified time window.
 
 - DiffERP plots display the difference in the ERP waveform between specified conditions.
