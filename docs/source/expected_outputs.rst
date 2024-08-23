@@ -116,6 +116,17 @@ b. Figures (``.jpeg``)
 
   Several images containing plots and figures automatically produced by MADE:
 
+
+.. note:: These plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
+
+.. figure:: Topo_Standard_MMN.jpg
+   :height: 100px
+   jpeg image above
+
+.. figure:: Topo_Standard_MMN.png
+   :height: 150px
+   png image above
+
 - Each plot’s title will contain N values for the number of trials retained for each condition of each task.
 
 	* MMN task plots are titled as follows: N = # standard trials, # predeviant trials, # deviant trials
