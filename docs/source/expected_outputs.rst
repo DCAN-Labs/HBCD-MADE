@@ -121,14 +121,14 @@ b. Figures (``.jpeg``)
 
 test images below 
 
-.. figure:: images/Topo_Standard_MMN.jpg
+.. image:: images/Topo_Standard_MMN.jpg
    :width: 400px
    :alt: jpg image above
 
 text here xyz
 	indented text? 
 
-.. figure:: images/Topo_Standard_MMN.png
+.. image:: images/Topo_Standard_MMN.png
    :width: 800px
    :alt: png image above
 
