@@ -43,23 +43,6 @@ The HBCD-MADE pipeline will run preprocessing on BIDS formatted data in the .set
 #. **Save the final output consisting of cleaned and epoched EEG data.**
 
 
-File Types 
---------
-Raw data and processing output consist of the following file types:
-
-- ``SET``- contains metadata and parameters for the EEG dataset, such as channel locations, sampling rate, and event information.
-- ``FDT``- field data table (FDT) files contain EEG data.
-- ``JSON``- stores metadata and configuration settings in a format that is easy for users to read and edit.
-- ``TSV``- plain text file that stores metadata and other relevant information.
-- ``JPEG``- images and plots as output from the MADE processing pipeline.
-- ``MAT`` - MATLAB data files contain processing output.
-- ``EDAT3``- contains task-specific event information from E-PRIME (stimulus presentation software).
-- ``TXT``- text files contain descriptive information.
-- ``CSV``- comma separated value files store data in tabular format.
-
-
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -77,6 +60,6 @@ Contents
    json_configuration
    expected_outputs
    resources
-
+   tutorial
 
 

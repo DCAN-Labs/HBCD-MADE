@@ -5,6 +5,16 @@ Input Data Requirements
 Contents of Raw HBCD data folders
 ----------------------------------
 
+**File Types:** 
+
+- ``TXT``- text files contain descriptive information.
+- ``EDAT3``- contains task-specific event information from E-PRIME (stimulus presentation software).
+- ``TSV``- plain text file that stores metadata and other relevant information.
+- ``JSON``- stores metadata and configuration settings in a format that is easy for users to read and edit.
+- ``SET``- contains metadata and parameters for the EEG dataset, such as channel locations, sampling rate, and event information.
+- ``FDT``- field data table (FDT) files contain EEG data.
+
+
 Each HBCD subject/session pair has a corresponding BIDS dataset for that session, containing EEG data and other information. 
 
 (1)	``./sub-*`` folder

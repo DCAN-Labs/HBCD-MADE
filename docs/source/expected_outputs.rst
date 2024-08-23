@@ -3,6 +3,8 @@ Expected Outputs
 ================
 
 The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under ``/bids_dir/sub-1/ses-1/eeg/``, then the output of HBCD-MADE will fall under ``output_dir/sub-1/ses-1/eeg/``. The output of HBCD-MADE will primarily be found in *.set EEGLAB formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the ‘processed_data’ folder. If you load an EEG file, from the processed_data folder, it’s ‘data’ field will have dimensions <num_electrodes, num_samples, num_epochs>, with the epochs placed around the events specified in the json file. The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
+
+
  The following output folders and files are created throughout processing within each subject’s output directory:
 
 - :ref:`./filtered_data <./filtered_data>`
@@ -10,6 +12,16 @@ The output structure of HBCD-MADE will mimic the input BIDS structure. If you ha
 - :ref:`./ica_data <./ica_data>` 
 - :ref:`./processed_data <./processed_data>` 
 - :ref:`./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv <./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv>`
+
+HBCD-MADE output contains the following file types:
+
+- ``JPEG``- session-level topographic, spectral and ERP plots.
+- ``MAT`` - MATLAB data files contain processing output.
+- ``CSV``- comma separated value files store data in tabular format.
+- ``JSON``- stores metadata and saves task-specific configuration settings in a format that is easy for users to read and edit.
+- ``SET``- contains metadata and parameters for the EEG dataset, such as channel locations, sampling rate, and event information.
+- ``FDT``- field data table (FDT) files contain EEG data resaved across different stages of processing.
+
 
 .. _./filtered_data:
 
