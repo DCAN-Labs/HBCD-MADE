@@ -42,6 +42,9 @@ These supported global settings are specified in the ``proc_settings_HBCD_contai
 
 .. _Unique_task_settings:
 
+Unique Task Settings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 - **ROI_of_interest**: Selects the ROI for ERPs.
 - **make_dummy_events**: (true or false) Whether to insert dummy events into your scan. This option is used to create new events in the case of resting-state acquisitions where there are no triggers to denote epochs.
 - **num_dummy_events**: (int) The number of dummy events to make if ``make_dummy_events`` = true.
