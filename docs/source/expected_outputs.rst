@@ -291,21 +291,8 @@ The following variables within the MADE processing report represent the number o
 
 6. ``...eeg_MADE_specification``
 --------------------------------------------------------------------
-If you are processing all four HBCD tasks, you will have four unique JSON keys titled accordingly.
 
-Task Specific Parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Task-specific parameters are defined in the task's corresponding .json key ending in ``MADE_specification.json``. The following parameters are task-specific and not listed in the ``proc_settings_HBCD_container.json`` which defines global parameters and some task specific parameters:
-
-- **ROI_of_interest**: Selects the ROI for ERPs.
-- **ERP_window_start**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
-- **ERP_window_end**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
-- **erp_filter**: Boolean variable indicating whether to apply a second low-pass filter before creating ERPs.
-- **erp_lowpass**: Hz at which to apply the second low-pass filter.
-- **score_times**: Time ranges in seconds used for SME and mean amplitude computation. There have to be the same number of ``score_times`` and ``score_ROIs``.
-- **score_ROIs**: ROIs to be used for computing SME and mean amplitude. There have to be the same number of ``score_times`` and ``score_ROIs``.
-
+A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see `json_configuration.rst`
 
 
 .. toctree::
