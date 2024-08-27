@@ -10,11 +10,15 @@ Construct
 Description
 	In V03, a silent video with a variety of colorful and abstract toys and visuals on screen. The child watches the video for the duration of the task.
 
-IMAGES GO HERE
+.. image:: images/RS.png
+   :width: 400px
+   :alt: png image above
 
 	In V04/6, a silent video with a variety of marble run and construction visuals on screen. The child watches the video for the duration of the task.
 
-IMAGES GO HERE
+.. image:: images/RS_V4_V6.png
+   :width: 400px
+   :alt: png image above
 
 **Visits Administered and corresponding age range of administration**
 - V03: 3-9 months
@@ -32,7 +36,9 @@ Construct
 Description
 	The task consists of 2 blocks: 50 trials of upright faces & 50 trials of inverted faces and 50 trials of upright faces & 50 trials of objects. If the child loses attention, an attention getter may be played to bring the child’s focus back to the task.
 
-IMAGES GO HERE 
+.. image:: images/FACE.png
+   :width: 400px
+   :alt: png image above
 
 **Visits Administered and corresponding age range of administration:**
 
@@ -68,7 +74,9 @@ Construct
 Description
 	A flashing black and white checkerboard is shown for the duration of the task.
 
-IMAGES GO HERE
+.. image:: images/VEP.png
+   :width: 400px
+   :alt: png image above
 
 **Visits Administered and corresponding age range of administration:**
 - V03: 3-9 months
