@@ -54,13 +54,11 @@ Contents
 
    computational_requirements
    container_info
-   getting_the_container
-   usage
-   running_made
    data_requirements
    json_configuration
    expected_outputs
    resources
    tutorial
+   task_info
 
 
