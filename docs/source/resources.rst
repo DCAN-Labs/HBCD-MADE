@@ -7,7 +7,7 @@
 Reference Materials
 ======================
 
-1. Publication describing original MADE pipeline [Debnath et al., 2020]_.
+1. Publication describing original MADE pipeline [Debnath2020]_.
 
 2. AdjustedADJUST algorithm used in HBCD-MADE for ICA artifact detection [Leach2020]_.
 
@@ -18,7 +18,7 @@ Reference Materials
 5. "Faster" algorithm used in HBCD-MADE for artifact rejection [Nolan2010]_.
 
 
-.. [Debnath et al., 2020] Debnath, R., Buzzell, G. A., Morales, S., Bowers, M. E., Leach, S. C., & Fox, N. A. (2020). The Maryland analysis of developmental EEG (MADE) pipeline. Psychophysiology, 57(6). `<https://doi.org/10.1111/psyp.13580>`_.
+.. [Debnath2020] Debnath, R., Buzzell, G. A., Morales, S., Bowers, M. E., Leach, S. C., & Fox, N. A. (2020). The Maryland analysis of developmental EEG (MADE) pipeline. Psychophysiology, 57(6). `<https://doi.org/10.1111/psyp.13580>`_.
 
 .. [Leach2020] Leach, S. C., Morales, S., Bowers, M. E., Buzzell, G. A., Debnath, R., Beall, D., & Fox, N. A. (2020). Adjusting adjust: Optimizing the adjust algorithm for pediatric data using geodesic nets. Psychophysiology, 57(8). `<https://doi.org/10.1111/psyp.13566>`_.
 
