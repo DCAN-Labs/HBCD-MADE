@@ -56,9 +56,9 @@ Contents
    container_info
    data_requirements
    json_configuration
-   expected_outputs
-   resources
    tutorial
+   expected_outputs
    task_info
+   resources
 
 

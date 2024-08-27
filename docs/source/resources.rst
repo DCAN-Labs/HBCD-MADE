@@ -4,10 +4,10 @@
 .. _citation:
 
 ======================
-Supporting Materials
+Reference Materials
 ======================
 
-1. [Debnath2020]_ original publication describing MADE pipeline.
+1. [Debnath2020]_ Original publication describing MADE pipeline.
 
 2. [Leach2020]_ AdjustedADJUST algorithm used in HBCD-MADE for ICA artifact detection
 
