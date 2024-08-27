@@ -31,8 +31,8 @@ Description
 
 **Estimated length of time for completion:** Approximately 3 minutes
 
-2. Face Task (FACE)
---------------------
+2. Face Task 
+-------------
 
 Abbreviation
 	FACE			
