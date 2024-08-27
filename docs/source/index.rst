@@ -53,6 +53,7 @@ Contents
 .. toctree::
 
    computational_requirements
+   container_info
    getting_the_container
    usage
    running_made
