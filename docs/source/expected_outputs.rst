@@ -127,7 +127,7 @@ Several images containing plots and figures are automatically produced by MADE:
    :width: 400px
    :alt: jpg image above
 
-	Example: Topo_Standard_MMN
+Example: Topo_Standard_MMN
 	Topographic map of average brain response 200-400ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
 
 
@@ -138,7 +138,7 @@ Several images containing plots and figures are automatically produced by MADE:
    :width: 500px
    :alt: NA
 
-	Example: PSD_AllCh
+Example: PSD_AllCh
 	Power spectral density plot for all channels across 295 retained epochs (1s each).
 
 
@@ -149,7 +149,7 @@ Several images containing plots and figures are automatically produced by MADE:
    :width: 500px
    :alt: NA
 
-	Example: ERP_oz_VEP
+Example: ERP_oz_VEP
 	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
 **Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
@@ -159,7 +159,7 @@ Several images containing plots and figures are automatically produced by MADE:
    :width: 500px
    :alt: NA
 
-	Example: Topo_Standard_MMN
+Example: Topo_Standard_MMN
 	Topographic plot of EEG between 200-400ms after presentation of standard stimulus during mismatch negativity task.
 	
 **DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
