@@ -14,7 +14,7 @@ HBCD-MADE Local Processing Tutorial
 	Click `here <https://osf.io/wg46a/files/osfstorage>`_ to download the raw and fully processed EEG file for one session. 
 
 2. Install HBCD-MADE
-	Visit https://github.com/ChildDevLab/HBCD-MADE to download the HBCD-MADE Pipeline.
+	Visit our `GitHub <https://github.com/ChildDevLab/HBCD-MADE>`_ to download the HBCD-MADE Pipeline.
 
 3. Install dependencies
 	Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for information about necessary software and toolboxes to run HBCD-MADE.

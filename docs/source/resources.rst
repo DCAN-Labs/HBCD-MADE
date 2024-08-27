@@ -3,9 +3,9 @@
 
 .. _citation:
 
-===============
-Resources and helpful links
-===============
+======================
+Supporting Materials
+======================
 
 1. [Debnath2020]_ original publication describing MADE pipeline.
 

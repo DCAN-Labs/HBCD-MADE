@@ -1,8 +1,11 @@
 HBCD EEG Task Information
 ==========================
 
-Resting State (RS, baseline)
------------------------------
+1. Resting State 
+------------------
+
+Abbreviation
+	RS, Baseline
 
 Construct
 	The Resting State Task 11.29.23 provides information about neural oscillations and dynamics between oscillatory rhythms across development. Ontogenetic changes in oscillatory activity reflect underlying developing large scale neural networks associated with early critical self-regulatory, cognitive, and affective processes and developmental outcomes.
@@ -20,15 +23,19 @@ Description
    :width: 400px
    :alt: png image above
 
-**Visits Administered and corresponding age range of administration**
+**Visits Administered and corresponding age range of administration:**
+
 - V03: 3-9 months
 - V04: 9-15 months
 - V06: 15-48 months
 
 **Estimated length of time for completion:** Approximately 3 minutes
 
-Face Task (FACE)
------------------			
+2. Face Task (FACE)
+--------------------
+
+Abbreviation
+	FACE			
 
 Construct
 	The Face task 11.29.23 assesses child and infant face processing abilities as well as the neural structures supporting face and object processing become increasingly specialized during the first years of life. ERPs will be recorded while infants view faces and objects using an oddball task designed to index different stages of processing including attention, perception, categorization, individuation and memory. 
@@ -48,8 +55,11 @@ Description
 
 **Estimated length of time for completion:** Approximately 5 minutes
 
-Auditory Mismatch Negativity Task (MMN)
------------------------------------------
+3. Auditory Mismatch Negativity Task 
+-------------------------------------
+
+Abbreviation 
+	MMN
 
 Construct
 	The Auditory mismatch negativity (MMN) Task 11.29.23 facilitates examining auditory evoked potentials, habituation/dishabituation to auditory stimuli, as well as perceptual narrowing in language processing. Speech stimuli have been shown to be an important index of future language abilities.
@@ -65,8 +75,11 @@ Description
 
 **Estimated length of time for completion:** Approximately 12 minutes (V03) or 9 minutes (V04/6)
 
-Visual Evoked Potential Task (VEP)
-----------------------------------
+4. Visual Evoked Potential Task 
+--------------------------------
+
+Abbreviation
+	VEP
 
 Construct
 	The Visual Evoked Potential Task (VEP) 11.29.23 is a measurement of the primary visual cortex’ response to visual stimuli. VEP amplitude and latency decreases with age during the first three years of life and has been associated with concurrent and later developmental measures. In addition, the morphology of the VEP likely reflects varying degrees of synaptic efficiency and as such, can be used as a readout of general cortical function.
@@ -79,6 +92,7 @@ Description
    :alt: png image above
 
 **Visits Administered and corresponding age range of administration:**
+
 - V03: 3-9 months
 - V04: 9-15 months
 - V06: 15-48 months
