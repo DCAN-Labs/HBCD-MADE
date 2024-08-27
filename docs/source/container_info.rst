@@ -1,8 +1,8 @@
 HBCD-MADE Container
+====================
 
 Installation
-=============
-
+--------------------------
 We recommend using the HBCD-MADE container when processing large amounts of data. The container for HBCD-MADE can be found on Docker Hub. It can be downloaded with Singularity as follows:
 
 .. code-block:: console
@@ -10,7 +10,7 @@ We recommend using the HBCD-MADE container when processing large amounts of data
    singularity pull hbcd_made_latest.sif docker://dcanumn/hbcd-made:1.0.9
 
 Usage
-=========
+--------------------------
 
 The design of the application is meant to follow general 
 `BIDS-App guidelines <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005209>`_.
@@ -47,7 +47,7 @@ The intended workflow of running HBCD-MADE involves utilizing a containerized ve
   * The session label to process for the given participant. (**V03** is the only session label available as of September 2024). 
   
 Running HBCD-MADE
-==================
+------------------
 
 **An example command to run HBCD-MADE:**
 

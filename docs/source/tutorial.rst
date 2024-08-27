@@ -14,16 +14,14 @@ HBCD-MADE Local Processing Tutorial
 	Click `here <https://osf.io/wg46a/files/osfstorage>`_ to download the raw and fully processed EEG file for one session. 
 
 2. Install HBCD-MADE
-	
 	Visit https://github.com/ChildDevLab/HBCD-MADE to download the HBCD-MADE Pipeline.
 
 3. Install dependencies
+	Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for information about necessary software and toolboxes to run HBCD-MADE.
 
-Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for information about necessary software and toolboxes to run HBCD-MADE.
+4. **Initialize ‘test_HBCD_MADE.m’**
 
-4. Initialize ‘test_HBCD_MADE.m’
-
-- Change file paths to where MADE is stored on your computer.
+- Change file paths to where HBCD-MADE is stored on your computer.
 - Set ``output_dir_name`` to your preferred output directory (we usually place the output - directly into the subject’s data folder).
 - Set ``bids_dir`` to the location of the data folder downloaded from OSF.
 - Set ``participant_label`` to the subject’s ID: (e.g. sub-123456).
@@ -32,4 +30,4 @@ Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for informa
 - Open ``proc_settings_HBCD.json`` and set the ``channel_locations`` path to where HBCD-MADE is stored on your computer.
 
 5. Run ``test_HBCD_MADE.m``
-Once complete, output will be available in the user-selected output directory. See the `expected outputs` page for descriptions of all HBCD-MADE output. 
+	Once complete, output will be available in the user-selected output directory. See the `expected outputs` page for descriptions of all HBCD-MADE output. 
