@@ -17,8 +17,8 @@ HBCD-MADE Local Processing Tutorial
 	Visit our `GitHub <https://github.com/ChildDevLab/HBCD-MADE>`_ to download the HBCD-MADE Pipeline.
 
 3. Install dependencies
-	Visit https://kasenetz.github.io/HBCD-MADE/_pages/LicDepInstall.html for information about necessary software and toolboxes to run HBCD-MADE.
-
+	HBCD-MADE is known to work well with MATLAB version 2024a. The Signal Processing Toolbox and Statistics/Machine Learning Toolboxes must also be installed into MATLAB. Users may elect to install the Parallel Processing Toolbox for faster processing. EEGLAB must also be installed and installation instructions can be found `here <https://sccn.ucsd.edu/eeglab/downloadtoolbox.php>`_. We recommend using version eeglab2023.0.
+ 
 4. **Initialize ‘test_HBCD_MADE.m’**
 
 - Change file paths to where HBCD-MADE is stored on your computer.

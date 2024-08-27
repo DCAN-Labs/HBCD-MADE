@@ -292,7 +292,7 @@ The following variables within the MADE processing report represent the number o
 6. ``...MADE_specification.csv``
 --------------------------------------------------------------------
 
-A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see `json_configuration.rst`
+A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see :doc:`Processing Settings and Configuration </json_configuration>`
 
 
 .. toctree::
