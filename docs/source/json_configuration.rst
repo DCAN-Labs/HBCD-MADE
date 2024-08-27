@@ -4,8 +4,8 @@
 Processing Settings and Configuration
 =====================================
 
-Selections of HBCD-MADE processing parameters are made in .json keys rather than in the MATLAB preprocesing scripts. An example json file used for processing data can be
-found :download:`here <proc_settings.json>`. The settings specified in the JSON file fall under two general categories:
+Selections of HBCD-MADE processing parameters are made in JSON keys rather than in the MATLAB preprocesing scripts. An example ``.json`` used for processing data can be
+found :download:`here <proc_settings.json>`. The settings specified in the JSON fall under two general categories:
 
 
 1. :ref:`Global parameters <Global_settings>` : These settings fall under the JSON key ``global_parameters`` and serve as the default settings across tasks.

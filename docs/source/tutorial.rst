@@ -8,7 +8,7 @@
 HBCD-MADE Local Processing Tutorial
 =============================================
 
-.. note:: This tutorial will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
+.. note:: These steps will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
 
 1. Download example data.
 	Click `here <https://osf.io/wg46a/files/osfstorage>`_ to download the raw and fully processed EEG file for one session. 
@@ -30,4 +30,5 @@ HBCD-MADE Local Processing Tutorial
 - Open ``proc_settings_HBCD.json`` and set the ``channel_locations`` path to where HBCD-MADE is stored on your computer.
 
 5. Run ``test_HBCD_MADE.m``
-	Once complete, output will be available in the user-selected output directory. See :doc:`Expected Outputs </expected_outputs.rst>` for descriptions of all HBCD-MADE output. 
+	Once complete, output will be available in the user-selected output directory. See :doc:`Expected Outputs </expected_outputs>` for descriptions of all HBCD-MADE output. 
+
