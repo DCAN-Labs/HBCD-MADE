@@ -25,7 +25,7 @@ HBCD-MADE output contains the following file types:
 
 .. _./filtered_data:
 
-``/filtered_data`` folder
+1. ``/filtered_data`` folder
 -------------------------
 
 **Description**
@@ -45,7 +45,7 @@ Each EEG task administered will have a corresponding ``.set`` and ``.fdt`` file 
 
 .. _./merged_data: 
 
-``/merged_data`` folder
+2. ``/merged_data`` folder
 -----------------------
 
 **Description**
@@ -58,7 +58,7 @@ Tasks present in the merged ``.fdt`` file are listed in the corresponding ``.jso
 
 .. _./ica_data:
 
-``/ica_data`` folder
+3. ``/ica_data`` folder
 -------------------------
 
 **Description**
@@ -84,7 +84,7 @@ The ./ica_data folder contains the following:
 
 .. _./processed_data:
 
-``/processed_data`` folder 
+4. ``/processed_data`` folder 
 -------------------------
 
 **Description** 
@@ -117,6 +117,7 @@ b. Figures (``.jpeg``)
 
 .. note:: The following plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
 
+
   Several images containing plots and figures are automatically produced by MADE:
 
 .. image:: images/Topo_Standard_MMN.jpg
@@ -126,58 +127,60 @@ b. Figures (``.jpeg``)
 Topo_Standard_MMN
 	Topographic map of average brain response 200-400ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
 
-- Each plot’s title will contain N values for the number of trials retained for each condition of each task.
 
-	* MMN task plots are titled as follows: N = # standard trials, # predeviant trials, # deviant trials
+**PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.**
 
-
-	* FACE task plots are titled as follows: N = # uprightINV trials, # inverted trials, # object trials, # uprightOBJ trials
-
-*PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.*
+Example: PSD_AllCh
 
 .. image:: images/PSD_AllCh.jpg
    :width: 500px
    :alt: NA
 
-Example: PSD_AllCh
 	Power spectral density plot for all channels across 295 retained epochs (1s each).
 
+
 **ERP plots show the event-related potential wave across N trials at a specified ROI.**
+
+Example: ERP_oz_VEP
 
 .. image:: images/ERP_oz_VEP.jpg
    :width: 500px
    :alt: NA
 
-Example: ERP_oz_VEP
 	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
 **Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
+
+Example: Topo_Standard_MMN
 
 .. image:: images/Topo_Standard_MMN.jpg
    :width: 500px
    :alt: NA
 
-Example: Topo_Standard_MMN
 	Topographic plot of EEG between 200-400ms after presentation of standard stimulus during mismatch negativity task.
 	
 **DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
 
-image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
+Example: DiffTop_Inv_Vs_Upr_FACE
+
+.. image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
    :width: 500px
    :alt: NA
 
-Example: DiffTop_Inv_Vs_Upr_FACE
 	Average difference in scalp distribution between 100-300ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
 
 **DiffERP plots display the difference in the ERP waveform between specified conditions.**
 
-image:: images/DiffERP_t7t8_MMN.jpg
+Example: DiffERP_t7t8_MMN
+
+.. image:: images/DiffERP_t7t8_MMN.jpg
    :width: 500px
    :alt: NA
 
-Example: DiffERP_t7t8_MMN
 	Difference waves for ERP reponses to stimuli during auditory mismatch negativity task at T7/T8 electrode cluster. 446 standard trials, 93 pre-deviant, and 90 deviant trials are represented. 
 
+
+.. note:: Each plot’s title will contain N values for the number of trials retained for each condition of each task. MMN task plots are titled as follows: N = # standard trials, # predeviant trials, # deviant trials. FACE task plots are titled as follows: N = # uprightINV trials, # inverted trials, # object trials, # uprightOBJ trials.
 
 c. MATLAB Data files (``.mat``) 
 .mat files contain processing output.
@@ -204,7 +207,7 @@ For each task, two .csv files are automatically produced by MADE: a summary stat
 
 .. _./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv:
 
-``./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv``
+5. ``./sub-*_ses-*_acq-eeg_MADE_preprocessing_report.csv``
 -------------------------------------------------------
 
 Processing report automatically generated by MADE. The file ``MADE_preprocessing_report.csv`` will contain summary level statistics related to the processing of your data. Because the EEG data is merged across tasks for portions of the pre-processing, some of these entries will be the same for all tasks. See Debnath et al. (2021) for more information on MADE preprocessing. The following variables are represented-
@@ -280,6 +283,25 @@ The following variables within the MADE processing report represent the number o
    * - MMN_Dev
      - MMN
      - mismatch negativity, deviant stimulus
+
+6. ``sub_ses_task_acq-eeg_eeg_MADE_specification``
+--------------------------------------------------------------------
+If you are processing all four HBCD tasks, you will have four unique JSON keys titled accordingly.
+
+Task Specific Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Task-specific parameters are defined in the task's corresponding .json key ending in ``MADE_specification.json``. The following parameters are task-specific and not listed in the ``proc_settings_HBCD_container.json`` which defines global parameters and some task specific parameters:
+
+- **ROI_of_interest**: Selects the ROI for ERPs.
+- **ERP_window_start**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
+- **ERP_window_end**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
+- **erp_filter**: Boolean variable indicating whether to apply a second low-pass filter before creating ERPs.
+- **erp_lowpass**: Hz at which to apply the second low-pass filter.
+- **score_times**: Time ranges in seconds used for SME and mean amplitude computation. There have to be the same number of ``score_times`` and ``score_ROIs``.
+- **score_ROIs**: ROIs to be used for computing SME and mean amplitude. There have to be the same number of ``score_times`` and ``score_ROIs``.
+
+
 
 .. toctree::
    :maxdepth: 2
