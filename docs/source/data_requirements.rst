@@ -1,6 +1,6 @@
 
-Input Data Requirements
-========================
+Input Data 
+===========
 
 Contents of Raw HBCD data folders
 ----------------------------------
@@ -15,7 +15,7 @@ Contents of Raw HBCD data folders
 - ``FDT``- field data table (FDT) files contain EEG data.
 
 
-Each HBCD subject/session pair has a corresponding BIDS dataset for that session, containing EEG data and other information. 
+Each HBCD subject/session pair has a corresponding BIDS dataset for that session, containing EEG data and other information:
 
 (1)	``./sub-*`` folder
 (2)	``./dataset_description.json``
@@ -23,27 +23,23 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
 (4)	``./participants.tsv``
 (5)	``./README``
 
-``./sub-* folder``
+1. ``./sub-* folder``
 
-Description
-  Raw data and metadata.
+  Stores raw data and metadata. Contains a folder called ses-V03 which houses an eeg folder and a .tsv labeled with the subject ID and recording session. This .tsv contains the file names and date and time of each EEG recording. The eeg folder contains several .json, .fdt, .txt and .edat3 files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
 
-Contents
-  Contains a folder called ses-V03 which houses an eeg folder and a .tsv labeled with the subject ID and recording session. This .tsv contains the file names and date and time of each EEG recording. The eeg folder contains several .json, .fdt, .txt and .edat3 files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
-
-``./dataset_description.json``
+2. ``./dataset_description.json``
 
   Contains basic information about the dataset such as the subject ID number, version of BIDS used and type of data.
 
-``./participants.json``
+3. ``./participants.json``
 
   File with descriptions of all variables stored in participants.tsv.
 
-``./participants.tsv``
+4. ``./participants.tsv``
 
   Lists basic information about the participant such as the ID and study site where the data were collected.
 
-``./README``
+5. ``./README``
 
   Provides references and information about BIDS format.
 
