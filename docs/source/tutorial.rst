@@ -30,4 +30,4 @@ HBCD-MADE Local Processing Tutorial
 - Open ``proc_settings_HBCD.json`` and set the ``channel_locations`` path to where HBCD-MADE is stored on your computer.
 
 5. Run ``test_HBCD_MADE.m``
-	Once complete, output will be available in the user-selected output directory. See the `expected outputs` page for descriptions of all HBCD-MADE output. 
+	Once complete, output will be available in the user-selected output directory. See :doc:`Expected Outputs </expected_outputs.rst>` for descriptions of all HBCD-MADE output. 
