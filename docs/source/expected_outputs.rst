@@ -90,7 +90,7 @@ The ./ica_data folder contains the following:
 
 **Description** 
 
-Each file found under this folder will have a corresponding json file in the parent directory that specifies the settings that were used for the specific task.  These data are saved at the end of the processing pipeline after the following operations have occurred:
+Each EEG file found in this folder will have a corresponding json file in the parent directory that specifies the settings that were used for the specific task.  These data are saved at the end of the processing pipeline after the following operations have occurred:
 
 - ICA artifact removal
 
@@ -113,15 +113,105 @@ a. EEG Data (``.fdt``, ``.set``)
 
 There is one .fdt and one corresponding .set file for each task containing fully processed data.
 
-b. Figures (``.jpg``)
+b. CSV data files (``.csv``)
 
+For each task, two .csv files are automatically produced by MADE: a summary statistics file and a trial measures file.
+
+- Summary Statistics
+
+	* For the MMN, VEP, and FACE tasks, the summaryStats file contains the standardized measurement error (SME) for a specified time range (e.g. 200-400 ms after stimulus presentation) at an ROI (e.g. fcz). The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
+
+	* For the RS (resting state), the summaryStats file contains the SME and mean power at each frequency bin ranging from 1-50Hz.
+
+.. list-table:: FACE Summary Statistics Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - inverted, object, uprightInv, uprightObj
+   * - NTrials
+     - number of trials retained per condition
+   * - SME_200-300_p8
+     - SME during 200-300 ms at P8 cluster
+   * - SME_75-125_oz
+     - SME during 75-125 ms at Oz cluster
+   * - SME_200-300_oz
+     - SME during 200-300 ms at Oz cluster
+   * - SME_325-625_oz
+     - SME during 325-625 ms at Oz cluster
+
+.. list-table:: VEP Summary Statistics Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - VEP
+   * - NTrials
+     - number of trials retained
+   * - SME_40-79_oz
+     - SME during 40-79 ms at Oz cluster
+   * - SME_80-140_oz
+     - SME during 80-140 ms at Oz cluster
+   * - SME_141-300_oz
+     - SME during 141-300 ms at Oz cluster
+ 
+.. list-table:: MMN Summary Statistics Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - deviant, predeviant, standard
+   * - NTrials
+     - number of trials retained per condition
+   * - SME_200-400_t7t8
+     - SME during 200-400 ms at T7/T8 cluster
+   * - SME_200-400_f7f8
+     - SME during 200-400 ms at F7/F8 cluster
+   * - SME_200-400_fcz
+     - SME during 200-400 ms at FCz cluster
+
+.. list-table:: RS Summary Statistics Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Frequency
+     - 1 Hz bins from 1-50 Hz
+   * - SME
+     - SME in each frequency bin
+   * - Mean_Power
+     - Mean power in each frequency bin
+   * - ID
+     - subject ID
+
+- Trial Measures 
+
+	* For the MMN, VEP, and FACE tasks, the trialMeasures files contain trial-by-trial mean amplitudes across time ranges for different ROIs.
+
+	* The RS does not have a trialMeasures file because this task does not contain trials.
+
+c. MATLAB Data files (``.mat``) 
+
+.mat files contain processing output.
+
+- Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
+
+- Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS .mat output does not contain the time dimension.
+
+d. Figures (``.jpg``)
 
 .. note:: The following plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
 
 Several images containing plots and figures are automatically produced by MADE:
 
 **I. Topographic maps show the average distribution of voltages across the scalp during a specified time window.**
-
 
 .. image:: images/Topo_Standard_MMN.jpg
    :width: 400px
@@ -185,28 +275,6 @@ Example: DiffTop_Inv_Vs_Upr_FACE.jpg
 
 .. note:: Plot titles contain N values for the number of trials retained for each condition of each task. MMN task plots are titled as follows: N = # standard trials, # predeviant trials, # deviant trials. FACE task plots are titled as follows: N = # uprightINV trials, # inverted trials, # object trials, # uprightOBJ trials.
 
-c. MATLAB Data files (``.mat``) 
-.mat files contain processing output.
-
-- Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
-
-- Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS .mat output does not contain the time dimension.
-
-d. CSV data files (``.csv``)
-
-For each task, two .csv files are automatically produced by MADE: a summary statistics file and a trial measures file.
-
-- Summary Statistics
-
-	* For the MMN, VEP, and FACE tasks, the summaryStats file contains the standardized measurement error (SME) for a specified time range (e.g. 200-400 ms after stimulus presentation) at an ROI (e.g. fcz). The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
-
-	* For the RS (resting state), the summaryStats file contains the SME and mean power at each frequency bin ranging from 1-50Hz.
-
-- Trial Measures 
-
-	* For the MMN, VEP, and FACE tasks, the trialMeasures files contain trial-by-trial mean amplitudes across time ranges for different ROIs.
-
-	* The RS does not have a trialMeasures file because this task does not contain trials.
 
 .. _./...eeg_MADE_preprocessing_report.csv:
 
