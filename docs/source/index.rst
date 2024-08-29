@@ -39,7 +39,7 @@ The HBCD-MADE pipeline will run preprocessing on BIDS formatted data in the .set
 #. **Remove epochs that have high voltage fluctations.**
 #. **Interpolate over bad channels within epoch.**
 #. **Interpolate deleted channels across epochs.**
-#. **Rereference the data.**
+#. **Re-reference the data.**
 #. **Save the final output consisting of cleaned and epoched EEG data.**
 
 

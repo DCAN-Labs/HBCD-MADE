@@ -22,7 +22,7 @@ HBCD-MADE Local Processing Tutorial
 4. **Initialize ‘test_HBCD_MADE.m’**
 
 - Change file paths to where HBCD-MADE is stored on your computer.
-- Set ``output_dir_name`` to your preferred output directory (we usually place the output - directly into the subject’s data folder).
+- Set ``output_dir_name`` to your preferred output directory (we usually place the output directly into the subject’s data folder).
 - Set ``bids_dir`` to the location of the data folder downloaded from OSF.
 - Set ``participant_label`` to the subject’s ID: (e.g. sub-123456).
 - Set ``session_label`` to the visit number for that file: (e.g. ses-V03).

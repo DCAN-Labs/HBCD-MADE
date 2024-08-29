@@ -65,7 +65,7 @@ Construct
 	The Auditory mismatch negativity (MMN) Task facilitates examining auditory evoked potentials, habituation/dishabituation to auditory stimuli, as well as perceptual narrowing in language processing. Speech stimuli have been shown to be an important index of future language abilities.
 
 Description
-	An auditory presentation of human syllables including “ba” and “da”. Video played on iPad as distractor with brightness all the way up, airplane mode, and not plugged in. The task runs 11:30 minutes in V03 and 8:30 minutes in V04/6. The task may be paused if breaks are needed.
+	An auditory presentation of English syllables “ba” and “da”. Video played on iPad as a distractor with brightness all the way up, airplane mode, and not plugged in. The task may be paused if breaks are needed.
 
 **Visits Administered and corresponding age range of administration:**
 

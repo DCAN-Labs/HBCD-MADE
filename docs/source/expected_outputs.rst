@@ -38,7 +38,7 @@ This folder contains all data saved early in the processing pipeline after filte
 - downsampling
 - deletion of outer electrode ring
 - filtering with 0.3 Hz high-pass with stopband of 0.1
-- 60Hz low-pass with 10 Hz transition band using a noncausal FIR filter
+- 60 Hz low-pass with 10 Hz transition band using a noncausal FIR filter
 
 **Contents**
 
@@ -102,7 +102,7 @@ Each file found under this folder will have a corresponding json file in the par
 
 - Interpolation of removed channels
 
-- Rereferencing
+- Re-referencing
 
 
 **Contents**
@@ -128,7 +128,7 @@ Several images containing plots and figures are automatically produced by MADE:
    :alt: jpg image above
 
 Example: Topo_Standard_MMN.jpg
-	Topographic map of average brain response 200-400ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
+	Topographic map of average brain response 200-400 ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
 
 
 **II. PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.**
@@ -160,7 +160,7 @@ Example: ERP_oz_VEP.jpg
    :alt: NA
 
 Example: Topo_Standard_MMN.jpg
-	Topographic plot of EEG between 200-400ms after presentation of standard stimulus during mismatch negativity task.
+	Topographic plot of EEG between 200-400 ms after presentation of standard stimulus during mismatch negativity task.
 	
 **V. DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
 
@@ -170,7 +170,7 @@ Example: Topo_Standard_MMN.jpg
    :alt: NA
 
 Example: DiffTop_Inv_Vs_Upr_FACE.jpg
-	Average difference in scalp distribution between 100-300ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
+	Average difference in scalp distribution between 100-300 ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
 
 **VI. DiffERP plots display the difference in the ERP waveform between specified conditions.**
 
@@ -198,7 +198,7 @@ For each task, two .csv files are automatically produced by MADE: a summary stat
 
 - Summary Statistics
 
-	* For the MMN, VEP, and FACE tasks, the summaryStats file contains the standardized measurement error (SME) for a specified time range (e.g. 200-400ms after stimulus presentation) at an ROI (e.g. fcz). The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
+	* For the MMN, VEP, and FACE tasks, the summaryStats file contains the standardized measurement error (SME) for a specified time range (e.g. 200-400 ms after stimulus presentation) at an ROI (e.g. fcz). The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
 
 	* For the RS (resting state), the summaryStats file contains the SME and mean power at each frequency bin ranging from 1-50Hz.
 
