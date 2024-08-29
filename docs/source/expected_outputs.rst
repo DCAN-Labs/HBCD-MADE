@@ -117,7 +117,7 @@ b. CSV data files (``.csv``)
 
 For each task, two .csv files are automatically produced by MADE: a trial measures file and a summary statistics file.
 
-- Trial Measures 
+- **I. Trial Measures**
 
 Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE and contain the following output variables for each trial retained after processing: 
 
@@ -182,7 +182,7 @@ Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE 
      - Mean amplitude between 200-400 ms at FCz cluster.
 
 
-- Summary Statistics
+- **II. Summary Statistics**
 	
 Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
 
