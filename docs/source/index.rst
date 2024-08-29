@@ -11,7 +11,8 @@ This page serves as documentation for the HBCD-MADE pipeline, an adapted version
 The HBCD-MADE pipeline will run preprocessing on BIDS formatted data in the .set file format. All metadata required for running the HBCD-MADE pipeline is present within the .set files themselves, and other BIDS metadata will not be referenced during processing. In general, HBCD-MADE's functionality is roughly as follows:
 
 .. image:: images/flowchart.png
-   :width: 400px
+   :width: 1000px
+   :height: 1000px
    :alt: png image above
 
 #. **Identify all session level EEG data for a given
