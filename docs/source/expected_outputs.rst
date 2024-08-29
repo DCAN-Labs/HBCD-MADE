@@ -115,19 +115,78 @@ There is one .fdt and one corresponding .set file for each task containing fully
 
 b. CSV data files (``.csv``)
 
-For each task, two .csv files are automatically produced by MADE: a summary statistics file and a trial measures file.
+For each task, two .csv files are automatically produced by MADE: a trial measures file and a summary statistics file.
 
-- Summary Statistics
-	
-Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
+- Trial Measures 
 
-	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
+Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE and contain the following output variables for each trial retained after processing: 
 
 	* ``MeanAmplitude``: Mean amplitude during specified measurement window
 
 	* ``AvgPeak``: The average peak, or adaptive mean peak, is calculated by finding the peak during the specified time window and averaging the amplitude across all sampling points within 1 standard deviation of the peak. 
 
 	* ``Latency``: Latency in ms to the peak amplitude during the specified time window
+
+
+.. list-table:: FACE Trial Measures Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - inverted, object, uprightInv, uprightObj
+   * - TrialNum
+     - trial
+   * - MeanAmplitude_200-300_p8
+     - Mean amplitude between 200-300 ms at P8 cluster.
+   * - MeanAmplitude_75-125_oz
+     - Mean amplitude between 75-125 ms at Oz cluster.
+   * - MeanAmplitude_200-300_oz
+     - Mean amplitude between 200-300 ms at Oz cluster.
+   * - MeanAmplitude_325-625_oz
+     - Mean amplitude between 325-625 OZ. 
+
+.. list-table:: VEP Trial Measures Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - VEP
+   * - TrialNum
+     - trial
+   * - MeanAmplitude_40-79_oz
+     - Mean amplitude between 40-79 ms at Oz cluster.
+   * - MeanAmplitude_80-140_oz
+     - Mean amplitude between 80-140 ms at Oz cluster.
+   * - MeanAmplitude_141-300_oz
+     - Mean amplitude between 141-300 ms at Oz cluster.
+
+.. list-table:: MMN Trial Measures Output
+   :widths: 31 50
+   :header-rows: 1
+
+   * - Variable Name
+     - Description
+   * - Condition
+     - standard, deviant, predeviant
+   * - TrialNum
+     - trial
+   * - MeanAmplitude_200-400_t7t8
+     - Mean amplitude between 200-400 ms at T7/T8 cluster.
+   * - MeanAmplitude_200-400_f7f8
+     - Mean amplitude between 200-400 ms at F7/F8 cluster.
+   * - MeanAmplitude_200-400_fcz
+     - Mean amplitude between 200-400 ms at FCz cluster.
+
+
+- Summary Statistics
+	
+Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
+
+	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
 
 	* ``Mean_Power``: mean power at each frequency bin ranging from 1-50Hz
 
@@ -199,11 +258,6 @@ Output files ending in ``summaryStats.csv`` are created for each task and contai
    * - ID
      - subject ID
 
-- Trial Measures 
-
-	* For the MMN, VEP, and FACE tasks, the trialMeasures files contain trial-by-trial mean amplitudes across time ranges for different ROIs.
-
-	* The RS does not have a trialMeasures file because this task does not contain trials.
 
 c. MATLAB Data files (``.mat``) 
 
