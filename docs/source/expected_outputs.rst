@@ -118,10 +118,18 @@ b. CSV data files (``.csv``)
 For each task, two .csv files are automatically produced by MADE: a summary statistics file and a trial measures file.
 
 - Summary Statistics
+	
+Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
 
-	* For the MMN, VEP, and FACE tasks, the summaryStats file contains the standardized measurement error (SME) for a specified time range (e.g. 200-400 ms after stimulus presentation) at an ROI (e.g. fcz). The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
+	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
 
-	* For the RS (resting state), the summaryStats file contains the SME and mean power at each frequency bin ranging from 1-50Hz.
+	* ``MeanAmplitude``: Mean amplitude during specified measurement window
+
+	* ``AvgPeak``: The average peak, or adaptive mean peak, is calculated by finding the peak during the specified time window and averaging the amplitude across all sampling points within 1 standard deviation of the peak. 
+
+	* ``Latency``: Latency in ms to the peak amplitude during the specified time window
+
+	* ``Mean_Power``: mean power at each frequency bin ranging from 1-50Hz
 
 .. list-table:: FACE Summary Statistics Output
    :widths: 31 50
@@ -158,7 +166,7 @@ For each task, two .csv files are automatically produced by MADE: a summary stat
      - SME during 80-140 ms at Oz cluster
    * - SME_141-300_oz
      - SME during 141-300 ms at Oz cluster
- 
+
 .. list-table:: MMN Summary Statistics Output
    :widths: 31 50
    :header-rows: 1
