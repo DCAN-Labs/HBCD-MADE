@@ -11,7 +11,7 @@ found :download:`here <proc_settings.json>`. The settings specified in the JSON 
 1. :ref:`Global parameters <Global_settings>` : These settings fall under the JSON key ``global_parameters`` and serve as the default settings across tasks.
 2. :ref:`Unique task settings <Unique_task_settings>` : Task-specific parameters are specified below `global_parameters`. It is important that the name of your files follows BIDS formatting for the pipeline to correctly identify the task name for a given EEG file. For example, if you have a file named ``sub-1_ses-1_task-MMN_run-2_acq-eeg_eeg.set``, you should have a field in your JSON file named ``MMN`` to denote the processing settings used for this task.
 
-Parameters can be set in both global and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings such as high and low-pass filter cutoffs should be the same across all tasks.
+Parameters can be set in both global and task-specific keys. When there are conflicting settings, HBCD-MADE will continue processing with the task-specific settings. Because some processing (i.e., ICA) will occur on a merged version of all tasks, some settings should be the same across all tasks (e.g., high and low-pass filter cutoffs).
 
 .. _Global_settings:
 
@@ -51,8 +51,8 @@ Unique Task Settings
 - **dummy_event_spacing**: (float) The amount of time (in seconds) to have between dummy events. Note that epochs are constructed around events, so this isn’t the same as spacing between epochs.
 - **pre_latency**: (float) The amount of time (in seconds) to include in an epoch prior to the event specified by the entries in ``marker_names``.
 - **post_latency**: (float) The amount of time (in seconds) to include in an epoch following the event specified by the entries in ``marker_names``.
-- **ERP_window_start**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
-- **ERP_window_end**: Time window of interest in the topographic plots and in the averages for the ``.mat`` files.
+- **ERP_window_start**: Time window of interest in the topographic plots and the averages for the ``.mat`` files.
+- **ERP_window_end**: Time window of interest in the topographic plots and the averages for the ``.mat`` files.
 - **erp_filter**: Boolean variable indicating whether to apply a second low-pass filter before creating ERPs.
 - **erp_lowpass**: Hz at which to apply the second low-pass filter.
 - **marker_names**: (list of strings) Name of event code markers you want to construct epochs around (e.g., ``DIN3``). If ``make_dummy_events`` = true, then this should instead represent the first marker in your EEG file. Dummy events will then be placed after the first instance of this marker.
