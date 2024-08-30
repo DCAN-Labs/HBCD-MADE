@@ -17,7 +17,7 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with most E
 
 .. image:: images/flowchart2.png
    :width: 1200px
-   :height: 800px
+   :height: 600px
    :alt: png image above
 
 #. **Identify all session-level EEG data for a given
