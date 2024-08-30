@@ -5,8 +5,12 @@
 .. _citation:
 
 =============================================
-HBCD-MADE Local Processing Tutorial
+Appendix
 =============================================
+
+
+HBCD-MADE Local Processing Tutorial
+------------------------------------
 
 .. note:: These steps will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
 
