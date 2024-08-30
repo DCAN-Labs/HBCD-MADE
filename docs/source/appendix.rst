@@ -16,6 +16,10 @@ tables go here (and links to download a single file)
 Supplementary Material 
 -----------------------
 
+Data Quality Considerations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ABC content goes here
 
 HBCD-MADE Local Processing Tutorial
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -52,6 +52,7 @@ Contributors
 ------------
 
 **Original Contributors to MADE pipeline:**
+
 - Ranjan Debnath (rdebnath@umd.edu)
 - George A. Buzzell (gbuzzell@umd.edu)
 - Santiago Morales Pamplona (moraless@umd.edu)
@@ -60,6 +61,7 @@ Contributors
 - Nathan A. Fox (fox@umd.edu)
 
 **Ongoing Contributors:**
+
 - Lydia Yoder (lyoder@umd.edu)
 - Erik Lee (eex6144@umn.edu)
 - Martin Antunez Garcia (mantunez@umd.edu )

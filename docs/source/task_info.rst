@@ -14,7 +14,8 @@ Description
 	In V03, a silent video with a variety of colorful and abstract toys and visuals on screen. The child watches the video for the duration of the task. 
 
 .. image:: images/RS.png
-   :width: 400px
+   :width: 700px
+   :height: 200px
    :alt: png image above
 
 	In V04/6, a silent video with a variety of marble run and construction visuals on screen. The child watches the video for the duration of the task.
