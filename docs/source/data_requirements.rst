@@ -8,7 +8,8 @@ Contents of Raw HBCD data folders
 **File Types:** 
 
 - ``EDAT3``- Contain task-specific event information from E-PRIME (stimulus presentation software).
-- ``TSV``- Plain text files store metadata and other relevant information.
+- ``TXT``- Contain E-PRIME event log output.
+- ``TSV``- Store metadata and other relevant information.
 - ``JSON``- Store metadata and configuration settings in a format that is easy for users to read and edit.
 - ``SET``- Contain metadata and parameters for the EEG dataset, such as channel locations, sampling rate, and event information.
 - ``FDT``- Field data table files contain EEG data.
