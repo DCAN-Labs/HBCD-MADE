@@ -8,14 +8,13 @@
 Appendix
 =============================================
 
+Data Dictionary
+-----------------
+
+tables go here (and links to download a single file)
 
 Supplementary Material 
 -----------------------
-
-Data Dictionary
-^^^^^^^^^^^^^^^^^^^
-
-ABC testing
 
 
 HBCD-MADE Local Processing Tutorial
