@@ -44,14 +44,14 @@ The intended workflow of running HBCD-MADE involves utilizing a containerized ve
   * The output directory to store the results (this will be the same for all subjects in a study).
   * The BIDS directory with the input data.
   * The participant label whose EEG data you want to process.
-  * The session label to process for the given participant. (**V03** is the only session label available as of September 2024). 
+  * The session label to process for the given participant. (**V03** is the only session label available for HBCD data as of September 2024). 
   
 Running HBCD-MADE
 ------------------
 
 **An example command to run HBCD-MADE:**
 
-This example will run processing for the test file available `here <https://osf.io/wg46a/>`_,
+This example will run processing for sub-1's ses-1,
 using the configuration file ``proc_settings_HBCD.json.``
 Note that the path to the electrode
 positioning files is determined in the json and not as an
