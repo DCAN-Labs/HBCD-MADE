@@ -61,7 +61,7 @@ Unique Task Settings
 - **score_times**: Time ranges (in seconds) to use for plotting and scoring SME, ERP, and peak measures.
 - **score_ROIs**: Regions of interest to use for plotting and scoring SME, ERP, and peak measures.
 
-.. note:: HBCD ``DIN`` markers are inserted by a StimTracker and denote specific types of stimuli. ``DIN2`` markers represent auditory stimuli from computer speakers, and ``DIN3`` markers represent visual stimuli captured by a photocell. ``DIN2`` flags will always be present in MMN, and will appear in the FACE and VEP task only in cases when the researcher prompted "attention getter" stimuli which involve an auditory signal to bring the participant's attention back to the computer screen. 
+.. note:: HBCD ``DIN`` markers are inserted by a StimTracker and denote specific types of stimuli. ``DIN2`` markers represent auditory stimuli from computer speakers, and ``DIN3`` markers represent visual stimuli captured by a photocell. ``DIN2`` flags will always be present in MMN, and will appear in the FACE and VEP task only in cases when the researcher prompted "attention getter" stimuli which involve an auditory signal to bring the participant's attention back to the computer screen. See :doc:`HBCD EEG Task Information </task_info>` for more information. 
 
 .. _HBCDprocset:
 
@@ -72,10 +72,9 @@ HBCD EEG Processing Settings
 The following parameters are used to process HBCD EEG data. 
 
 **HBCD Global Parameters** 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - ``boundary_marker``: "boundary"
-- ``ekg_channels``:  "E125", "E126", "E127", "E128"
+- ``ekg_channels``: "E125", "E126", "E127", "E128"
 - ``channel_locations``: "/sample_locs/GSN129.sfp"
 - ``down_sample``: 0
 - ``sampling_rate``: 1000
@@ -111,7 +110,7 @@ The following parameters are used to process HBCD EEG data.
 - ``dummy_event_spacing``: 0.5
 - ``marker_names``: "DIN3"
 - ``score_times``: [40, 79], [80,140], [141, 300]
-- `score_ROIs``: ["oz", "oz", "oz"]
+- ``score_ROIs``: ["oz", "oz", "oz"]
 
 2. **VEP**
 ^^^^^^^^^^^^
@@ -153,7 +152,7 @@ The following parameters are used to process HBCD EEG data.
 - ``erp_filter``: 1
 - ``erp_lowpass``: 30
 - ``marker_names``: "DIN3"
-- ``score_times``:[200, 300], [75,125], [200, 300], [325, 625]
+- ``score_times``: [200, 300], [75,125], [200, 300], [325, 625]
 - ``score_ROIs``: ["p8", "oz", "oz", "oz"]
 
 
