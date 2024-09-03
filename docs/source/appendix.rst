@@ -8,11 +8,6 @@
 Appendix
 =============================================
 
-Data Dictionary
------------------
-
-tables go here (and links to download a single file)
-
 Supplementary Material 
 -----------------------
 
