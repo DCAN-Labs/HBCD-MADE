@@ -64,69 +64,69 @@ Unique Task Settings
 .. _HBCDprocset:
 
 
-Processing Settings used for HBCD EEG
+HBCD EEG Processing Settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **HBCD Global Parameters**
 
-- **boundary_marker**: "boundary"
-- **ekg_channels**:  "E125", "E126", "E127", "E128"
-- **channel_locations**: "/sample_locs/GSN129.sfp"
-- **down_sample**: 0
-- **sampling_rate**: 1000
-- **delete_outerlayer**: 1
-- **outerlayer_channel**: "E17", "E38", "E43", "E44", "E48", "E49", "E113", "E114", "E119", "E120", "E121", "E56", "E63", "E68", "E73", "E81", "E88", "E94", "E99", "E107"
-- **highpass**: 0.3
-- **lowpass**: 50
-- **remove_baseline**: 1
-- **baseline_window**: -100, 0
-- **voltthresh_rejection**: 1
-- **volt_threshold**: -200, 200
-- **interp_epoch**: 1
-- **frontal_channels**:  "E1", "E8", "E14", "E21", "E25", "E32", "E17"
-- **interp_channels**: 1
-- **rerefer_data**: 1
-- **reref**: []
-- **output_format**: 1
+- boundary_marker: "boundary"
+- ekg_channels:  "E125", "E126", "E127", "E128"
+- channel_locations: "/sample_locs/GSN129.sfp"
+- down_sample: 0
+- sampling_rate: 1000
+- delete_outerlayer: 1
+- outerlayer_channel: "E17", "E38", "E43", "E44", "E48", "E49", "E113", "E114", "E119", "E120", "E121", "E56", "E63", "E68", "E73", "E81", "E88", "E94", "E99", "E107"
+- highpass: 0.3
+- lowpass: 50
+- remove_baseline: 1
+- baseline_window: -100, 0
+- voltthresh_rejection: 1
+- volt_threshold: -200, 200
+- interp_epoch: 1
+- frontal_channels:  "E1", "E8", "E14", "E21", "E25", "E32", "E17"
+- interp_channels: 1
+- rerefer_data: 1
+- reref: []
+- output_format: 1
 
 **HBCD Unique Task Settings** 
 
 1. **RS**
 
-- **ROI_of_interest**: "oz"
-- **make_dummy_events**: true
-- **remove_baseline**: 0
-- **lowpass**: 50
-- **erp_filter**: 0
-- **erp_lowpass**: 0
-- **pre_latency**: 0.5
-- **post_latency**: 0.5
-- **num_dummy_events**: 360
-- **dummy_event_spacing**: 0.5
-- **marker_names**: "DIN3"
-- **score_times**: [40, 79], [80,140], [141, 300]
-- **score_ROIs**: ["oz", "oz", "oz"]
+- ROI_of_interest: "oz"
+- make_dummy_events: true
+- remove_baseline: 0
+- lowpass: 50
+- erp_filter: 0
+- erp_lowpass: 0
+- pre_latency: 0.5
+- post_latency: 0.5
+- num_dummy_events: 360
+- dummy_event_spacing: 0.5
+- marker_names: "DIN3"
+- score_times: [40, 79], [80,140], [141, 300]
+- score_ROIs: ["oz", "oz", "oz"]
 
 2. **VEP**
 
-- **ROI_of_interest**: "oz"
-- **erp_filter**: 1
-- **erp_lowpass**: 30
-- **pre_latency**: 0.1
-- **post_latency**: 0.4
-- **ERP_window_start**: 0.07
-- **ERP_window_end**: 0.15
-- **marker_names: "DIN3"
-- **score_times**: [40, 79], [80,140], [141, 300]
-- **score_ROIs**: ["oz", "oz", "oz"]
+- ``ROI_of_interest``: "oz"
+- ``erp_filter``: 1
+- ``erp_lowpass``: 30
+- ``pre_latency``: 0.1
+- ``post_latency``: 0.4
+- ``ERP_window_start``: 0.07
+- ``ERP_window_end``: 0.15
+- ``marker_names``: "DIN3"
+- ``score_times``: [40, 79], [80,140], [141, 300]
+- ``score_ROIs``: ["oz", "oz", "oz"]
 
 3. **MMN**
 
-- ROI_of_interest: "t7t8"
-- pre_latency: 0.1
-- post_latency: 0.5
-- ERP_window_start: 0.2
-- ERP_window_end: 0.4
+- ``ROI_of_interest``: "t7t8"
+- ``pre_latency``: 0.1
+- ``post_latency``: 0.5
+- ``ERP_window_start``: 0.2
+- ``ERP_window_end``: 0.4
 - erp_filter: 1
 - erp_lowpass: 30
 - marker_names: "DIN2"
