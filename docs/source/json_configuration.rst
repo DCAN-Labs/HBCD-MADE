@@ -18,7 +18,7 @@ For a list of processing specifications for HBCD EEG data, see :ref:`HBCD Proces
 .. _Global_settings:
 
 Global Parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------
 
 These supported global settings are specified in the ``proc_settings_HBCD_container.json``:
 
@@ -45,7 +45,7 @@ These supported global settings are specified in the ``proc_settings_HBCD_contai
 .. _Unique_task_settings:
 
 Unique Task Settings
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 - **ROI_of_interest**: Selects the ROI for ERPs.
 - **make_dummy_events**: (true or false) Whether to insert dummy events into your scan. This option is used to create new events in the case of resting-state acquisitions where there are no triggers to denote epochs.
@@ -67,11 +67,12 @@ Unique Task Settings
 
 
 HBCD EEG Processing Settings
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 The following parameters are used to process HBCD EEG data. 
 
 **HBCD Global Parameters** 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - ``boundary_marker``: "boundary"
 - ``ekg_channels``:  "E125", "E126", "E127", "E128"
@@ -96,6 +97,7 @@ The following parameters are used to process HBCD EEG data.
 **HBCD Unique Task Settings** 
 
 1. **RS**
+^^^^^^^^^^^
 
 - ``ROI_of_interest``: "oz"
 - ``make_dummy_events``: true
@@ -112,6 +114,7 @@ The following parameters are used to process HBCD EEG data.
 - `score_ROIs``: ["oz", "oz", "oz"]
 
 2. **VEP**
+^^^^^^^^^^^^
 
 - ``ROI_of_interest``: "oz"
 - ``erp_filter``: 1
@@ -125,6 +128,7 @@ The following parameters are used to process HBCD EEG data.
 - ``score_ROIs``: ["oz", "oz", "oz"]
 
 3. **MMN**
+^^^^^^^^^^^
 
 - ``ROI_of_interest``: "t7t8"
 - ``pre_latency``: 0.1
@@ -139,6 +143,7 @@ The following parameters are used to process HBCD EEG data.
 
 
 4. **FACE**
+^^^^^^^^^^^^^^^
 
 - ``ROI_of_interest``: "oz",
 - ``pre_latency``: 0.1
