@@ -58,6 +58,8 @@ Unique Task Settings
 - **erp_filter**: Boolean variable indicating whether to apply a second low-pass filter before creating ERPs.
 - **erp_lowpass**: Hz at which to apply the second low-pass filter.
 - **marker_names**: (list of strings) Name of event code markers you want to construct epochs around (e.g., ``DIN3``). If ``make_dummy_events`` = true, then this should instead represent the first marker in your EEG file. Dummy events will then be placed after the first instance of this marker.
+- **score_times**: Time ranges (in seconds) to use for plotting and scoring SME, ERP, and peak measures.
+- **score_ROIs**: Regions of interest to use for plotting and scoring SME, ERP, and peak measures.
 
 .. note:: HBCD ``DIN`` markers are inserted by a StimTracker and denote specific types of stimuli. ``DIN2`` markers represent auditory stimuli from computer speakers, and ``DIN3`` markers represent visual stimuli captured by a photocell. ``DIN2`` flags will always be present in MMN, and will appear in the FACE and VEP task only in cases when the researcher prompted "attention getter" stimuli which involve an auditory signal to bring the participant's attention back to the computer screen. 
 
@@ -67,7 +69,9 @@ Unique Task Settings
 HBCD EEG Processing Settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**HBCD Global Parameters**
+The following parameters are used to process HBCD EEG data. 
+
+**HBCD Global Parameters** 
 
 - ``boundary_marker``: "boundary"
 - ``ekg_channels``:  "E125", "E126", "E127", "E128"

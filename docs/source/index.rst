@@ -27,7 +27,7 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with most E
    downsample the data, delete the outer layer of channels (which are often noisy in infant populations),
    and filter each file with the desired high-pass/low-pass settings.**
 #. **Merge all task files together.**
-#. **Check whether any electrodes are outliers at the session level.  This is done by using FASTER [Nolan2010]_. In short, for each electrode, the following measures will be calculated to judge outlier status, and any electrodes that have deviations greater than 3 SDs on any given measure will be excluded from further analysis:**
+#. **Check whether any electrodes are outliers at the session level.  This is done by using FASTER (Nolan, 2010). In short, for each electrode, the following measures will be calculated to judge outlier status, and any electrodes that have deviations greater than 3 SDs on any given measure will be excluded from further analysis:**
    
    * The average temporal correlation to other electrodes
    * The Hurst exponent (measuring the self-similarity within each electrode's
