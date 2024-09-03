@@ -63,6 +63,10 @@ Unique Task Settings
 
 .. _HBCDprocset:
 
+
+Processing Settings used for HBCD EEG
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 **HBCD Global Parameters**
 
 - **boundary_marker**: "boundary"
@@ -88,6 +92,7 @@ Unique Task Settings
 **HBCD Unique Task Settings** 
 
 1. **RS**
+
 - **ROI_of_interest**: "oz"
 - **make_dummy_events**: true
 - **remove_baseline**: 0
@@ -99,10 +104,11 @@ Unique Task Settings
 - **num_dummy_events**: 360
 - **dummy_event_spacing**: 0.5
 - **marker_names**: "DIN3"
-- **score_times**:[[40, 79], [80,140], [141, 300]]
+- **score_times**: [40, 79], [80,140], [141, 300]
 - **score_ROIs**: ["oz", "oz", "oz"]
 
 2. **VEP**
+
 - **ROI_of_interest**: "oz"
 - **erp_filter**: 1
 - **erp_lowpass**: 30
@@ -110,8 +116,8 @@ Unique Task Settings
 - **post_latency**: 0.4
 - **ERP_window_start**: 0.07
 - **ERP_window_end**: 0.15
-- **marker_names**: "DIN3"
-- **score_times**:[[40, 79], [80,140], [141, 300]]
+- **marker_names: "DIN3"
+- **score_times**: [40, 79], [80,140], [141, 300]
 - **score_ROIs**: ["oz", "oz", "oz"]
 
 3. **MMN**
@@ -124,7 +130,7 @@ Unique Task Settings
 - erp_filter: 1
 - erp_lowpass: 30
 - marker_names: "DIN2"
-- score_times:[[200, 400], [200, 400], [200, 400]]
+- score_times: [200, 400], [200, 400], [200, 400]
 - score_ROIs: ["t7t8", "f7f8", "fcz"]
 
 
@@ -138,7 +144,7 @@ Unique Task Settings
 - erp_filter: 1
 - erp_lowpass: 30
 - marker_names: "DIN3"
-- score_times:[[200, 300], [75,125], [200, 300], [325, 625]]
+- score_times:[200, 300], [75,125], [200, 300], [325, 625]
 - score_ROIs: ["p8", "oz", "oz", "oz"]
 
 
