@@ -4,7 +4,7 @@ Expected Outputs
 
 The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under ``/bids_dir/sub-1/ses-1/eeg/``, then the output of HBCD-MADE will fall under ``output_dir/sub-1/ses-1/eeg/``. 
 
-The output of HBCD-MADE will primarily be found in *.set `EEGLAB <https://eeglab.org/>`_ formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the :ref:`./processed_data <./processed_data>` folder. If you load an EEG file, from the processed_data folder, it’s ‘data’ field will have dimensions ``<num_electrodes, num_samples, num_epochs>``, with the epochs placed around the events specified in the ``proc_settings.json`` file. The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
+The output of HBCD-MADE will primarily be found in *.set `EEGLAB <https://eeglab.org/>`_ formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the :ref:`./processed_data <./processed_data>` folder. If you load an EEG file from the processed_data folder, it’s ‘data’ field will have dimensions ``<num_electrodes, num_samples, num_epochs>``, with the epochs placed around the events specified in the ``proc_settings.json`` file. The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
 
 
  The following output folders and files are created throughout processing within each subject’s output directory:

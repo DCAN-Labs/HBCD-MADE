@@ -1,3 +1,4 @@
+.. _resources:
 
 .. include:: links.rst
 
@@ -15,7 +16,7 @@ Reference Materials
 
 4. CleanLine EEGLAB plugin used to estimate line noise in signal [Mullen2012]_. 
 
-5. "Faster" algorithm used in HBCD-MADE for artifact rejection [Nolan2010]_.
+5. FASTER algorithm used in HBCD-MADE for artifact rejection [Nolan2010]_.
 
 
 .. [Debnath2020] Debnath, R., Buzzell, G. A., Morales, S., Bowers, M. E., Leach, S. C., & Fox, N. A. (2020). The Maryland analysis of developmental EEG (MADE) pipeline. Psychophysiology, 57(6). `<https://doi.org/10.1111/psyp.13580>`_.
