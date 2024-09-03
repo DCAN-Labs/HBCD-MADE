@@ -1,14 +1,18 @@
-.. _citation:
+
 
 .. HBCD_EEG_MADE documentation master file, created by
    sphinx-quickstart on Mon May 16 10:41:56 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. include:: links.rst
+
+.. _citation:
+
 HBCD-MADE Introduction
 ======================
 
-This page serves as documentation for the HBCD-MADE pipeline, an adapted version of the Maryland Analysis of Developmental EEG (MADE) pipeline (Debnath et al., 2020) for use with data from the Healthy Brain and Child Development (HBCD) study. The GitHub repository for the MADE pipeline upon which HBCD-MADE is based can be found `here <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_, and a publication describing the original pipeline can be found `here <https://onlinelibrary.wiley.com/doi/full/10.1111/psyp.13580>`_. The documentation of for the HBCD-MADE pipeline is found `here <https://docs-hbcd-made.readthedocs.io/en/latest/index.html>_.` 
+This page serves as documentation for the HBCD-MADE pipeline, an adapted version of the Maryland Analysis of Developmental EEG (MADE) pipeline (Debnath et al., 2020) for use with data from the Healthy Brain and Child Development (HBCD) study. The GitHub repository for the MADE pipeline upon which HBCD-MADE is based can be found `here <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_, and a publication describing the original pipeline can be found `here <https://onlinelibrary.wiley.com/doi/full/10.1111/psyp.13580>`_. The documentation of for the HBCD-MADE pipeline is found `here <https://docs-hbcd-made.readthedocs.io/en/latest/index.html>`_. 
 
 The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with most EEG files being the .set file format. All metadata required for running the HBCD-MADE pipeline is present within the .set files themselves, and other BIDS metadata will not be referenced during processing. In general, HBCD-MADE's functionality is roughly as follows:
 
