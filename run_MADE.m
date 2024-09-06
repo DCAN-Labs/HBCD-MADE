@@ -106,6 +106,30 @@ for run=1:length(datafile_names)
 %     EEG = eeg_checkset(EEG);
 %     EEG = pop_select( EEG,'nochannel', 65:72); % delete redundant channels
 
+    %% TM - 8/6/2024: Impedances catch
+    % Check if impedances were turned on and off -- if so pop out the
+    % section with impedances and save
+    % will not catch if impdances was turned on before task was
+    % started or aff after task was finished
+
+    if numel(find(strcmp({EEG.event.type}, 'IBEG')))>0 && numel(find(strcmp({EEG.event.type}, 'IEND')))>0
+        startidx = find(strcmp({EEG.event.type}, 'IBEG'));
+        endidx = find(strcmp({EEG.event.type}, 'IEND'));
+        if length(startidx) == 1 && length(endidx) == 1
+            impstart = EEG.event(startidx).onset - 0.1;
+            impend = EEG.event(endidx).onset;
+        else
+            error('multiple Impedance flags, check raw data and fix manually please');
+        end
+
+        EEG = pop_select(EEG, 'rmtime', [impstart impend]);
+    end
+
+    %% TM - 8/6/2024 Catch DRPS flag and throw error
+    if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
+        error('DrpS flag found, check raw data and fix manually please');
+    end
+
     %% Step 1.25: Load settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
     s = grab_settings(datafile_names{run}, json_settings_file);
@@ -840,7 +864,9 @@ for run = 1 : length(event_struct.file_names)
 
     Tasks(run) = string(task);
     
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task);
+    %In future changes, pull site information from participants.tsv (site)
+    outEEGname = outEEG.setname;
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, outEEGname);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
