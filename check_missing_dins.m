@@ -20,7 +20,7 @@ function [EEG] = check_missing_dins(EEG, task, outEEGname)
 % Whitney Kasenetz, kasenetz@umd.edu
 
 % This file path will change based on where the file is stored
-site_delay_file = 'C:\Users\tmahesh\Desktop\HBCD-MADE\mean_flag_delay_by_site.csv'; %eventually put elsewhere on server
+site_delay_file = 'C:\Users\tmahesh\Desktop\HBCD_MADE\mean_flag_delay_by_site.csv'; %eventually put elsewhere on server
 
 site_delays = readtable(site_delay_file);
 
@@ -41,6 +41,7 @@ if strcmp(task, 'FACE')
             EEG.event(din4s(t)).type = 'DIN3';
             
         end
+        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
     
     if length(din3s) < length(stms)
@@ -84,8 +85,8 @@ elseif strcmp(task, 'VEP')
     if length(din4s)>0
         for t=1:length(din4s)
             EEG.event(din4s(t)).type = 'DIN3';
-            
         end
+        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
     
     if length(din3s) < length(stms)
@@ -106,22 +107,22 @@ elseif strcmp(task, 'RS')
     din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     din4s = find(strcmp({EEG.event.type}, 'DIN4'));
 
-    if length(din4s)>0
+    if length(din4s)>0 & isempty(din3s)
         for t=1:length(din4s)
             EEG.event(din4s(t)).type = 'DIN3';
-            
         end
+        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
-    
+
     if isempty(din3s)
         sitedelay = site_delays(index,'mean_FACE_delay').mean_FACE_delay;
         missing = setdiff(stms,din3s);
-        
+
         for t=1:length(missing)
             EEG.event(missing(t)).type = 'DIN3';
-            
+
             EEG.event(missing(t)).latency = EEG.event(missing(t)).latency + sitedelay;
-            
+
         end
     end
 end
