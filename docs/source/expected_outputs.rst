@@ -1,3 +1,6 @@
+.. include:: links.rst
+
+.. _citation:
 
 Expected Outputs
 ================
@@ -75,8 +78,7 @@ These files are saved later in processing. After data are merged into one file, 
 	* Broken into 1-s epochs for epoch-level rejection
 	* Bad channels rejected
 - ICA
-- Run through adjustedADJUST to identify artifacted ICs- see Leach et al (2021) for details (wip add citation) 
-
+- Run through adjustedADJUST to identify artifacted ICs- see [Leach2020]_ for details.
 
 **Contents**
 
@@ -430,6 +432,9 @@ The following variables within the MADE processing report represent the number o
 
 A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see :doc:`Processing Settings and Configuration </json_configuration>`
 
+
+
+.. [Leach2020] Leach, S. C., Morales, S., Bowers, M. E., Buzzell, G. A., Debnath, R., Beall, D., & Fox, N. A. (2020). Adjusting adjust: Optimizing the adjust algorithm for pediatric data using geodesic nets. Psychophysiology, 57(8). `<https://doi.org/10.1111/psyp.13566>`_.
 
 .. toctree::
    :maxdepth: 2
