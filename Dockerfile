@@ -55,13 +55,13 @@ ENV EXECUTABLE_PATH=/python_code/run_compiled.sh
 ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/v912/runtime/glnxa64:/mcr_path/v912/bin/glnxa64:/mcr_path/v912/sys/os/glnxa64:/mcr_path/v912/extern/bin/glnxa64"
 
 
-#Change Permissions
-RUN chmod 555 -R /mcr_path /python_code /sample_locs
-
 #Add code dir to path
 ENV PATH="${PATH}:/python_code"
 ENV pipeline_name=made
 COPY ./python_code/run.py /python_code/$pipeline_name
 COPY ./python_code/run.py /python_code/run.py
+
+#Change Permissions
+RUN chmod 555 -R /mcr_path /python_code /sample_locs
 
 ENTRYPOINT ["made"]
