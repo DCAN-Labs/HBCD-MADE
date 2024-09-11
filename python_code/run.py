@@ -106,3 +106,6 @@ def main():
                 raise ValueError('Error: Matlab command line returned non-zero exit status ({})'.format(output_status))
             
     return
+
+if __name__ == "__main__":
+    main()
