@@ -7,7 +7,7 @@ Expected Outputs
 
 The output structure of HBCD-MADE will mimic the input BIDS structure. If you have some EEG file that is found under ``/bids_dir/sub-1/ses-1/eeg/``, then the output of HBCD-MADE will fall under ``output_dir/sub-1/ses-1/eeg/``. 
 
-The output of HBCD-MADE will primarily be found in *.set `EEGLAB <https://eeglab.org/>`_ formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the :ref:`./processed_data <./processed_data>` folder. If you load an EEG file from the processed_data folder, it’s ‘data’ field will have dimensions ``<num_electrodes, num_samples, num_epochs>``, with the epochs placed around the events specified in the ``proc_settings.json`` file. The .set/.fdt files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
+The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeglab.org/>`_ formatted data structures. Different stages of data processing will be saved, but the final data elements to be used for subsequent analyses will be found under the :ref:`./processed_data <./processed_data>` folder. If you load an EEG file from the this folder, it’s ``data`` field will have dimensions ``<num_electrodes, num_samples, num_epochs>``, with the epochs placed around the events specified in the ``proc_settings.json`` file. The ``.set/.fdt`` files saved by HBCD-MADE can be loaded back into Matlab with EEGLAB’s pop_loadset function, or loaded in python using MNE. 
 
 
  The following output folders and files are created throughout processing within each subject’s output directory:
@@ -21,9 +21,9 @@ The output of HBCD-MADE will primarily be found in *.set `EEGLAB <https://eeglab
 
 HBCD-MADE output contains the following file types:
 
-- ``JPEG``- session-level topographic, spectral and ERP plots.
+- ``JPEG``- topographic, spectral and ERP plots.
 - ``MAT`` - MATLAB data files contain processing output.
-- ``CSV``- comma separated value files store data in tabular format.
+- ``CSV``- stores data in tabular format.
 - ``JSON``- stores metadata and saves task-specific configuration settings in a format that is easy for users to read and edit.
 - ``SET``- contains metadata and parameters for the EEG dataset, such as channel locations, sampling rate, and event information.
 - ``FDT``- field data table (FDT) files contain EEG data resaved across different stages of processing.
@@ -94,7 +94,7 @@ The ./ica_data folder contains the following:
 
 **Description** 
 
-Each EEG file found in this folder will have a corresponding json file in the parent directory that specifies the settings that were used for the specific task.  These data are saved at the end of the processing pipeline after the following operations have occurred:
+Each EEG file found in this folder will have a corresponding ``.json`` file in the parent directory that specifies the settings that were used for the specific task.  These data are saved at the end of the processing pipeline after the following operations have occurred:
 
 - ICA artifact removal
 
@@ -192,7 +192,7 @@ Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE 
 	
 Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
 
-	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See Luck et al. (2021) for more information.
+	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See [Luck2021]_ for more information.
 
 	* ``Mean_Power``: mean power at each frequency bin ranging from 1-50Hz
 
@@ -268,16 +268,16 @@ Output files ending in ``summaryStats.csv`` are created for each task and contai
 c. MATLAB Data files (``.mat``) 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.mat files contain processing output.
+``.mat`` files contain processing output.
 
 - Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
 
-- Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS .mat output does not contain the time dimension.
+- Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS ``.mat`` output does not contain the time dimension.
 
 d. Figures (``.jpg``)
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: The following plots are based on data from an adult volunteer and were processed using a pipeline optimized for infant data. They do not represent typical infant results.
+.. note:: The following plots are based on data from an adult volunteer and were processed using the HBCD-MADE pipeline, which is optimized for infant data. They do not represent typical infant results.
 
 Several images containing plots and figures are automatically produced by MADE:
 
@@ -351,7 +351,7 @@ Example: DiffTop_Inv_Vs_Upr_FACE.jpg
 5. ``./...MADE_preprocessing_report.csv``
 -------------------------------------------------------
 
-Processing report automatically generated by MADE. The file ``MADE_preprocessing_report.csv`` will contain summary level statistics related to the processing of the data. Because the EEG data is merged across tasks for portions of the pre-processing, some of these entries will be the same for all tasks. See Debnath et al. (2021) for more information on MADE preprocessing. The following variables are represented-
+Processing report automatically generated by MADE for each session. The file ``MADE_preprocessing_report.csv`` will contain summary level statistics related to the processing of the data. Because the EEG data is merged across tasks for portions of the pre-processing, some of these entries will be the same for all tasks. See [Debnath2020]_ for more information on MADE preprocessing. The following variables are represented-
 
 
 .. list-table:: Processing Report Output
@@ -433,8 +433,12 @@ The following variables within the MADE processing report represent the number o
 A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see :doc:`Processing Settings and Configuration </json_configuration>`
 
 
+.. [Debnath2020] Debnath, R., Buzzell, G. A., Morales, S., Bowers, M. E., Leach, S. C., & Fox, N. A. (2020). The Maryland analysis of developmental EEG (MADE) pipeline. Psychophysiology, 57(6). `<https://doi.org/10.1111/psyp.13580>`_.
 
 .. [Leach2020] Leach, S. C., Morales, S., Bowers, M. E., Buzzell, G. A., Debnath, R., Beall, D., & Fox, N. A. (2020). Adjusting adjust: Optimizing the adjust algorithm for pediatric data using geodesic nets. Psychophysiology, 57(8). `<https://doi.org/10.1111/psyp.13566>`_.
+
+.. [Luck2021] Luck, S. J., Stewart, A. X., Simmons, A. M., & Rhemtulla, M. (2021). Standardized measurement error: A universal metric of data quality for averaged event‐related potentials. Psychophysiology, 58(6). `<https://doi.org/10.1111/psyp.13793>`_.
+
 
 .. toctree::
    :maxdepth: 2

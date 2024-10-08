@@ -3,7 +3,7 @@ HBCD-MADE Container
 
 Installation
 --------------------------
-We recommend using the HBCD-MADE container when processing large amounts of data. The container for HBCD-MADE can be found on Docker Hub.  A tutorial on how to use containers is located `here <https://docker-curriculum.com/>`_. It can be downloaded with Singularity as follows (click `here <https://docs.sylabs.io/guides/latest/user-guide/>`_. for a Singularity user guide):
+We recommend using the HBCD-MADE container when processing large amounts of data. The container for HBCD-MADE can be found on Docker Hub.  A tutorial on how to use containers is located `here <https://docker-curriculum.com/>`_. It can be downloaded with Singularity as follows (click `here <https://docs.sylabs.io/guides/latest/user-guide/>`_ for a Singularity user guide):
 
 .. code-block:: console
 
@@ -44,7 +44,7 @@ The intended workflow of running HBCD-MADE involves utilizing a containerized ve
   * The output directory to store the results (this will be the same for all subjects in a study).
   * The BIDS directory with the input data.
   * The participant label whose EEG data you want to process.
-  * The session label to process for the given participant. (**V03** is the only session label available for HBCD data as of September 2024). 
+  * The session label to process for the given participant. (**V03** is the only session label available for the initial HBCD data release). 
   
 Running HBCD-MADE
 ------------------

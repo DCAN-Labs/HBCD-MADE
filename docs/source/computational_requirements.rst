@@ -3,7 +3,7 @@ Computational Requirements
 --------------------------
 
 The computational requirements for running HBCD-MADE depend on the amount of input data
-(length of acquisition, number of channels, etc), along with the processing settings
+(length of acquisition, number of channels, etc.), along with the processing settings
 (downsampling, filtering, etc.).
 
 For an HBCD-style acquisition (1kHz sampling rate, 128 electrodes),
