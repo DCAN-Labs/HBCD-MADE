@@ -82,6 +82,8 @@ def main():
 
         if session_label == '_':
             temp_sessions = glob.glob(os.path.join(bids_dir, temp_participant, 'ses-*', 'eeg'))
+        else:
+            temp_sessions = [os.path.join(bids_dir, temp_participant, session_label, 'eeg')]
         if len(temp_sessions) == 0:
             temp_sessions = glob.glob(os.path.join(bids_dir, temp_participant, 'eeg'))
             if len(temp_sessions) > 0:
@@ -93,6 +95,10 @@ def main():
         for temp_session in temp_sessions:
             temp_session_split = temp_session.split('/')
             temp_session_label = temp_session_split[-2]
+            num_eeg_affiliated_files = len(glob.glob(os.path.join(temp_session, '*eeg.*')))
+            if num_eeg_affiliated_files == 0:
+                print('Skipping processing for {} since eeg directory appears to be empty (did not contain any files with character sequence "eeg." in file name)'.format(temp_session))
+                continue
             #temp_log_file_path = os.path.join(temp_session, 'MCR_Processing_Log.txt')
             output_status = os.system(compiled_executable_path + ' ' + mcr_path + ' ' + output_dir + ' ' + bids_dir + ' ' + temp_participant + ' ' + temp_session_label + ' ' + file_extension + ' ' + json_settings + ' ' + save_interim)
             output_status = os.WEXITSTATUS(output_status)
@@ -100,3 +106,6 @@ def main():
                 raise ValueError('Error: Matlab command line returned non-zero exit status ({})'.format(output_status))
             
     return
+
+if __name__ == "__main__":
+    main()
