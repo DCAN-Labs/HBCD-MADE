@@ -1,9 +1,15 @@
-HBCD-MADE Container
-====================
+HBCD-MADE Container Usage
+=========================
 
 Installation
---------------------------
-We recommend using the HBCD-MADE container when processing large amounts of data. The container for HBCD-MADE can be found on Docker Hub.  A tutorial on how to use containers is located `here <https://docker-curriculum.com/>`_. It can be downloaded with Singularity as follows (click `here <https://docs.sylabs.io/guides/latest/user-guide/>`_ for a Singularity user guide):
+------------
+
+We recommend using the HBCD-MADE container when processing large amounts of data.
+The container for HBCD-MADE can be found on `Docker Hub <https://hub.docker.com/r/dcanumn/hbcd-made/tags>`_.
+A tutorial on how to use containers is located `here <https://docker-curriculum.com/>`_.
+It can be downloaded with Singularity as follows (click
+`here <https://docs.sylabs.io/guides/latest/user-guide/>`_ for
+a Singularity user guide):
 
 .. code-block:: console
 
@@ -75,3 +81,13 @@ so that Singularity can access it.
    sub-144696 \
    ses-V03
    
+Command-Line Arguments
+----------------------
+.. argparse::
+   :ref: python_code.run.build_parser
+   :prog: hbcd-made
+   :nodefaultconst:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
