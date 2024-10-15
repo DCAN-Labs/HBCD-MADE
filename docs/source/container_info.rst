@@ -91,3 +91,16 @@ Command-Line Arguments
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+
+Computational Requirements
+--------------------------
+
+The computational requirements for running HBCD-MADE depend on the amount of input data
+(length of acquisition, number of channels, number of files, etc.), along with the
+processing settings (downsampling, filtering, etc.).
+
+For an HBCD-style acquisition with 1kHz sampling rate and 128 electrodes,
+processing generally takes between one and three hours per session. HBCD-MADE
+processing is generally initiated with 2 CPUs, 40GB of RAM, and 7
+hours of compute time.
