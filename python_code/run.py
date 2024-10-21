@@ -11,8 +11,8 @@ def build_parser():
     parser.add_argument("json_settings", help="The path to the subject-agnostic JSON file that will be used to configure processing settings", type=str)
 
     parser.add_argument('--participant_label', '--participant-label', help="The name/label of the subject to be processed (i.e. sub-01 or 01)", type=str)
-    parser.add_argument('--session_id', '--session-id', help="OPTIONAL: the name of a specific session to be processed (i.e. ses-01)", type=str)
-    parser.add_argument('-ext', '--file_extension', '--file-extension', help="OPTIONAL: file extension for EEG data (only supported option is .set right now)", type=str, default='.set')
+    parser.add_argument('--session_id', '--session-id', help="The name of a specific session to be processed (i.e. ses-01)", type=str)
+    parser.add_argument('-ext', '--file_extension', '--file-extension', help="File extension for EEG data (.set is the only supported option right now)", type=str, default='.set')
     parser.add_argument('-skip_interim', '--skip_saving_interim_results', '--skip-saving-interim-results', help="Flag: skip saving interim results to output folder", action="store_true")
 
     return parser
