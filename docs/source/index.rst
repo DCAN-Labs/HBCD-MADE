@@ -87,7 +87,6 @@ Contents
 
 .. toctree::
 
-   computational_requirements
    container_info
    data_requirements
    json_configuration

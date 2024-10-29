@@ -11,8 +11,8 @@ def build_parser():
     parser.add_argument("json_settings", help="The path to the subject-agnostic JSON file that will be used to configure processing settings", type=str)
 
     parser.add_argument('--participant_label', '--participant-label', help="The name/label of the subject to be processed (i.e. sub-01 or 01)", type=str)
-    parser.add_argument('--session_id', '--session-id', help="OPTIONAL: the name of a specific session to be processed (i.e. ses-01)", type=str)
-    parser.add_argument('-ext', '--file_extension', '--file-extension', help="OPTIONAL: file extension for EEG data (only supported option is .set right now)", type=str, default='.set')
+    parser.add_argument('--session_id', '--session-id', help="The name of a specific session to be processed (i.e. ses-01)", type=str)
+    parser.add_argument('-ext', '--file_extension', '--file-extension', help="File extension for EEG data (.set is the only supported option right now)", type=str, default='.set')
     parser.add_argument('-skip_interim', '--skip_saving_interim_results', '--skip-saving-interim-results', help="Flag: skip saving interim results to output folder", action="store_true")
 
     return parser
@@ -82,6 +82,8 @@ def main():
 
         if session_label == '_':
             temp_sessions = glob.glob(os.path.join(bids_dir, temp_participant, 'ses-*', 'eeg'))
+        else:
+            temp_sessions = [os.path.join(bids_dir, temp_participant, session_label, 'eeg')]
         if len(temp_sessions) == 0:
             temp_sessions = glob.glob(os.path.join(bids_dir, temp_participant, 'eeg'))
             if len(temp_sessions) > 0:
@@ -93,6 +95,10 @@ def main():
         for temp_session in temp_sessions:
             temp_session_split = temp_session.split('/')
             temp_session_label = temp_session_split[-2]
+            num_eeg_affiliated_files = len(glob.glob(os.path.join(temp_session, '*eeg.*')))
+            if num_eeg_affiliated_files == 0:
+                print('Skipping processing for {} since eeg directory appears to be empty (did not contain any files with character sequence "eeg." in file name)'.format(temp_session))
+                continue
             #temp_log_file_path = os.path.join(temp_session, 'MCR_Processing_Log.txt')
             output_status = os.system(compiled_executable_path + ' ' + mcr_path + ' ' + output_dir + ' ' + bids_dir + ' ' + temp_participant + ' ' + temp_session_label + ' ' + file_extension + ' ' + json_settings + ' ' + save_interim)
             output_status = os.WEXITSTATUS(output_status)
@@ -100,3 +106,6 @@ def main():
                 raise ValueError('Error: Matlab command line returned non-zero exit status ({})'.format(output_status))
             
     return
+
+if __name__ == "__main__":
+    main()
