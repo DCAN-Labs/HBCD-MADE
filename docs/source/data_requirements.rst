@@ -4,16 +4,18 @@ Input Data
 
 HBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. 
 
-- :ref:`./task_info <./HBCD EEG Task Information>` 
+- :ref:`./HBCD EEG Task Information <./task_info>` 
 
-- :ref:`./data_contents <./Contents of Raw HBCD data folders>`
+- :ref:`./Contents of Raw HBCD data folders <./data_contents>`
 
-- :ref:`./required_inputs <./Required Processing Inputs>`
+- :ref:`./Required Processing Inputs <./required_inputs>`
 
 .. _./task_info:
 
 HBCD EEG Task Information
 --------------------------
+
+.. note:: HBCD EEG Task files can be downloaded from our `GitHub repository <https://github.com/ChildDevLab/Tasks>`_ 
 
 1. Resting State 
 ^^^^^^^^^^^^^^^^^^
