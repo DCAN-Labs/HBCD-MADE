@@ -164,9 +164,9 @@ Description
 Contents of Raw HBCD data folders
 ----------------------------------
 
-.. note:: Note all contents of HBCD EEG folders are used for processing with HBCD-MADE. See :ref:`Required Processing Inputs <./required_inputs>` for a list of required inputs. 
+.. note:: Not all contents of HBCD EEG folders are used for processing with HBCD-MADE. See :ref:`Required Processing Inputs <./required_inputs>` for a list of required inputs. 
 
-Raw HBCD data folders are curated using the `EEG2BIDS Wizard <https://hbcd-docs.readthedocs.io/en/latest/datacuration/eeg/#eeg2bids-wizard-details>`_ , a custom developed software for HBCD EEG data management and BIDS formatting. Each raw data folder contains the following: 
+Raw HBCD data folders are curated using the `EEG2BIDS Wizard <https://hbcd-docs.readthedocs.io/en/latest/datacuration/eeg/#eeg2bids-wizard-details>`_, a custom developed software for HBCD EEG data management and BIDS formatting. Each raw data folder contains the following: 
 
 **File Types:** 
 
@@ -211,6 +211,4 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
 
 Required Processing Inputs
 ---------------------------
-
-xyz
 
