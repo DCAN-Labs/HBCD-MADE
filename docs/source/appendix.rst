@@ -8,11 +8,18 @@
 Appendix
 =============================================
 
-Supplementary Material 
------------------------
+Helpful Links 
+--------------
+BIDS-App Guidelines
+Docker Hub
+EEGLAB
+HBCD EEG Task GitHub Repository
+HBCD-MADE GitHub Repository
+Singularity User Guide
+OSF Site containing HBCD Test Data 
 
 HBCD-MADE Local Processing Tutorial
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------
 
 .. note:: These steps will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
 

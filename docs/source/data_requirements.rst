@@ -4,11 +4,11 @@ Input Data
 
 HBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. 
 
-- :ref:`./HBCD EEG Task Information <./task_info>` 
+- :ref:`HBCD EEG Task Information <./task_info>` 
 
-- :ref:`./Contents of Raw HBCD data folders <./data_contents>`
+- :ref:`Contents of Raw HBCD data folders <./data_contents>`
 
-- :ref:`./Required Processing Inputs <./required_inputs>`
+- :ref:`Required Processing Inputs <./required_inputs>`
 
 .. _./task_info:
 
@@ -203,8 +203,10 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
   Provides references and information about BIDS formatting.
 
 
-.._./required_inputs:
+.. _./required_inputs:
 
 Required Processing Inputs
 ---------------------------
+
+xyz
 
