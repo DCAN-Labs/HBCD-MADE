@@ -60,7 +60,7 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with most E
 Contributors
 ------------
 
-**Original and Past Contributors to MADE pipeline:**
+**Original Contributors to MADE pipeline:**
 
 - Ranjan Debnath (rdebnath@umd.edu)
 - George A. Buzzell (gbuzzell@umd.edu)
@@ -69,13 +69,11 @@ Contributors
 - Maureen Elizabeth Bowers (mbowers1@umd.edu)
 - Nathan A. Fox (fox@umd.edu)
 
-**Other Contributors:** 
+**Past Contributors:** 
 - Martin Antunez Garcia (mantunez@umd.edu)
 - Lydia Yoder (lyoder@umd.edu)
 
-
 **Ongoing Contributors:**
-
 - Erik Lee (eex6144@umn.edu)
 - Jessica Norris (jnorri10@umd.edu)
 - Kira Ashton (kashton7@umd.edu)

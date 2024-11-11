@@ -120,7 +120,7 @@ Description
 A schematic of the trial progression for Visit 3 is below.
 
 .. image:: images/MMNtiming.png
-   :width: 400px
+   :width: 800px
    :alt: png image above
 
 4. Visual Evoked Potential Task 
@@ -163,6 +163,11 @@ Description
 
 Contents of Raw HBCD data folders
 ----------------------------------
+
+.. note:: Note all contents of HBCD EEG folders are used for processing with HBCD-MADE. See .. _./required_inputs: for a list of required inputs. 
+
+
+Raw HBCD data folders are curated using the custom EEG2BIDS Wizard software and contain the following: 
 
 **File Types:** 
 
