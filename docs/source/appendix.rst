@@ -10,13 +10,19 @@ Appendix
 
 Helpful Links 
 --------------
-BIDS-App Guidelines
-Docker Hub
-EEGLAB
-HBCD EEG Task GitHub Repository
-HBCD-MADE GitHub Repository
-Singularity User Guide
-OSF Site containing HBCD Test Data 
+`BIDS-App guidelines <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005209>`_
+
+`Docker Hub <https://hub.docker.com/r/dcanumn/hbcd-made/tags>`_
+
+`EEGLAB <https://eeglab.org/>`_
+
+`HBCD EEG Tasks <https://github.com/ChildDevLab/Tasks>`_ 
+
+`HBCD-MADE pipeline GitHub repository <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_
+
+`Singularity User Guide <https://docs.sylabs.io/guides/latest/user-guide/>`_
+
+`OSF Site containing HBCD Test Data <https://osf.io/wg46a/files/osfstorage>`_
 
 HBCD-MADE Local Processing Tutorial
 ------------------------------------

@@ -2,7 +2,7 @@
 Input Data 
 ===========
 
-testestHBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. 
+HBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. 
 
 - :ref:`HBCD EEG Task Information <./task_info>` 
 
