@@ -70,10 +70,12 @@ Contributors
 - Nathan A. Fox (fox@umd.edu)
 
 **Past Contributors:** 
+
 - Martin Antunez Garcia (mantunez@umd.edu)
 - Lydia Yoder (lyoder@umd.edu)
 
 **Ongoing Contributors:**
+
 - Erik Lee (eex6144@umn.edu)
 - Jessica Norris (jnorri10@umd.edu)
 - Kira Ashton (kashton7@umd.edu)
