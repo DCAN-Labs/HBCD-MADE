@@ -164,7 +164,7 @@ Description
 Contents of Raw HBCD data folders
 ----------------------------------
 
-.. note:: Note all contents of HBCD EEG folders are used for processing with HBCD-MADE. See .. _./required_inputs: for a list of required inputs. 
+.. note:: Note all contents of HBCD EEG folders are used for processing with HBCD-MADE. See :ref:`Required Processing Inputs <./required_inputs>` for a list of required inputs. 
 
 
 Raw HBCD data folders are curated using the custom EEG2BIDS Wizard software and contain the following: 
