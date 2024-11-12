@@ -212,6 +212,8 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
 Required Processing Inputs
 ---------------------------
 
+The following files are required inputs to the HBCD-MADE pipeline: 
+
 (1)	Channel locations file: ``./participants.json``
 (2)	EEG and metadata in .set files: ``./sub-<label>_ses-<label>_task-<label>_acq-eeg_eeg.set``
 (3)	Processing settings .json: ``./0_2AverageNet128_v1.sfp``
