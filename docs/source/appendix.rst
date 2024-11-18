@@ -8,11 +8,24 @@
 Appendix
 =============================================
 
-Supplementary Material 
------------------------
+Helpful Links 
+--------------
+`BIDS-App guidelines <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005209>`_
+
+`Docker Hub <https://hub.docker.com/r/dcanumn/hbcd-made/tags>`_
+
+`EEGLAB <https://eeglab.org/>`_
+
+`HBCD EEG Tasks <https://github.com/ChildDevLab/Tasks>`_ 
+
+`HBCD-MADE pipeline GitHub repository <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_
+
+`Singularity User Guide <https://docs.sylabs.io/guides/latest/user-guide/>`_
+
+`OSF Site containing HBCD Test Data <https://osf.io/wg46a/files/osfstorage>`_
 
 HBCD-MADE Local Processing Tutorial
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------
 
 .. note:: These steps will configure the user to run local processing. However, due to the computational demands of EEG pre-processing, it is recommended to use the HBCD-MADE container for HPC instead of locally processing data files. 
 

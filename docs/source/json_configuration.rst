@@ -4,8 +4,9 @@
 Processing Settings and Configuration
 =====================================
 
-Selections of HBCD-MADE processing parameters are made in JSON keys rather than in the MATLAB preprocessing scripts. An example ``.json`` used for processing data can be
-found :download:`here <proc_settings.json>`. The parameters defined in the downloadable ``.json`` are identical to the parameters used for HBCD data processing. The settings specified in the JSON fall under two general categories:
+Selections of HBCD-MADE processing parameters are made in JSON keys rather than in the MATLAB preprocessing scripts. An example ``.json`` that has been used for processing data can be found :download:`here <proc_settings.json>`. The parameters defined in the downloadable ``.json`` are typical parameters used for HBCD data processing. 
+
+The settings specified in the JSON fall under two general categories:
 
 
 1. :ref:`Global parameters <Global_settings>` : These settings fall under the JSON key ``global_parameters`` and serve as the default settings across tasks.
@@ -69,7 +70,7 @@ Unique Task Settings
 HBCD EEG Processing Settings
 ------------------------------
 
-The following parameters are used to process HBCD EEG data. 
+The following parameters were used to process HBCD EEG data for the initial data release. For an exact report of parameters used to process any given file, refer to the ``MADE_specification.csv`` file in the HBCD-MADE output. 
 
 **HBCD Global Parameters** 
 
