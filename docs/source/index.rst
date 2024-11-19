@@ -12,10 +12,8 @@
 HBCD-MADE- an automated developmental EEG preprocessing pipeline 
 ==================================================================
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7019701.svg)](https://doi.org/10.5281/zenodo.7019701)
-
-.. image:: https://img.shields.io/badge/Nature%20Methods-10.1038%2Fs41592--021--01185--5-purple
-  :target: https://doi.org/10.1038/s41592-021-01185-5
+.. image:: https://img.shields.io/badge/Psychophysiology-10.1038%2Fs41592--021--01185--5-purple
+  :target: https://doi.org/10.1111/psyp.13580
   :alt: Publication DOI
 
 .. image:: https://img.shields.io/badge/License-BSD--3--Clause-green
