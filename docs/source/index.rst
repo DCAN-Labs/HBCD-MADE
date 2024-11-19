@@ -16,8 +16,8 @@ HBCD-MADE- an automated developmental EEG preprocessing pipeline
   :target: https://doi.org/10.1111/psyp.13580
   :alt: Publication DOI
 
-.. image:: https://img.shields.io/badge/License-BSD--3--Clause-green
-  :target: https://opensource.org/licenses/BSD-3-Clause
+.. image:: https://img.shields.io/badge/License-GNU--Public--License-green
+  :target: https://github.com/ChildDevLab/HBCD-MADE?tab=GPL-3.0-1-ov-file#readme
   :alt: License
 
 DOI: `10.1111/psyp.13580 <https://onlinelibrary.wiley.com/doi/10.1111/psyp.13580>`_.
