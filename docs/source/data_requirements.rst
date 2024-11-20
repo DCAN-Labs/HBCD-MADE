@@ -187,7 +187,7 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
 
 1. ``./sub-* folder``
 
-  Stores raw data and metadata. Contains a folder called ``ses-V03`` which houses an ``eeg`` folder and a ``.tsv`` labeled with the subject ID and recording session. This ``.tsv`` contains the file names and date and time of each EEG recording. The eeg folder contains several ``.json``, ``.fdt``, ``.txt`` and ``.edat3`` files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
+  Stores raw data and metadata. Contains a folder called ``ses-V03`` which houses an ``eeg`` folder and a ``.tsv`` labeled with the subject ID and recording session. This ``.tsv`` contains the file names and date and time of each EEG recording. The eeg folder contains several ``.json``, ``.fdt``, and ``.txt`` files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
 
 2. ``./dataset_description.json``
 
