@@ -68,11 +68,11 @@ Contributors
 
 **Original Contributors to MADE pipeline:**
 
-- Ranjan Debnath (rdebnath@umd.edu)
-- George A. Buzzell (gbuzzell@umd.edu)
-- Santiago Morales Pamplona (moraless@umd.edu)
-- Stephanie Leach (sleach12@umd.edu)
-- Maureen Elizabeth Bowers (mbowers1@umd.edu)
+- Ranjan Debnath (ranjan.ju@gmail.com)
+- George A. Buzzell (gbuzzell@fiu.edu)
+- Santiago Morales (santiago.morales@usc.edu)
+- Stephanie Leach (stephanie-leach@uiowa.edu)
+- Maureen Elizabeth Bowers (maureenbowers@gmail.com)
 - Nathan A. Fox (fox@umd.edu)
 
 **Past Contributors:** 
@@ -88,7 +88,7 @@ Contributors
 - Marco McSweeney (mmcsw1@umd.edu)
 - Savannah McNair (smcnair1@umd.edu)
 - Trisha Maheshwari (tmahesh@umd.edu)
-- Whitney Kasenetz (kasenetz@umd.edu)
+- Whitney E. Kasenetz (kasenetz@umd.edu)
 
 
 
