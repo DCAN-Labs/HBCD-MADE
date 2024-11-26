@@ -18,7 +18,7 @@ Helpful Links
 
 `HBCD EEG Tasks <https://github.com/ChildDevLab/Tasks>`_ 
 
-`HBCD-MADE pipeline GitHub repository <https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline>`_
+`HBCD-MADE pipeline GitHub repository <https://github.com/DCAN-Labs/HBCD-MADE>`_
 
 `Singularity User Guide <https://docs.sylabs.io/guides/latest/user-guide/>`_
 

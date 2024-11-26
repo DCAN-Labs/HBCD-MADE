@@ -170,7 +170,6 @@ Raw HBCD data folders are curated using the `EEG2BIDS Wizard <https://hbcd-docs.
 
 **File Types:** 
 
-- ``EDAT3``- Contain task-specific event information from E-PRIME (stimulus presentation software).
 - ``TXT``- Contain E-PRIME event log output.
 - ``TSV``- Store metadata and other relevant information.
 - ``JSON``- Store metadata and configuration settings in a format that is easy for users to read and edit.
@@ -188,7 +187,7 @@ Each HBCD subject/session pair has a corresponding BIDS dataset for that session
 
 1. ``./sub-* folder``
 
-  Stores raw data and metadata. Contains a folder called ``ses-V03`` which houses an ``eeg`` folder and a ``.tsv`` labeled with the subject ID and recording session. This ``.tsv`` contains the file names and date and time of each EEG recording. The eeg folder contains several ``.json``, ``.fdt``, ``.txt`` and ``.edat3`` files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
+  Stores raw data and metadata. Contains a folder called ``ses-V03`` which houses an ``eeg`` folder and a ``.tsv`` labeled with the subject ID and recording session. This ``.tsv`` contains the file names and date and time of each EEG recording. The eeg folder contains several ``.json``, ``.fdt``, and ``.txt`` files in BIDS format providing information about the recording system, location of electrodes, events for each task, and raw data.
 
 2. ``./dataset_description.json``
 
