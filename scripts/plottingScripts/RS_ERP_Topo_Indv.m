@@ -67,7 +67,7 @@ hold on;
 title(title_figure, 'FontSize', 15);
 hold off;
 
-save_plot_name = strcat(IDnum, '_PSD_AllCh',  '.jpg');
+save_plot_name = strcat(IDnum, '_task-RS_desc-allCh_PSD',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd, full_save_path);
 close all;
@@ -78,19 +78,20 @@ freqs_2_plot = freqs_eo';
 freqs_2_plot = freqs_2_plot(:,2:50);
 globalPSD_eo = avg_elec_eo_spectra(:,2:50);
 
-% Create the filename with Subject_ID included
-filename = sprintf('%s_RS.mat', subject_ID);
 
-% Save the data into a .mat file with the specified filename
-save_name_whole = strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat');
-save([save_path filesep save_name_whole], 'channel_location', 'freqs_eo', 'spectra_eo_db')
 
-%% % Calculate SME and AVG Power across Trials
+%%%%%%%%%%%%%%%%%%%% Commented out Marco 12/19/2024
+% % Create the filename with Subject_ID included
+% filename = sprintf('%s_RS.mat', subject_ID);
+
+% % Save the data into a .mat file with the specified filename
+% save_name_whole = strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat');
+% save([save_path filesep save_name_whole], 'channel_location', 'freqs_eo', 'spectra_eo_db')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% % Calculate Absolute Power, SME, AVG Power across Trials & tiral level data
 
 total = [1 50];
-overlap = 0; % set to 0 for no ovrelap, 1 = ovrelap
-zeroPad = 0; % set to 1 if you want zero padding.
-overlap2use = [];
 
 % get # of channels
 num_channels = EEG.nbchan;
@@ -116,6 +117,75 @@ for chan = 1:num_channels
     end
 end
 
+
+% get index of frequency bins from 1hz to 50hz
+totalIdx = dsearchn(freqs, total');
+% get average across epochs
+avg_abs_pow = squeeze(mean(power_matrix,3)); 
+% save power values for 1 - 50hz only
+avg_abs_pow = avg_abs_pow(:, totalIdx(1):totalIdx(2));
+% Corresponding frequency values
+freqs = freqs(totalIdx(1):totalIdx(2)); 
+
+% Save out epoch level data
+power_matrix2 = power_matrix(:, totalIdx(1):totalIdx(2), :); % Get power from 1-50hz
+% Save epoch-level power as 3D matrix [channels x frequencies x epochs]
+all_abs_power = power_matrix2; % Keep original matrix for saving
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Prepare for the .csv file - ADDED Marco 12/19/2024
+
+% Save channel location anmes to add to .csv file
+chan_locs = EEG.chanlocs;
+elec_names = {chan_locs.labels};
+
+% Format frequency labels as strings for table column headers for .csv file
+freq_labels = arrayfun(@(x) sprintf('%.1fHz', x), freqs, 'UniformOutput', false); % Convert to cell array of strings
+
+% Combine channel names and spectra into a table
+spectra_table = array2table(avg_abs_pow, 'VariableNames', freq_labels, 'RowNames', elec_names);
+
+% % Not needed just for testing / can replace with IDnum
+subject_ID = 'S01'; 
+
+% Create the output file name with the subject_ID
+output_file = sprintf([subject_ID,'_spectra_output.csv']); % E.g., "spectra_output_S01.csv"
+
+% Save the table to a CSV file
+writetable(spectra_table, output_file, 'WriteRowNames', true);
+
+% disp(['Spectra saved to ' output_file]);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Prepare the .mat file - ADDED Marco 12/19/2024
+% subject_ID = 'S01'; % Not needed just for testing
+
+% Saves out avg_abs_pow (average absolute power across epochs), 
+% all_abs_power (chans x power x epochs), epoch_level_pow (abs power for each epoch),
+% channel locations file, freqs (frequency bins (1hz increments, 1-50hz)), 
+% num_trials (number of epochs), and Fs (sampling rate) - for sanity check
+
+% Save epoch-level power as separate variables
+for epoch = 1:num_trials
+    epoch_name = sprintf('epoch_power_%d', epoch); % Dynamically name variables
+    epoch_data = squeeze(power_matrix2(:, :, epoch)); % Get power for the current epoch
+    assignin('base', epoch_name, epoch_data); % Assign the matrix to the base workspace
+    
+    % Optionally, save each epoch as a separate field
+    epoch_level_pow.(epoch_name) = epoch_data;
+end
+
+% Save the data into the .mat file
+output_file_mat = sprintf([subject_ID, '_spectra_output.mat']); 
+
+% Save the data, including the epoch-level power matrices
+save(output_file_mat, 'subject_ID', 'num_trials', 'Fs', 'chan_locs', 'avg_abs_pow', 'freqs', 'all_abs_power', 'epoch_level_pow');
+
+% disp(['Data saved to ' output_file_mat]);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% this part looks OK Marco 12/19/2024
 roi_ind=find(ismember({EEG.chanlocs.labels},ROI));
 avg_chan_spec = squeeze(mean(power_matrix(roi_ind,:,:),1)); %average PSD over channels of interest
 
@@ -137,7 +207,8 @@ sme_tab.Properties.VariableNames = {'Frequency', 'SME', 'Mean_Power'};
 sme_tab.ID(:) = string(subject_ID);   
 writetable(sme_tab, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_Power-summaryStats.csv']);
     
-%% Do transformation only for the db
+%% Do transformation only for the db - 
+% below is just for plotting so I thinks it's ok Marco 12/19/2024
 avg_elec_eo_db_spectra = mean(spectra_eo_db,1); % get average power at each frequency across all electrodes
 
 freqs_2_plot = freqs_eo';
@@ -156,7 +227,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, '_PSD_AllCh_Avg',  '.jpg');
+save_plot_name = strcat(IDnum, '_task-RS_desc-allChAvg_PSD',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
@@ -183,7 +254,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, '_PSD_ROI',  '.jpg');
+save_plot_name = strcat(IDnum, 'task-RS_desc-', ROIname,  '_PSD.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
