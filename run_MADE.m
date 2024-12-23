@@ -864,9 +864,28 @@ for run = 1 : length(event_struct.file_names)
 
     Tasks(run) = string(task);
     
-    %In future changes, pull site information from participants.tsv (site)
-    outEEGname = outEEG.setname;
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, outEEGname);
+    %Pull site information from scans.tsv (site) - TM 12/20/2024
+    %outEEGname = outEEG.setname;
+
+    try
+        %first try getting siteinfo from scans.tsv
+        sitepath = [bids_dir filesep participant_label filesep session_label];
+        sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
+        try
+            siteinfo=sitetable.site(contains(sitetable.filename,'eeg'));
+        catch
+            error("Site data is missing!")
+        end
+    catch
+        %otherwise try getting site info from local PSCID
+        try
+            outEEGname = outEEG.setname;
+            siteinfo = outEEGname(3:5);
+        catch
+            error("Site data is missing locally!")
+        end
+    end
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
