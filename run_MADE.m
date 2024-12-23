@@ -1097,10 +1097,31 @@ for run = 1 : length(event_struct.file_names)
     save_name = [name '.mat'];
     save_name_jpg = [name '.jpeg'];
     save_path = [output_location filesep 'processed_data' filesep ];
+
+    try
+        % on cbrain, look for scans.tsv
+        tsvpath= [bids_dir filesep participant_label filesep session_label];
+        agetable = readtable([tsvpath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
+        try
+            taskages=agetable.age(contains(agetable.filename,'eeg'));
+            age = taskages(1)*12;   
+        catch
+            error("Age data is missing!")
+        end
+    
+    catch
+        % locally, use participants.tsv
+        agetable = readtable([bids_dir filesep 'participants.tsv'],"Filetype","text",'Delimiter','\t');
+        try
+            age = agetable.age(strcmp(agetable.participant_id, participant_label))*12; %if age is given in years?
+        catch
+            error("Age data is missing!")
+        end
+    end
     
     if contains(event_struct.file_names{run}, 'MMN')
         try
-            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'MMN', output_location, participant_label, session_label)
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'MMN', output_location, participant_label, session_label, age)
             MMN_ERP_Topo_Indv();
             clear allData;
         catch
@@ -1115,7 +1136,7 @@ for run = 1 : length(event_struct.file_names)
         end
     elseif contains(event_struct.file_names{run}, 'VEP')
         try
-            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label)
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label, age)
             VEP_ERP_Topo_Indv();
             clear allData;
         catch
@@ -1123,7 +1144,7 @@ for run = 1 : length(event_struct.file_names)
         end
     elseif contains(event_struct.file_names{run}, 'FACE')
         try
-            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label)
+            computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label, age)
             FACE_ERP_Topo_Indv();
             clear allData;
         catch
