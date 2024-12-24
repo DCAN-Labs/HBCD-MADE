@@ -26,7 +26,7 @@ site_delays = readtable(site_delay_file);
 
 % Pulls from scans.tsv or outEEGname for local files
 try
-    site = siteinfo(1); 
+    site = siteinfo; 
     [~,index] = ismember(site,site_delays.site);
 catch
     error("Invalid site info, check again please.");

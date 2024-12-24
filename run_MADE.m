@@ -873,6 +873,7 @@ for run = 1 : length(event_struct.file_names)
         sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
         try
             siteinfo=sitetable.site(contains(sitetable.filename,'eeg'));
+            siteinfo = siteinfo(1);
         catch
             error("Site data is missing!")
         end
