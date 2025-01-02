@@ -426,6 +426,6 @@ for i=1:length(scoreTimes)
 
 end
 smeWide.Properties.VariableNames{2} = 'NTrials';
-writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-summaryStats.csv']);
-writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-trialMeasures.csv']);
+writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '__ERPSummaryStats.csv']);
+writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPTrialMeasures.csv']);
 

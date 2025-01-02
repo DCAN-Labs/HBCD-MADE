@@ -125,7 +125,7 @@ title(strcat('Standard',infoSafeTitle_s), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '01_Topo_Standard_MMN.jpg';
+Plot_Name = 'task-MMN_desc-standard_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -136,7 +136,7 @@ title(strcat('PreDeviant',infoSafeTitle_d), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '02_Topo_PreDeviant_MMN.jpg';
+Plot_Name = 'task-MMN_desc-preDeviant_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -147,7 +147,7 @@ title(strcat('Deviant',infoSafeTitle_n), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '03_Topo_Deviant_MMN.jpg';
+Plot_Name = 'task-MMN_desc-deviant_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -159,7 +159,7 @@ title(strcat('Deviant vs Standard',infoSafeTitle), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '04_DiffTopo_Dev_Vs_Sta_MMN.jpg';
+Plot_Name = 'task-MMN_desc-diffDevVsSta_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -170,7 +170,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '05_DiffTopo_Dev_Vs_Pre_MMN.jpg';
+Plot_Name = 'task-MMN_desc-diffDevVsPre_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -222,7 +222,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_MMN.jpg');
+save_plot_name = strcat(name, '_task-MMN_desc-', ROIname, '_ERP.jpg');
 saveas(erp, save_plot_name);
 
 %Difference
@@ -243,7 +243,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_DiffERP_', ROIname, '_MMN.jpg');
+save_plot_name = strcat(name, '_task-MMN_desc-', ROIname, '_diffERP.jpg');
 saveas(erp, save_plot_name);
 
 

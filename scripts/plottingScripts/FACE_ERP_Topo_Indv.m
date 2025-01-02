@@ -136,7 +136,7 @@ title(strcat('Upright',infoSafeTitle_s), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '01_Topo_Upright_FACE.jpg';
+Plot_Name = 'task-FACE_desc-upright_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -147,7 +147,7 @@ title(strcat('Inverted',infoSafeTitle_d), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '02_Topo_Inverted_FACE.jpg';
+Plot_Name = 'task-FACE_desc-inverted_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -158,7 +158,7 @@ title(strcat('Object',infoSafeTitle_n), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '03_Topo_Object_FACE.jpg';
+Plot_Name = 'task-FACE_desc-object_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -169,7 +169,7 @@ title(strcat('Upright2',infoSafeTitle_s2), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '04_Topo_Upright2_FACE.jpg';
+Plot_Name = 'task-FACE_desc-upright2_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -181,7 +181,7 @@ title(strcat('Inverted vs Upright',infoSafeTitle), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = '05_DiffTop_Inv_Vs_Upr_FACE.jpg';
+Plot_Name = 'task-FACE_desc-diffInvVsUpr_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -192,7 +192,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '06_DiffTopo_Obj_Vs_Up2_FACE.jpg';
+Plot_Name = 'task-FACE_desc-diffObjVsUp2_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
@@ -243,7 +243,7 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_FACE.jpg');
+save_plot_name = strcat(name, '_task-FACE_desc-', ROIname, '_ERP.jpg');
 saveas(erp, save_plot_name);
 
 %Diference
@@ -267,9 +267,8 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_DiffERP_', ROIname, '_FACE.jpg');
+save_plot_name = strcat(name, '_task-FACE_desc-', ROIname, '_diffERP.jpg');
 saveas(erp, save_plot_name);
-
 
 %%Individual ERPs ends here
 

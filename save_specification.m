@@ -9,7 +9,7 @@ function save_specification(s, output_folder, eeg_file_name)
 %with MADE appended to the end and the extension
 %switched to json
 [a,filename, extension] = fileparts(eeg_file_name);
-output_path = fullfile(output_folder, [filename '_MADE_specification.json']);
+output_path = fullfile(output_folder, [filename '_specification.json']);
 fid = fopen(output_path, 'w');
 json_content = jsonencode(s, PrettyPrint=true);
 fprintf(fid, json_content);
