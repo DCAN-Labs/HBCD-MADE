@@ -38,10 +38,10 @@ RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip \
     && rm /mcr_path/mcr.zip 
 
 #Download the unique code for this project
-RUN mkdir /code
-RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v142.zip -O /code/code.zip \
-    && cd /code && unzip -q ./code.zip \
-    && rm /code/code.zip
+RUN mkdir /python_code
+RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v142.zip -O /python_code/code.zip \
+    && cd /python_code && unzip -q ./code.zip \
+    && rm /python_code/code.zip
 
 #Download the sample locations/electrode files
 RUN mkdir /sample_locs
@@ -51,17 +51,17 @@ RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_june24_24.zip  -O /s
 
 #Export paths (make sure LD_LIBRARY_PATH is set to the correct version)
 ENV MCR_PATH=/mcr_path/v912
-ENV EXECUTABLE_PATH=/code/run_compiled.sh
+ENV EXECUTABLE_PATH=/python_code/run_compiled.sh
 ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/v912/runtime/glnxa64:/mcr_path/v912/bin/glnxa64:/mcr_path/v912/sys/os/glnxa64:/mcr_path/v912/extern/bin/glnxa64"
 
 
-#Change Permissions
-RUN chmod 555 -R /mcr_path /code /sample_locs
-
 #Add code dir to path
-ENV PATH="${PATH}:/code"
+ENV PATH="${PATH}:/python_code"
 ENV pipeline_name=made
-COPY run.py /code/$pipeline_name
-COPY run.py /code/run.py
+COPY ./python_code/run.py /python_code/$pipeline_name
+COPY ./python_code/run.py /python_code/run.py
+
+#Change Permissions
+RUN chmod 555 -R /mcr_path /python_code /sample_locs
 
 ENTRYPOINT ["made"]
