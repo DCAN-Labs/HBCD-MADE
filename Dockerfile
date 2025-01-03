@@ -33,9 +33,10 @@ RUN pip install numpy
 #of MCR, install it, zip it, and upload the new path to a public bucket
 #on S3
 RUN mkdir /mcr_path
-RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip \
-    && cd /mcr_path && unzip -q ./mcr.zip \
-    && rm /mcr_path/mcr.zip 
+RUN wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip || { echo "Download failed"; exit 1; } \
+    && cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
+    && rm /mcr_path/mcr.zip
+
 
 #Download the unique code for this project
 RUN mkdir /python_code
