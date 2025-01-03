@@ -93,7 +93,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = '01_Topo_VEP.jpg';
+Plot_Name = 'task-VEP_topo.jpg';
 merged_Plot_Name = [subject_ID, '_',Plot_Name]; % 
 saveas(erp, merged_Plot_Name);
 
@@ -138,6 +138,6 @@ hold off;
 
 
 cd(save_path)
-save_plot_name = strcat(name, '_ERP_', ROIname, '_VEP.jpg'); %name, '_
+save_plot_name = strcat(name, '_task-VEP_desc-', ROIname, '_ERP.jpg'); %name, '_
 saveas(erp, save_plot_name);
 
