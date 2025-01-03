@@ -1,5 +1,5 @@
 
-function [EEG] = check_missing_dins(EEG, task, siteinfo)
+function [EEG] = check_missing_dins(EEG, task, siteinfo, json_file)
 
 % Script checks dins for each task and adds in missing dins during needed
 % trials. Takes in EEG struct and outputs editted struct. 
@@ -20,7 +20,7 @@ function [EEG] = check_missing_dins(EEG, task, siteinfo)
 % Whitney Kasenetz, kasenetz@umd.edu
 
 % This file path will change based on where the file is stored
-site_delay_file = 'C:\Users\tmahesh\Desktop\HBCD-MADE\mean_flag_delay_by_site.csv'; %change this to wherever it is saved
+site_delay_file = json_file.site_delay_file; %change this to wherever it is saved
 
 site_delays = readtable(site_delay_file);
 

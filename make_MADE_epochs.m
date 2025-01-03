@@ -74,7 +74,7 @@ if isfield(s,'make_dummy_events')
         %     error('Error: there should only be one instance of DIN3 event in EEG file'); %TM patch
         % end
         if length(start_index) < 1 % TM add code to check for missing RS din3 and add it in
-            tEEG = check_missing_dins(tEEG, task, siteinfo);
+            tEEG = check_missing_dins(tEEG, task, siteinfo, s);
             start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
         end
         start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
@@ -94,7 +94,7 @@ if isfield(s,'make_dummy_events')
 end
     
 %add kira's code here -- TM 8/1/24
-tEEG = check_missing_dins(tEEG, task, siteinfo);
+tEEG = check_missing_dins(tEEG, task, siteinfo, s);
 tEEG = eeg_checkset(tEEG);
 
 epoch_length=[-1*pre_latency post_latency]; % define Epoch Length

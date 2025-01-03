@@ -74,6 +74,7 @@
       "E128"
     ],
     "channel_locations": "C:/Users/tmahesh/Desktop/HBCD-MADE/0_2AverageNet128_v1.sfp",
+    "site_delay_file": "C:/Users/tmahesh/Desktop/HBCD-MADE/mean_flag_delay_by_site.csv",
     "down_sample": 0,
     "sampling_rate": 1000,
     "delete_outerlayer": 1,
