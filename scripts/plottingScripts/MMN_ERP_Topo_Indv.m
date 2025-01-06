@@ -89,7 +89,7 @@ Conditions = {'Standard_1', 'PreDeviant_2', 'Deviant_3'};
 Channels = EEG.chanlocs;
 Times = EEG.times;
 
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_eeg.set', 'ERP.mat')];
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_desc-filtered_eeg.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
