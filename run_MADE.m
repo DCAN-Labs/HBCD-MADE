@@ -1086,10 +1086,10 @@ for run = 1 : length(event_struct.file_names)
     %% Save processed data
     if output_format==1
         EEG = eeg_checkset(EEG);
-        EEG = pop_editset(EEG, 'setname',  strrep(event_struct.file_names{run}, ext, '_processed_data'));
-        EEG = pop_saveset(EEG, 'filename', strrep(event_struct.file_names{run}, ext, '_processed_data.set'),'filepath', [output_location filesep 'processed_data' filesep ]); % save .set format
+        EEG = pop_editset(EEG, 'setname',  strrep(event_struct.file_names{run}, ext, '_processed_eeg'));
+        EEG = pop_saveset(EEG, 'filename', strrep(event_struct.file_names{run}, ext, '_processed_eeg.set'),'filepath', [output_location filesep 'processed_data' filesep ]); % save .set format
     elseif output_format==2
-        save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.mat')], 'EEG'); % save .mat format
+        save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.mat')], 'EEG'); % save .mat format
     end
     
     

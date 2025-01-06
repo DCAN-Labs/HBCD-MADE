@@ -1,6 +1,6 @@
 %% FACE Plot ERPs and Topos
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
 
 % % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
