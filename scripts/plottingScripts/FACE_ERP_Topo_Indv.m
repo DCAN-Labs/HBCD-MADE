@@ -96,7 +96,7 @@ allData(4, :, :) = meanEpoch_s2;
 Conditions = {'Upright_1', 'Inverted_2', 'Object_3', 'Upright2_4'};
 Channels = EEG.chanlocs;
 Times = EEG.times;
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')];
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_eeg.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
