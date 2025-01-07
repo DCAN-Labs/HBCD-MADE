@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-    # Any tag that starts with 'v'
+    # Any tag
     tags:
-      - 'v*'
+      - '*'
 
 jobs:
   docker:
@@ -35,7 +35,7 @@ jobs:
           # Always include "latest"
           echo "tags=dcanumn/hbcd-made:latest" >> $GITHUB_OUTPUT
 
-          # If this is a tag push (refs/tags/v1.2.3, for example),
+          # If this is a tag push (refs/tags/1.2.3, for example),
           # also add "dcanumn/hbcd-made:1.2.3"
           if [ "${{ github.ref_type }}" = "tag" ]; then
             VERSION_TAG="${GITHUB_REF#refs/tags/}"
