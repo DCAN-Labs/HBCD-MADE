@@ -1,6 +1,6 @@
 %% RS Plot PSD
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
 %%
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
@@ -136,7 +136,7 @@ all_abs_power = power_matrix2; % Keep original matrix for saving
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Prepare for the .csv file - ADDED Marco 12/19/2024
 
-% Save channel location anmes to add to .csv file
+% Save channel location names to add to .csv file
 chan_locs = EEG.chanlocs;
 elec_names = {chan_locs.labels};
 
@@ -147,10 +147,10 @@ freq_labels = arrayfun(@(x) sprintf('%.1fHz', x), freqs, 'UniformOutput', false)
 spectra_table = array2table(avg_abs_pow, 'VariableNames', freq_labels, 'RowNames', elec_names);
 
 % % Not needed just for testing / can replace with IDnum
-subject_ID = 'S01'; 
+%subject_ID = 'S01'; 
 
 % Create the output file name with the subject_ID
-output_file = sprintf([subject_ID,'_spectra_output.csv']); % E.g., "spectra_output_S01.csv"
+output_file = sprintf([IDnum,'_task-RS_desc-spectra_output', '.csv']); 
 
 % Save the table to a CSV file
 writetable(spectra_table, output_file, 'WriteRowNames', true);
@@ -177,7 +177,7 @@ for epoch = 1:num_trials
 end
 
 % Save the data into the .mat file
-output_file_mat = sprintf([subject_ID, '_spectra_output.mat']); 
+output_file_mat = sprintf([subject_ID, '_task-RS_desc-spectra_output.mat']); 
 
 % Save the data, including the epoch-level power matrices
 save(output_file_mat, 'subject_ID', 'num_trials', 'Fs', 'chan_locs', 'avg_abs_pow', 'freqs', 'all_abs_power', 'epoch_level_pow');
@@ -205,7 +205,7 @@ sme_tab = table(sme_mat);
 sme_tab = splitvars(sme_tab);
 sme_tab.Properties.VariableNames = {'Frequency', 'SME', 'Mean_Power'};
 sme_tab.ID(:) = string(subject_ID);   
-writetable(sme_tab, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_Power-summaryStats.csv']);
+writetable(sme_tab, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_powerSummaryStats.csv']);
     
 %% Do transformation only for the db - 
 % below is just for plotting so I thinks it's ok Marco 12/19/2024
@@ -254,7 +254,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, 'task-RS_desc-', ROIname,  '_PSD.jpg');
+save_plot_name = strcat(IDnum, '_task-RS_desc-', ROIname,  '_PSD.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;

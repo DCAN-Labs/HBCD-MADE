@@ -57,15 +57,15 @@ else
 end
 
 EEG = eeg_checkset( EEG );
-EEG = pop_editset(EEG, 'setname', [subses '_Merged']);
-EEG = pop_saveset(EEG, 'filename',[subses '_merged.set'],'filepath', [output_location filesep 'merged_data']); 
+EEG = pop_editset(EEG, 'setname', [subses '_desc-merged_eeg']);
+EEG = pop_saveset(EEG, 'filename',[subses '_desc-merged_eeg.set'],'filepath', [output_location filesep 'merged_data']); 
 %[ALLEEG, EEG] = eeg_store(ALLEEG, EEG, CURRENTSET); %NOT SURE IF THIS DOES ANYTHING???
 
 event_struct = struct();
 event_struct.file_names = task_names;
 event_struct.indices = task_specific_event_indices;
 
-event_struct_path = fullfile(output_location, 'merged_data', [subses '_merged.json']);
+event_struct_path = fullfile(output_location, 'merged_data', [subses '_desc-merged_eeg.json']);
 fid = fopen(event_struct_path, 'w');
 json_contents = jsonencode(event_struct, PrettyPrint = true);
 fprintf(fid, json_contents);

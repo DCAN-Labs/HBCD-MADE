@@ -1,9 +1,9 @@
-function[] = computeSME(EEG, eeg_file_name, json_file_name, task, output_location, participant_label, session_label)
+function[] = computeSME(EEG, eeg_file_name, json_file_name, task, output_location, participant_label, session_label, age)
 % COMPUTE ERP SCORES AND SME BY CONDITION: Function which computes the erp scores for a give
 % task given specified chennels and timepoints of interest.
 % The json_file_name is the path to the json configuration file. The eeg_file_name is the (absolute or relative)
 % path to the EEG file and will be used to extract the task name. Task is
-% the task label.
+% the task label. 
 EEG=eeg_checkset(EEG);
 
 %Find the task label
@@ -14,11 +14,47 @@ jsonStr = fileread(json_file_name);
 settingsData = jsondecode(jsonStr);
 
 %Grab task specific settings
-scoreTimes = s.score_times;
-scoreROIs = s.score_ROIs;
 
-%Assert that the correct number of parameters are present
-assert(length(scoreTimes)== length(scoreROIs), "Must have the same number of score times and ROIs!")
+scoreROIs = s.score_ROIs;
+scoreAges = s.score_ages;
+
+if isempty(scoreAges)
+    %Assert that the correct number of parameters are present
+    scoreTimes = s.score_times;
+    assert(length(scoreTimes)== length(scoreROIs), "Must have the same number of score times and ROIs!")
+    
+else
+ 
+    age_bin = 1;
+    in_range = 0;
+    for i=1:length(scoreAges)
+        agemin = scoreAges(i,1);
+        agemax = scoreAges(i,2);
+        
+        if age >= agemin && age < agemax
+            age_bin = i;
+            in_range = 1;
+            break
+        end    
+        
+    end 
+    if in_range==0
+        if age < scoreAges(1,1)
+            age_bin=1;
+    
+        else
+            age_bin=2;
+        end
+    end
+
+    if age_bin == 1
+        scoreTimes = s.score_times1;
+    elseif age_bin == 2
+        scoreTimes = s.score_times2;
+    end
+
+
+end
 
 for i=1:length(scoreTimes)
     %select time window of interest
@@ -390,6 +426,6 @@ for i=1:length(scoreTimes)
 
 end
 smeWide.Properties.VariableNames{2} = 'NTrials';
-writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-summaryStats.csv']);
-writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERP-trialMeasures.csv']);
+writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPSummaryStats.csv']);
+writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPTrialMeasures.csv']);
 

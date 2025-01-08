@@ -1,27 +1,9 @@
+[![DOI](https://zenodo.org/badge/495550838.svg)](https://doi.org/10.5281/zenodo.14194452)
+
+
 # HBCD-MADE
-HBCD branch of the MADE pipeline for EEG preprocessing
+HBCD branch of the MADE pipeline for EEG preprocessing.
 
-## HBCD-specific Parameters
+Please see the ReadTheDocs page for current documentation: https://hbcd-made.readthedocs.io/en/latest/
 
-### ROI_of_Interest:
-Selects the ROI for the ERP. The channels in the coded name are in “clusters” (e.g. “oz”, “p8”, “user_defined”). The researcher can feel free to add more ROIs in the “clusters” section and then indicate them in the FACE.ROI_of_Interest section (or MMN, RS, VEP, depending on the task of interest). The "all" cluster is specified with [] and will result in selecting all channels.
-### pre_latency:
-  Time of start of the epoch. Please consider that the value will turn negative in the script. (E.g. 0.1 will be -100 ms). This is also the time where the range for the ERP will start.
-### post_latency:
-  Time of the end of the epoch. It is seconds and will be transform in milliseconds (E.g. 0.5 will be 500 ms). This is also the time where the range for the ERP will end.
-### ERP_window_start:
-  This will be used for the time window of interest in the topoplots and in the averages for the .mat files (and potentially future metrics).
-### ERP_window_end:
-  This will be used for the time window of interest in the topoplots and in the averages for the .mat files (and potentially future metrics).
-### erp_filter:
-  This gives the option on applying a second lowpass filter before creating the ERPs. (1 for using the filter, 0 for not)
-### erp_lowpass:
-  In case we apply a second filter right before epoching, this will determine the lowpass filter used (e.g. 30).
-### marker_names:
-  The “event” code name where the data is epoched around (e.g. “DIN3”)
-### score_times:
-  The time ranges in seconds which will be used for SME and meanAmplitude computation. There have to be the same number of score_times and score_ROIs.
-### score_ROIs:
-  The ROIs to be used for computing SME and meanAmplitude. There have to be the same number of score_times and score_ROIs.
-
-
+Also see the following repository for the original MADE code that the current pipeline is based on: https://github.com/ChildDevLab/MADE-EEG-preprocessing-pipeline

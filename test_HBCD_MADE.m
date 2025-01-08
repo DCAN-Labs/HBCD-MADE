@@ -8,10 +8,10 @@ addpath 'C:\Users\lyoder\Documents\HBCD-MADE\scripts\getLineNoise'
 addpath 'C:\Users\lyoder\Documents\HBCD-MADE\adjusted_adjust_scripts'
 addpath 'C:\Users\lyoder\Documents\HBCD-MADE\scripts'
 
-output_dir_name = 'C:\Users\lyoder\Documents\QIOSU0041_202404_P04_bids\MADE_output_updates'; 
-bids_dir = 'C:\Users\lyoder\Documents\QIOSU0041_202404_P04_bids'; 
-participant_label = 'sub-202404';
-session_label = 'ses-P04';
+output_dir_name = 'C:\Users\lyoder\Documents\test_file\MADE_output_updates'; 
+bids_dir = 'C:\Users\lyoder\Documents\test_file'; 
+participant_label = 'sub-ID';
+session_label = 'ses-session';
 file_extension = '.set';
 json_settings_file = 'C:\Users\lyoder\Documents\HBCD-MADE\proc_settings_HBCD.json';
 

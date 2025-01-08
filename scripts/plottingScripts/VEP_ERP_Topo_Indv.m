@@ -1,6 +1,6 @@
 %% VEP Plot ERP and Topos
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_data.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
 
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
@@ -58,7 +58,7 @@ Channels = EEG.chanlocs;
 Times = EEG.times;
 
 %save([save_path filesep save_name], 'Conditions', 'Channels', 'Times', 'allData')
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_filtered_data.set', 'ERP.mat')];
+save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_desc-filtered_eeg.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
