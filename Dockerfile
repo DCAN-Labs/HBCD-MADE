@@ -64,7 +64,11 @@ ENV pipeline_name=made
 COPY ./python_code/run.py /python_code/$pipeline_name
 COPY ./python_code/run.py /python_code/run.py
 
+#Add site timing file that is specific for HBCD
+RUN mkdir /site_timing_info
+COPY ./site_flag_delays_v2025_01_09.csv /site_timing_info/
+
 #Change Permissions
-RUN chmod 555 -R /mcr_path /python_code /sample_locs
+RUN chmod 555 -R /mcr_path /python_code /sample_locs /site_timing_info
 
 ENTRYPOINT ["made"]
