@@ -96,6 +96,8 @@ for run=1:length(datafile_names)
     if isempty(run_label) 
         run_label = "run-01";
     end
+    task_label = strcat("task", extractBetween(datafile_names{run}, "_task", "_"))
+
         
     %% STEP 1: Import EGI data file and relevant information
     EEG = pop_loadset('filename',datafile_names{run},'filepath',rawdata_location);
