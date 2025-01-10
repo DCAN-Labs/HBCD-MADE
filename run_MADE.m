@@ -91,6 +91,11 @@ for run=1:length(datafile_names)
     fprintf('\n\n\n*** Processing run %d (%s) ***\n\n\n', run, datafile_names{run});
     
     sub_id(run) = string(participant_label);
+    pat = "run-" + digitsPattern(2);
+    run_label = string(extract(datafile_names{run}, pat));
+    if isempty(run_label) 
+        run_label = "run-01";
+    end
         
     %% STEP 1: Import EGI data file and relevant information
     EEG = pop_loadset('filename',datafile_names{run},'filepath',rawdata_location);
