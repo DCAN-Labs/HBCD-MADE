@@ -137,7 +137,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-upright_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -148,7 +148,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-inverted_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -159,7 +159,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-object_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -170,7 +170,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-upright2_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 % Difference wave
@@ -182,7 +182,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-diffInvVsUpr_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -193,7 +193,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-diffObjVsUp2_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 %%%TOPO ENDS HERE
@@ -202,7 +202,7 @@ saveas(erp, merged_Plot_Name);
 %%
 %%Individual ERPs starts here
 
-name = subject_ID;
+name = [subject_ID,'_', session_label];
 
 end_ind = interp1(EEG.times,1:length(EEG.times),End,'nearest');
 start_ind = interp1(EEG.times,1:length(EEG.times),Start,'nearest');
