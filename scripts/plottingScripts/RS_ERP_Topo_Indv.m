@@ -1,6 +1,6 @@
 %% RS Plot PSD
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg.set')]);
 %%
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);

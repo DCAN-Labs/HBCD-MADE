@@ -1,6 +1,6 @@
 %% MMN Plot ERP and Topos
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg.set')]);
 
 %%
 % Read the JSON file contents
@@ -89,7 +89,7 @@ Conditions = {'Standard_1', 'PreDeviant_2', 'Deviant_3'};
 Channels = EEG.chanlocs;
 Times = EEG.times;
 
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_desc-filtered_eeg.set', 'ERP.mat')];
+save_name_whole = [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
