@@ -1,6 +1,6 @@
 %% FACE Plot ERPs and Topos
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg.set')]);
 
 % % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
@@ -96,7 +96,7 @@ allData(4, :, :) = meanEpoch_s2;
 Conditions = {'Upright_1', 'Inverted_2', 'Object_3', 'Upright2_4'};
 Channels = EEG.chanlocs;
 Times = EEG.times;
-save_name_whole = [strrep(event_struct.file_names{run}, 'eeg_desc-filtered_eeg.set', 'ERP.mat')];
+save_name_whole = [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'ERP.mat')];
 save([save_path filesep save_name_whole], 'Conditions', 'Channels', 'Times', 'allData')
 
 %%
@@ -137,7 +137,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-upright_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -148,7 +148,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-inverted_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -159,7 +159,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-object_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -170,7 +170,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-upright2_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 % Difference wave
@@ -182,7 +182,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-diffInvVsUpr_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 erp = figure;
@@ -193,7 +193,7 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
 Plot_Name = 'task-FACE_desc-diffObjVsUp2_topo.jpg';
-merged_Plot_Name = [subject_ID, '_', Plot_Name];
+merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
 saveas(erp, merged_Plot_Name);
 
 %%%TOPO ENDS HERE
@@ -202,7 +202,7 @@ saveas(erp, merged_Plot_Name);
 %%
 %%Individual ERPs starts here
 
-name = subject_ID;
+name = [subject_ID,'_', session_label];
 
 end_ind = interp1(EEG.times,1:length(EEG.times),End,'nearest');
 start_ind = interp1(EEG.times,1:length(EEG.times),Start,'nearest');

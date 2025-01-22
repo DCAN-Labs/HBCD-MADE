@@ -1,6 +1,6 @@
 %% RS Plot PSD
 
-EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.set')]);
+EEG = pop_loadset([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg.set')]);
 %%
 % Read the JSON file contents
 jsonStr = fileread(json_settings_file);
@@ -67,7 +67,7 @@ hold on;
 title(title_figure, 'FontSize', 15);
 hold off;
 
-save_plot_name = strcat(IDnum, '_task-RS_desc-allCh_PSD',  '.jpg');
+save_plot_name = strcat(IDnum, '_', session_label, '_task-RS_desc-allCh_PSD',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd, full_save_path);
 close all;
@@ -150,7 +150,7 @@ spectra_table = array2table(avg_abs_pow, 'VariableNames', freq_labels, 'RowNames
 %subject_ID = 'S01'; 
 
 % Create the output file name with the subject_ID
-output_file = sprintf([IDnum,'_task-RS_desc-spectra_output', '.csv']); 
+output_file = sprintf([IDnum,'_', session_label, '_task-RS_spectra', '.csv']); 
 
 % Save the table to a CSV file
 writetable(spectra_table, output_file, 'WriteRowNames', true);
@@ -177,7 +177,7 @@ for epoch = 1:num_trials
 end
 
 % Save the data into the .mat file
-output_file_mat = sprintf([subject_ID, '_task-RS_desc-spectra_output.mat']); 
+output_file_mat = sprintf([subject_ID,'_', session_label, '_task-RS_spectra.mat']); 
 
 % Save the data, including the epoch-level power matrices
 save(output_file_mat, 'subject_ID', 'num_trials', 'Fs', 'chan_locs', 'avg_abs_pow', 'freqs', 'all_abs_power', 'epoch_level_pow');
@@ -227,7 +227,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, '_task-RS_desc-allChAvg_PSD',  '.jpg');
+save_plot_name = strcat(IDnum, '_', session_label, '_task-RS_desc-allChAvg_PSD',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
@@ -254,7 +254,7 @@ title(title_figure, 'FontSize', 15);
 hold off;
 %ylim([0, 15]);
 
-save_plot_name = strcat(IDnum, '_task-RS_desc-', ROIname,  '_PSD.jpg');
+save_plot_name = strcat(IDnum, '_', session_label, '_task-RS_desc-', ROIname,  '_PSD.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
 saveas(psd_avg, full_save_path);
 close all;
