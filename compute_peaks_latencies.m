@@ -12,7 +12,7 @@ EEG_peak_latencies = zeros((length(EEG_peak_values)),1);
 
 for i=1:length(EEG_peak_values)
     
-    peak_index = find(EEG_ui_roi(:,i)== EEG_peak_values(i));
+    peak_index = find(EEG_ui_roi(:,i)== EEG_peak_values(i),1);
     peak_latency = EEG.times(peak_index);
     
     sd = fix(std(EEG.times));
