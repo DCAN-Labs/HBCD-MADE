@@ -73,8 +73,8 @@
       "E127",
       "E128"
     ],
-    "channel_locations": "C:/Users/tmahesh/Desktop/HBCD-MADE/0_2AverageNet128_v1.sfp",
-    "site_delay_file": "C:/Users/tmahesh/Desktop/HBCD-MADE/mean_flag_delay_by_site.csv",
+    "channel_locations": "C:/Users/kasenetz/Documents/GitHub/HBCD-MADE/0_2AverageNet128_v1.sfp",
+    "site_delay_file": "C:/Users/kasenetz/Documents/GitHub/HBCD-MADE/mean_flag_delay_by_site.csv",
     "down_sample": 0,
     "sampling_rate": 1000,
     "delete_outerlayer": 1,
@@ -188,8 +188,8 @@
       "DIN3"
     ],
     "score_ages": [[3,6],[6,9]],
-    "score_times1": [[200, 350], [75,125], [250, 350], [355, 625], [300, 699]],
-    "score_times2": [[250, 300], [75,125], [250, 300], [325, 625], [300, 699]],
+    "score_times1": [[200, 350], [75,125], [250, 350], [355, 625], [300, 650]],
+    "score_times2": [[250, 300], [75,125], [250, 300], [325, 625], [300, 650]],
     "score_ROIs": ["p8", "oz", "oz", "oz", "fcz"]
   }
 }
