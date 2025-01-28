@@ -91,6 +91,13 @@ for run=1:length(datafile_names)
     fprintf('\n\n\n*** Processing run %d (%s) ***\n\n\n', run, datafile_names{run});
     
     sub_id(run) = string(participant_label);
+    pat = 'run-' + digitsPattern(2);
+    run_label = extract(datafile_names{run}, pat);
+    if isempty(run_label) 
+        run_label = 'run-01';
+    end
+    task_label = strcat('task', extractBetween(datafile_names{run}, '_task', '_'));
+
         
     %% STEP 1: Import EGI data file and relevant information
     EEG = pop_loadset('filename',datafile_names{run},'filepath',rawdata_location);
@@ -468,10 +475,10 @@ for run=1:length(datafile_names)
     %% Step 6.5: Save individual files
     if output_format==1
         EEG = eeg_checkset( EEG );
-        EEG = pop_editset(EEG, 'setname', strrep(datafile_names{run}, ext, '_desc-filtered_eeg'));
-        EEG = pop_saveset( EEG,'filename',strrep(datafile_names{run}, ext, '_desc-filtered_eeg.set'),'filepath', [output_location filesep 'filtered_data' filesep]); % save .set format
+        EEG = pop_editset(EEG, 'setname', strrep(datafile_names{run}, '_eeg.set', '_desc-filtered_eeg'));
+        EEG = pop_saveset( EEG,'filename',strrep(datafile_names{run}, '_eeg.set', '_desc-filtered_eeg.set'),'filepath', [output_location filesep 'filtered_data' filesep]); % save .set format
     elseif output_format==2
-        save([[output_location filesep 'filtered_data' filesep ] strrep(datafile_names{run}, ext, '_desc-filtered_eeg.mat')], 'EEG'); % save .mat format
+        save([[output_location filesep 'filtered_data' filesep ] strrep(datafile_names{run}, '_eeg.set', '_desc-filtered_eeg.mat')], 'EEG'); % save .mat format
     end
     
 end
@@ -1086,10 +1093,10 @@ for run = 1 : length(event_struct.file_names)
     %% Save processed data
     if output_format==1
         EEG = eeg_checkset(EEG);
-        EEG = pop_editset(EEG, 'setname',  strrep(event_struct.file_names{run}, ext, '_processed_eeg'));
-        EEG = pop_saveset(EEG, 'filename', strrep(event_struct.file_names{run}, ext, '_processed_eeg.set'),'filepath', [output_location filesep 'processed_data' filesep ]); % save .set format
+        EEG = pop_editset(EEG, 'setname',  strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg'));
+        EEG = pop_saveset(EEG, 'filename', strrep(event_struct.file_names{run}, '_desc-filtered_eeg.set', '_desc-filteredprocessed_eeg.set'),'filepath', [output_location filesep 'processed_data' filesep ]); % save .set format
     elseif output_format==2
-        save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_processed_eeg.mat')], 'EEG'); % save .mat format
+        save([[output_location filesep 'processed_data' filesep ] strrep(event_struct.file_names{run}, ext, '_desc-filteredprocessed_eeg.mat')], 'EEG'); % save .mat format
     end
     
     

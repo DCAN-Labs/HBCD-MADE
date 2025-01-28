@@ -33,108 +33,199 @@ catch
 end
 
 if strcmp(task, 'FACE')
-    
-    stms = find(strcmp({EEG.event.type}, 'stm+'));
-    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+    % check for din4s and change them to din3s
+
     din4s = find(strcmp({EEG.event.type}, 'DIN4'));
-    
+
     if length(din4s)>0
         for t=1:length(din4s)
             EEG.event(din4s(t)).type = 'DIN3';
-            
         end
-        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
-    
-    if length(din3s) < length(stms)
+
+    % count all the dins and stms
+    events = find(strcmp({EEG.event.type}, 'stm+'));
+    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+    % if same number of dins and stms, nothing to fix 
+    if length(din3s) < length(events)
+
         sitedelay = site_delays(index,'mean_FACE_delay').mean_FACE_delay;
-        missing = setdiff(stms,din3s);
-        
-        for t=1:length(missing)
-            EEG.event(missing(t)).type = 'DIN3';
-            
-            EEG.event(missing(t)).latency = EEG.event(missing(t)).latency + sitedelay;
-            
+
+        for t = events
+
+            prev = EEG.event(t-1);
+            next = EEG.event(t+1);
+            % check if each stm has a din
+            if strcmp(next.type, 'DIN3') | strcmp(prev.type, 'DIN3')
+                continue
+            % if not, rename stm to din3, add the site delay, and set the trialnum from trsp 
+            elseif strcmp(next.type, 'TRSP')
+                tnum = next.TrialNum;
+                EEG.event(t).TrialNum = tnum;
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN3';
+            end
+
+
+
         end
+
     end
+
+
+
     
 elseif strcmp(task, 'MMN')
-    stms = find(strcmp({EEG.event.type}, 'stms'));
+
+    % count all the dins and stms
+    events = find(strcmp({EEG.event.type}, 'stms'));
     din2s = find(strcmp({EEG.event.type}, 'DIN2'));
-    
-    if length(din2s) < length(stms)
+
+    % if same number of dins and stms, nothing to fix 
+    if length(din2s) < length(events)
+
         sitedelay = site_delays(index,'mean_MMN_delay').mean_MMN_delay;
-        missing = setdiff(stms,din2s);
-        
-        for t=1:length(missing)
-            EEG.event(missing(t)).type = 'DIN2';
-            
-            EEG.event(missing(t)).latency = EEG.event(missing(t)).latency + sitedelay;
-            
+
+        for t = events
+
+            prev = EEG.event(t-1);
+            next = EEG.event(t+1);
+            % check if each stm has a din
+            if strcmp(next.type, 'DIN2') | strcmp(prev.type, 'DIN2')
+                continue
+            % if not, rename stm to din2, add the site delay, and set the trialnum from trsp 
+            elseif strcmp(next.type, 'TRSP')
+                tnum = next.TrialNum;
+                EEG.event(t).TrialNum = tnum;
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN2';
+            end
+
+
+
         end
     end
+    
+
     
 elseif strcmp(task, 'VEP')
     
-    stms1 = find(strcmp({EEG.event.type}, 'ch1+'));
-    stms2 = find(strcmp({EEG.event.type}, 'ch2+'));
-    
-    stms = [ stms1 stms2 ];
-    
-    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+    % check for din4s and change them to din3s
+
     din4s = find(strcmp({EEG.event.type}, 'DIN4'));
-    
+
     if length(din4s)>0
         for t=1:length(din4s)
             EEG.event(din4s(t)).type = 'DIN3';
         end
-        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
+
+    % count all the dins and stms
+    stms1 = find(strcmp({EEG.event.type}, 'ch1+'));
+    stms2 = find(strcmp({EEG.event.type}, 'ch2+'));
     
-    if length(din3s) < length(stms)
+    events = [ stms1 stms2 ];
+    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+    % if same number of dins and stms, nothing to fix 
+    if length(din3s) < length(events)
+
         sitedelay = site_delays(index,'mean_VEP_delay').mean_VEP_delay;
-        missing = setdiff(stms,din3s);
         
-        for t=1:length(missing)
-            EEG.event(missing(t)).type = 'DIN3';
-            
-            EEG.event(missing(t)).latency = EEG.event(missing(t)).latency + sitedelay;
-            
+        trsps = find(strcmp({EEG.event.type}, 'TRSP'));
+        if length(din3s) == 0 
+            for k = 1:length(trsps) 
+                %relabel trsp to be 2xtrialnum
+                EEG.event(trsps(k)).TrialNum = str2num(EEG.event(trsps(k)).TrialNum)*2;
+            end
+        else
+            for k = 1:length(trsps) 
+                %relabel trsp to be trialnum
+                EEG.event(trsps(k)).TrialNum = str2num(EEG.event(trsps(k)).TrialNum);
+            end
         end
+
+        for t = events
+
+            prev = EEG.event(t-1);
+            next = EEG.event(t+1);
+            try
+                nextnext = EEG.event(t+2);
+            catch
+                nextnext = EEG.event(t); %make it not a trsp but don't let it error
+            end
+            try
+                next3 = EEG.event(t+3);
+            catch
+                next3 = EEG.event(t); %make it not a trsp but don't let it error
+            end
+            % check if each stm has a din
+            if strcmp(next.type, 'DIN3')
+                continue
+            % if not, rename stm to din3, add the site delay, and set the trialnum from trsp 
+            elseif strcmp(next.type, 'TRSP')
+                tnum = next.TrialNum;
+                EEG.event(t).TrialNum = num2str(tnum);
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN3';
+
+            elseif strcmp(nextnext.type, 'TRSP')
+                tnum = nextnext.TrialNum;
+                EEG.event(t).TrialNum = num2str(tnum-1);
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN3';
+            elseif strcmp(next3.type, 'TRSP')
+                tnum = next3.TrialNum;
+                EEG.event(t).TrialNum = num2str(tnum-1);
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN3';
+            end
+
+        end
+
     end
-    
+
+
     
 elseif strcmp(task, 'RS')
-    stms = find(strcmp({EEG.event.type}, 'bas+'));
-    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
     din4s = find(strcmp({EEG.event.type}, 'DIN4'));
 
-    if length(din4s)>0 & isempty(din3s)
+    if length(din4s)>0
         for t=1:length(din4s)
             EEG.event(din4s(t)).type = 'DIN3';
         end
-        din3s = find(strcmp({EEG.event.type}, 'DIN3'));
     end
 
-    if isempty(din3s)
+    events = find(strcmp({EEG.event.type}, 'bas+'));
+
+    din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+    % if same number of dins and stms, nothing to fix 
+    if length(din3s) < length(events)
         sitedelay = site_delays(index,'mean_FACE_delay').mean_FACE_delay;
-        missing = setdiff(stms,din3s);
+        
+        for t = events
 
-        for t=1:length(missing)
-            EEG.event(missing(t)).type = 'DIN3';
-
-            EEG.event(missing(t)).latency = EEG.event(missing(t)).latency + sitedelay;
+            prev = EEG.event(t-1);
+            next = EEG.event(t+1);
+            % check if each stm has a din
+            if strcmp(next.type, 'DIN3') | strcmp(prev.type, 'DIN3')
+                continue
+            % if not, rename stm to din3, add the site delay, and set the trialnum from trsp 
+            elseif strcmp(next.type, 'TRSP')
+                tnum = next.TrialNum;
+                EEG.event(t).TrialNum = tnum;
+                EEG.event(t).latency = EEG.event(t).latency + sitedelay;
+                EEG.event(t).type = 'DIN3';
+            end
 
         end
+
+
     end
-end
 
 end
-
-
-
-
-
-
-
-
