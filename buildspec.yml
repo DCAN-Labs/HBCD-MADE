@@ -1,0 +1,50 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Starting install phase..."
+      # (Optional) Install any dependencies your build may require:
+      # sudo apt-get update && sudo apt-get install -y <packages>
+
+  pre_build:
+    commands:
+      - echo "Logging in to Docker Hub..."
+      # Assumes environment variables DOCKERHUB_USERNAME and DOCKERHUB_TOKEN
+      # are provided in the CodeBuild project settings or via AWS Secrets Manager
+      - echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+
+  build:
+    commands:
+      - echo "Starting build phase..."
+      # Build the Docker image with a temporary local tag
+      - docker build -t hbcd .
+      
+      # Tag it as "latest" for the Docker Hub repository "<username>/hbcd-made"
+      - docker tag hbcd $DOCKERHUB_USERNAME/hbcd-made:latest
+
+      # Optional: If this build was triggered by a tag push, also tag the image with that version
+      - |
+        if [[ "$CODEBUILD_WEBHOOK_TRIGGER" == tag/* ]]; then
+          VERSION_TAG="${CODEBUILD_WEBHOOK_TRIGGER#tag/}"
+          echo "Detected a tag build: $VERSION_TAG"
+          docker tag hbcd $DOCKERHUB_USERNAME/hbcd-made:$VERSION_TAG
+        fi
+
+  post_build:
+    commands:
+      - echo "Pushing Docker images to Docker Hub..."
+      - docker push $DOCKERHUB_USERNAME/hbcd-made:latest
+      
+      # Push the versioned tag if it was set
+      - |
+        if [[ -n "$VERSION_TAG" ]]; then
+          docker push $DOCKERHUB_USERNAME/hbcd-made:$VERSION_TAG
+        fi
+
+artifacts:
+  # Typically, you might not need artifacts if your only goal is to build+push the image.
+  # However, you can specify files to be zipped and stored in S3 if needed.
+  files:
+    - '**/*'
+
