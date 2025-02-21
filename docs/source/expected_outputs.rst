@@ -154,23 +154,6 @@ Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE 
    * - MeanAmplitude_325-625_oz
      - Mean amplitude between 325-625 OZ. 
 
-.. list-table:: VEP Trial Measures Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - VEP
-   * - TrialNum
-     - trial
-   * - MeanAmplitude_40-79_oz
-     - Mean amplitude between 40-79 ms at Oz cluster.
-   * - MeanAmplitude_80-140_oz
-     - Mean amplitude between 80-140 ms at Oz cluster.
-   * - MeanAmplitude_141-300_oz
-     - Mean amplitude between 141-300 ms at Oz cluster.
-
 .. list-table:: MMN Trial Measures Output
    :widths: 31 50
    :header-rows: 1
