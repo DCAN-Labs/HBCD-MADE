@@ -124,6 +124,8 @@ b. CSV data files (``.csv``)
 
 For each task, two .csv files are automatically produced by MADE: a trial measures file and a summary statistics file.
 
+Click :download:`here <csv_data_dictionary.csv>` to download a data dictionary defining the fields in each .csv output file. 
+
 **I. Trial Measures**
 
 Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE and contain the following output variables for each trial retained after processing: 
