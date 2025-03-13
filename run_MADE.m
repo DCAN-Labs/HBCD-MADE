@@ -18,7 +18,7 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 
 % Ongoing Contributors:
 % Lydia Yoder (lyoder@umd.edu)
-% Erik Lee (eex6144@umn.edu)
+% Erik Lee (leex6144@umn.edu)
 % Martin Antunez Garcia (mantunez@umd.edu )
 % Marco McSweeney (mmcsw1@umd.edu)
 
