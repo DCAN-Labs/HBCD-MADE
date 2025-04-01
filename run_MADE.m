@@ -84,6 +84,9 @@ datafile_names={datafile_names.name};
 %% Check whether EEGLAB and all necessary plugins are in Matlab path.
 check_if_plugins_are_present(ext);
 
+%TM relative path patch
+currentWD = pwd;
+
 %% Loop over all data files
 for run=1:length(datafile_names)
     
@@ -154,6 +157,12 @@ for run=1:length(datafile_names)
     % 3. Enter the path of the channel location file
     %channel_locations = ['path to eeglab folder' filesep 'sample_locs' filesep 'GSN128.sfp'];
     channel_locations = s.channel_locations;
+
+    % TM - 4/1/25 Read in Site Delays file earlier as a relative path (You
+    % must be in the correct Working Directory or this will error)
+    site_delay_file = s.site_delay_file;
+    cd(currentWD); %change this to wherever it is saved
+    site_delays = readtable(site_delay_file);
 
     % 5. Do you want to down sample the data?
     down_sample = s.down_sample; % 0 = NO (no down sampling), 1 = YES (down sampling)
@@ -893,7 +902,8 @@ for run = 1 : length(event_struct.file_names)
             error("Site data is missing locally!")
         end
     end
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo);
+
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
