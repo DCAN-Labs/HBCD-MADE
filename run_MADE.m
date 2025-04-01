@@ -162,7 +162,12 @@ for run=1:length(datafile_names)
     % must be in the correct Working Directory or this will error)
     site_delay_file = s.site_delay_file;
     cd(currentWD); %change this to wherever it is saved
-    site_delays = readtable(site_delay_file);
+    try
+        site_delays = readtable(site_delay_file);
+    catch
+        disp(currentWD);
+        error("No Site delay file present, please check working directory");
+    end
 
     % 5. Do you want to down sample the data?
     down_sample = s.down_sample; % 0 = NO (no down sampling), 1 = YES (down sampling)
