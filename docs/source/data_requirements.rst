@@ -2,12 +2,11 @@
 Input Data 
 ===========
 
-HBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. 
+HBCD-MADE takes raw, BIDS formatted HBCD data in .set file format. Please visit the `HBCD Data Release Docs <https://docs.hbcdstudy.org>`_ for information once the data is released:
 
-- :ref:`Required Processing Inputs <./required_inputs>`
-
-
-.. _./required_inputs:
+`HBCD EEG Overview <https://docs.hbcdstudy.org/measures/eeg/#electroencephalography-eeg>`_
+`HBCD EEG Task Details <https://docs.hbcdstudy.org/measures/eeg/#electroencephalography-eeg/#eeg-task-details>`_
+`HBCD EEG Raw BIDS Data <https://docs.hbcdstudy.org/datacuration/rawbids/#eeg>`_
 
 Required Processing Inputs
 ---------------------------
