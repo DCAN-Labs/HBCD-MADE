@@ -1,11 +1,15 @@
-function [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG, PeakRange, roi_ind)
+function [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG, PeakRange, roi_ind, direction)
 
 
 %% Find peak, avg around it 
 
 EEG_ui_roi = squeeze(mean(EEG.data(roi_ind, :,:),1)); %select and average across channels of interest
 EEG_roi_tw = EEG_ui_roi(PeakRange, :);
-EEG_peak_values = squeeze(max(EEG_roi_tw));
+if direction==1
+    EEG_peak_values = squeeze(max(EEG_roi_tw));
+elseif direction==-1
+    EEG_peak_values = squeeze(min(EEG_roi_tw));
+end
 
 EEG_avg_peak_values = zeros((length(EEG_peak_values)),1);
 EEG_peak_latencies = zeros((length(EEG_peak_values)),1);
