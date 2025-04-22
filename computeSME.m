@@ -141,7 +141,7 @@ for i=1:length(scoreTimes)
                 tab2.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
-                tab2.Condition(:) = "uprightInv"; %add condition variable
+                tab2.Condition(:) = "inverted"; %add condition variable
                 tab2.("TrialNum") = EEG_i_trialnums; %add trial num variable
             else
                 EEG_i_trialnums = {EEG_i.event.TrialNum}';
@@ -179,7 +179,7 @@ for i=1:length(scoreTimes)
                 tab3.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
-                tab3.Condition(:) = "uprightInv"; %add condition variable
+                tab3.Condition(:) = "object"; %add condition variable
                 tab3.("TrialNum") = EEG_o_trialnums; %add trial num variable
             else
                 EEG_o_trialnums = {EEG_o.event.TrialNum}';
@@ -217,7 +217,7 @@ for i=1:length(scoreTimes)
                 tab4.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
-                tab4.Condition(:) = "uprightInv"; %add condition variable
+                tab4.Condition(:) = "uprightObj"; %add condition variable
                 tab4.("TrialNum") = EEG_uo_trialnums; %add trial num variable
             else
                 EEG_uo_trialnums = {EEG_uo.event.TrialNum}';
@@ -414,8 +414,14 @@ for i=1:length(scoreTimes)
 
     tabFull = convertvars(tabFull,["Condition"],"categorical");
     % Group-wise sme calculations
+    conditions2 = cellstr(unique(tabFull.Condition, 'stable'));
     sme = grpstats(tabFull, 'Condition', {@(x) std(x)/sqrt(numel(x))}, 'DataVars', ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]);
     sme.Properties.VariableNames{3} = ['SME_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)];
+    %sme(cellstr(conditions2), :) = sme
+    [X,Y] = ismember(sme.Condition, conditions2);
+    [~,Z] = sort(Y);
+    sme2 = sme(Z,:);
+    sme = sme2;
 
     ncond = height(sme);
     peakVals = zeros(ncond, 1);
@@ -430,7 +436,7 @@ for i=1:length(scoreTimes)
         EEG_c_roi = squeeze(mean(EEG_c.data(roi_ind, :,:),1)); %select and average across channels of interest
         EEG_c_mean = mean(EEG_c_roi,2);
         EEG_roi_tw = EEG_c_mean(PeakRange);
-        if direction==1%NEW TM -- @dylan this is what was missing when we tried to fix it last week and didn't see any changes lol
+        if direction==1
             EEG_peak_value = max(EEG_roi_tw);
         elseif direction==-1
             EEG_peak_value = min(EEG_roi_tw);
