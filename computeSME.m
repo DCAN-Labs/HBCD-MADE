@@ -111,13 +111,13 @@ for i=1:length(scoreTimes)
                 EEG_ui_roi = squeeze(mean(EEG_ui.data(roi_ind, :,:),1)); %select and average across channels of interest
                 EEG_ui_peak = squeeze(mean(EEG_ui_roi(PeakRange, :),1)); %select and average across timerange of interest
                 Scores = EEG_ui_peak';
-                %tab = array2table(Scores); %make table
-                %tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
+                tab = array2table(Scores); %make table
+                tab = renamevars(tab,["Scores"], ['MeanAmplitude_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]); %label table
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_ui, PeakRange, roi_ind, direction);%NEW TM
-                tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
                 tab.Condition(:) = "uprightInv"; %add condition variable
                 tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
@@ -261,8 +261,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_s, PeakRange, roi_ind, direction);%NEW TM
-                tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab.Condition(:) = "standard"; %add condition variable
@@ -277,8 +277,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_s, PeakRange, roi_ind, direction);%NEW TM
-                tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab.Condition(:) = "standard"; %add condition variable
@@ -299,8 +299,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_p, PeakRange, roi_ind, direction);%NEW TM
-                tab2.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab2.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab2.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab2.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab2.Condition(:) = "predeviant"; %add condition variable
@@ -315,8 +315,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_p, PeakRange, roi_ind, direction);%NEW TM
-                tab2.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab2.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab2.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab2.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab2.Condition(:) = "predeviant"; %add condition variable
@@ -337,8 +337,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_d, PeakRange, roi_ind, direction);%NEW TM
-                tab3.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab3.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab3.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab3.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab3.Condition(:) = "deviant"; %add condition variable
@@ -353,8 +353,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_d, PeakRange, roi_ind, direction);%NEW TM
-                tab3.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
-                tab3.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
+                %tab3.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = AvgPeakScores;
+                %tab3.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab3.Condition(:) = "deviant"; %add condition variable
@@ -472,6 +472,8 @@ for i=1:length(scoreTimes)
     end
 
     if strcmp(task, 'FACE')
+        sme.(['MeanAmp_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = meanVals;
+    elseif strcmp(task, 'MMN')
         sme.(['MeanAmp_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = meanVals;
     else
         sme.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = peakVals;
