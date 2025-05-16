@@ -1,0 +1,73 @@
+﻿Output File Name,Relevant Task(s),Name,Description,Data Type
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,datafile_name,File name of EEG data,String
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,subject_id,Subject ID,String
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,task,"FACE, MMN, RS, VEP",String
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,line_noise,"Estimate of how much electrical line noise is present in the EEG signal Values of 1 indicate no line noise, values of 0 indicate pure line noise",Float
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,reference_for_faster,"Reference electrode used by the FASTER algorithm used for bad channel detection (Nolan et al, 2010)",String
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,faster_bad_channels,"List of channels identified by FASTER algorithm as being artifactual, or not representative of brain activity",List of Strings
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,ica_prep_bad_channels,Channels deleted by FASTER before ICA,List of Integers
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,length_ica_data,Amount of continuous data (in seconds) used for independent component analysis,Integer
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,total_ics,Number of independent components identified by ICA,Integer
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,ics_removed,"Independent components removed by adjusted-ADJUST (Leach et al, 2020)",List of Integers
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,total_epochs_pre_artifact_rej,Number of epochs collected,Integer
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,total_epochs_post_artifact_rej,Number of epochs retained after epoch-level artifact rejection,Integer
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,total_channels_interp,Number of channels interpolated using spline interpolation after bad channel removal,Integer
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,avg_chan_interp_artifact_rej,Average number of channels interpolated per epoch using spline interpolation for each task,Float
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,std_chan_interp_artifact_rej,Standard deviation of the number of channels removed per epoch for each task,Float
+sub-<label>_ses-<label>_acq-eeg_preprocessingReport,All Tasks,range_chan_interp_artifact_rej,Range of number of channels interpolated per epoch,Integer
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,boundary_marker,"If the specified string is present in the EEG events, data from before this marker was removed prior to analysis",String
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,ekg_channels,Non-cortical electrodes measuring the electrocardiogram,List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,channel_locations,The path to the *sfp file with electrode channel locations ,String
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,down_sample,Whether data were downsampled,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,sampling_rate,The new sampling rate after downsampling Only used if down_sample = 1,Integer
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,delete_outerlayer,Whether outer layer of channels was removed,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,outerlayer_channel,List of removed outer layer channels Only used if delete_outerlayer = 1,List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,highpass,High-pass filter cutoff frequency,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,lowpass,Low-pass filter cutoff frequency,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,remove_baseline,Whether baseline period was removed,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,baseline_window,Baseline time window,List
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,voltthresh_rejection,Whether epochs were removed based on voltage thresholds,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,volt_threshold,Negative and positive values in uV used for epoch thresholding,List of Floats
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,interp_epoch,Whether interpolation was used for channels removed at the epoch level ,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,frontal_channels,List of frontal channels,List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,interp_channels,Whether to interpolation was used for channels fully removed,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,rerefer_data,Whether data were re-referenced,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,reref,Either [] for electrode average re-referencing or list of electrodes used for re-referencing,List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,output_format,1 = set; 2 = mat,Binary (1 or 2)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,roi_of_interest,Selects the ROI for ERPs,String
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,pre_Latency,The amount of time (in seconds) to include in an epoch prior to the event specified by the entries in marker_names,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,post_Latency,The amount of time (in seconds) to include in an epoch following the event specified by the entries in marker_names,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,erp_window_start,Time window of interest in the topographic plots and the averages for the mat files,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,erp_window_end,Time window of interest in the topographic plots and the averages for the mat files,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,erp_filter,Boolean variable indicating whether to apply a second low-pass filter before creating ERPs,Binary (1 or 0)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,erp_lowpass,The frequency at which to apply the second low-pass filter,Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,marker_names,"Name of event code markers you want to construct epochs around (eg, DIN3) If make_dummy_events = true, then this should instead represent the first marker in your EEG file Dummy events will then be placed after the first instance of this marker",List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,score_times1,"Sets of time windows that are used for participants between 3-6 months. Used for computation of standardized measurement error, peak/adaptive mean amplitude within the time window, and mean amplitude across the time window",List of Integers
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,score_times2,"Sets of time windows that are used for participants between 6-9 months. Used for computation of standardized measurement error, peak/adaptive mean amplitude within the time window, and mean amplitude across the time window",List of Integers
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,score_rois,"Names of each ROI used with score_times for computation of standardized measurement error, mean amplitude, and peak/adaptive mean amplitude",List of Strings
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,RS,make_dummy_events,Resting state ony: Dummy events were inserted into the data This option is used to create new events in resting state acquisitions where there are no triggers to denote epochs,Boolean (true or false)
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,RS,num_dummy_events,Resting state only: The number of dummy events created Only used if make_dummy_events = true,Integer
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,RS,dummy_event_spacing,"Resting state only: The amount of time (in seconds) between dummy events Note that epochs are constructed around events, so this isn’t the same as spacing between epochs",Float
+sub-<label>_ses-<label>_task-<label>_acq-eeg_MADEspecification,All Tasks,score_ages,Sets of age bins used to define time_windows for ERP measures and SME,List of Integers
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,FACE,condition,"Stimulus condition: inverted, object, uprightInv, uprightObj in the Faces task.",String
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,MMN,condition,"Stimulus condition: standard, deviant, predeviant in the MMN task.",String
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",Latency_<time-window>_<ROI>,Latency to peak/adaptive mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",ntrials,Number of trials per condition retained after processing.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",MeanAmp_<time-window>_<ROI>,Mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",Peak_<time-window>_<ROI>,Peak/adpative mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",SME_<time-window>_<ROI>,Standardized measurement error within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",Latency_<time-window>_<ROI>,Latency to peak/adaptive mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",MeanAmplitude_<time-window>_<ROI>,Mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,VEP,condition,Stimulus condition: VEP has only one condition.,String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",id,Subject ID,String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",condition,"Stimulus condition: standard, deviant, predeviant in the MMN task.",String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",Peak_<time-window>_<ROI>,Peak/adpative mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",trial_num,Trial number,Integer
+sub-<label>_ses-<label>_task-RS_powerSummaryStats,RS,frequency,1 Hz bins from 1-50 Hz in the resting state task.,Integer
+sub-<label>_ses-<label>_task-RS_powerSummaryStats,RS,SME,Standardized measurement error in each frequency bin in the resting state task.,Float
+sub-<label>_ses-<label>_task-RS_powerSummaryStats,RS,mean_power,Mean power in each frequency bin in the resting state task.,Float
+sub-<label>_ses-<label>_task-RS_powerSummaryStats,RS,id,Subject ID in the resting state task.,String
+sub-<label>_task-RS_spectra,RS,spectra_output_row,Electrode label,String
+sub-<label>_task-RS_spectra,RS,spectra_output_1.0Hz,Absolute power from 0.3-1Hz at corresponding electrode site ,Float
+sub-<label>_task-RS_spectra,RS,spectra_output_2.0Hz,Absolute power from1-2Hz at corresponding electrode site ,Float
+sub-<label>_task-RS_spectra,RS,spectra_output_3.0Hz,Absolute power from 2-3Hz at corresponding electrode site ,Float

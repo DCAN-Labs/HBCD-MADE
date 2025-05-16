@@ -124,6 +124,8 @@ b. CSV data files (``.csv``)
 
 For each task, two .csv files are automatically produced by MADE: a trial measures file and a summary statistics file.
 
+Click :download:`here <csv_data_dictionary.csv>` to download a data dictionary defining the fields in each .csv output file. 
+
 **I. Trial Measures**
 
 Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE and contain the following output variables for each trial retained after processing: 
@@ -153,23 +155,6 @@ Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE 
      - Mean amplitude between 200-300 ms at Oz cluster.
    * - MeanAmplitude_325-625_oz
      - Mean amplitude between 325-625 OZ. 
-
-.. list-table:: VEP Trial Measures Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - VEP
-   * - TrialNum
-     - trial
-   * - MeanAmplitude_40-79_oz
-     - Mean amplitude between 40-79 ms at Oz cluster.
-   * - MeanAmplitude_80-140_oz
-     - Mean amplitude between 80-140 ms at Oz cluster.
-   * - MeanAmplitude_141-300_oz
-     - Mean amplitude between 141-300 ms at Oz cluster.
 
 .. list-table:: MMN Trial Measures Output
    :widths: 31 50

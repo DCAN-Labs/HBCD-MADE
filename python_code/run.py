@@ -78,6 +78,7 @@ def main():
         save_interim = '1'
         
     #Iterate through participants and run MADE (this is less efficient than handling in MATLAB, but okay for now)
+    os.chdir(cwd) #go back to the cwd in case anything is utilizing relative paths
     for temp_participant in participants:
 
         if session_label == '_':
