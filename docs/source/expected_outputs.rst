@@ -13,6 +13,7 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
  The following output folders and files are created throughout processing within each subject’s output directory:
 
  .. code-block::
+
      |__ made/
         |__ sub-<label>/ #individual subject folder
         |    |__ ses-<label>/
@@ -23,6 +24,7 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
         |            |__ processed_data/
 	|	     |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport		
 
+   code
 
 - :ref:`./filtered_data <./filtered_data>`
 - :ref:`./merged_data <./merged_data>` 
