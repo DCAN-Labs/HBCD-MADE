@@ -24,7 +24,7 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
         |            |__ processed_data/
 	|	     |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport		
 
-   code
+   
 
 - :ref:`./filtered_data <./filtered_data>`
 - :ref:`./merged_data <./merged_data>` 
