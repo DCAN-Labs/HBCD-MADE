@@ -16,28 +16,28 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
 
      |__ made/
         |__ sub-<label>/ #individual subject folder
-        |    |__ ses-<label>/
-	|        |__ eeg/
-	|	     |__ filtered_data/	
-	|	         |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.set
-	|		 |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.fdt
-	|	     |__ ica_data/
-	|		 |__ sub-<label>_ses-<label>_adjustReport
-	|		 |__ sub-<label>_ses-<label>_mergedICA_eeg.set
-	|		 |__ sub-<label>_ses-<label>_mergedICA_eeg.fdt
-        |            |__ merged_data/
-	|		 |__ sub-<label>_ses-<label>_merged_eeg.set
-	|		 |__ sub-<label>_ses-<label>_merged_eeg.fdt
-        |            |__ processed_data/
-	|		 |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.set
-	|		 |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.fdt
-	|		 |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run<label>_ERP.mat #for VEP, FACE, MMN
-	|		 |__ sub-<label>_ses-<label>_task-RS_RS_spectra.mat #for RS
-	|		 |__ sub-<label>_ses-<label>_task-<label>_desc-<label>_ERP.jpg 
-	|		 |__ sub-<label>_ses-<label>_task-<label>_desc-<label>_diffERP.jpg 
-	|		 |__ sub-<label>_ses-<label>_task-<label>_desc-<label>_topo.jpg 
-	|	     |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport.csv
-	|	     |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_MADEspecification.csv		
+        |   |__ ses-<label>/
+	|       |__ eeg/
+	|	    |__ filtered_data/	
+	|	        |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.set
+	|	        |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.fdt
+	|	    |__ ica_data/
+	|		|__ sub-<label>_ses-<label>_adjustReport
+	|		|__ sub-<label>_ses-<label>_mergedICA_eeg.set
+	|		|__ sub-<label>_ses-<label>_mergedICA_eeg.fdt
+        |           |__ merged_data/
+	|		|__ sub-<label>_ses-<label>_merged_eeg.set
+	|		|__ sub-<label>_ses-<label>_merged_eeg.fdt
+        |           |__ processed_data/
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.set
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.fdt
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run<label>_ERP.mat #for VEP, FACE, MMN
+	|		|__ sub-<label>_ses-<label>_task-RS_RS_spectra.mat #for RS
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_ERP.jpg 
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_diffERP.jpg 
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_topo.jpg 
+	|	    |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport.csv
+	|	    |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_MADEspecification.csv		
 
    
 
