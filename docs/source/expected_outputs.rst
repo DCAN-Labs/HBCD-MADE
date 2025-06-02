@@ -12,6 +12,18 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
 
  The following output folders and files are created throughout processing within each subject’s output directory:
 
+ .. code-block::
+     |__ made/
+        |__ sub-<label>/ #individual subject folder
+        |    |__ ses-<label>/
+	|        |__ eeg/
+	|	     |__ filtered_data/	
+	|	     |__ ica_data/
+        |            |__ merged_data/
+        |            |__ processed_data/
+	|	     |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport		
+
+
 - :ref:`./filtered_data <./filtered_data>`
 - :ref:`./merged_data <./merged_data>` 
 - :ref:`./ica_data <./ica_data>` 
@@ -120,7 +132,6 @@ a. EEG Data (``.fdt``, ``.set``)
 There is one .fdt and one corresponding .set file for each task containing fully processed data.
 
 
-
 c. MATLAB Data files (``.mat``) 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -129,6 +140,7 @@ c. MATLAB Data files (``.mat``)
 - Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
 
 - Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS ``.mat`` output does not contain the time dimension.
+
 
 d. Figures (``.jpg``)
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,18 +159,7 @@ Example: Topo_Standard_MMN.jpg
 	Topographic map of average brain response 200-400 ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
 
 
-**II. PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.**
-
-
-.. image:: images/PSD_AllCh.jpg
-   :width: 500px
-   :alt: NA
-
-Example: PSD_AllCh.jpg
-	Power spectral density plot for all channels across 295 retained epochs (1s each).
-
-
-**III. ERP plots show the event-related potential wave across N trials at a specified ROI.**
+**II. ERP plots show the event-related potential wave across N trials at a specified ROI.**
 
 
 .. image:: images/ERP_oz_VEP.jpg
@@ -168,7 +169,7 @@ Example: PSD_AllCh.jpg
 Example: ERP_oz_VEP.jpg
 	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
-**IV. Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
+**III. Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
 
 
 .. image:: images/Topo_Standard_MMN.jpg
@@ -178,7 +179,7 @@ Example: ERP_oz_VEP.jpg
 Example: Topo_Standard_MMN.jpg
 	Topographic plot of EEG between 200-400 ms after presentation of standard stimulus during mismatch negativity task.
 	
-**V. DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
+**IV. DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
 
 
 .. image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
@@ -188,7 +189,7 @@ Example: Topo_Standard_MMN.jpg
 Example: DiffTop_Inv_Vs_Upr_FACE.jpg
 	Average difference in scalp distribution between 100-300 ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
 
-**VI. DiffERP plots display the difference in the ERP waveform between specified conditions.**
+**V. DiffERP plots display the difference in the ERP waveform between specified conditions.**
 
 
 .. image:: images/DiffERP_t7t8_MMN.jpg
