@@ -446,10 +446,13 @@ for i=1:length(scoreTimes)
         peak_index = find(EEG_c_mean== EEG_peak_value,1);
         peak_latency = EEG.times(peak_index);
         
-        sd = fix(std(EEG.times));
-    
-        peakav_start = find(EEG.times == peak_latency-sd);
-        peakav_end = find(EEG.times == peak_latency+sd);
+        %window_ms is the variable determining the window around the
+        %adaptive mean. DG edit on 7/8
+        window_ms = 10;
+
+        % Find index range within ±10 ms of the peak
+        peakav_start = find(EEG.times >= peak_latency - window_ms, 1, 'first');
+        peakav_end   = find(EEG.times <= peak_latency + window_ms, 1, 'last');
 
         if isempty(peakav_start)
             peakav_start = 1;
@@ -476,7 +479,7 @@ for i=1:length(scoreTimes)
     elseif strcmp(task, 'MMN')
         sme.(['MeanAmp_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = meanVals;
     else
-        sme.(['Peak_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = peakVals;
+        sme.(['AdaptiveMean_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = peakVals;
         sme.(['Latency_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = latVals;
         sme.(['MeanAmp_' num2str(PeakStart) '-' num2str(PeakEnd) '_' char(Cluster)]) = meanVals;
     end
