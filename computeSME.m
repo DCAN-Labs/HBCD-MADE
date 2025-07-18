@@ -498,6 +498,21 @@ for i=1:length(scoreTimes)
 
 end
 smeWide.Properties.VariableNames{2} = 'NTrials';
+%Add ID and visit as grouping vars
+smeWide.ID = repmat({participant_label}, height(smeWide), 1);
+smeWide.Visit = repmat({session_label}, height(smeWide), 1);
+
+%Pivot data to wide format - TM 
+% NOTE THIS WILL NEED TO MANUALLY CHANGE EVERY TIME THE VARIABLE NAMES
+% CHANGE SORRY
+if strcmp(task, 'FACE')
+        smeWide = unstack(smeWide, {'NTrials','SME_N290_p8','MeanAmp_N290_p8','SME_N290_p7','MeanAmp_N290_p7','SME_P1_oz','MeanAmp_P1_oz','SME_N290_oz','MeanAmp_N290_oz','SME_P400_oz','MeanAmp_P400_oz','SME_NC_fcz','MeanAmp_NC_fcz'}, 'Condition');
+elseif strcmp(task, 'MMN')
+        smeWide = unstack(smeWide, {'NTrials','SME_MMN_t7t8','MeanAmp_MMN_t7t8','SME_MMN_f7f8','MeanAmp_MMN_f7f8','SME_MMN_fcz','MeanAmp_MMN_fcz'}, 'Condition');
+elseif strcmp(task, 'VEP')
+        smeWide = unstack(smeWide, {'NTrials','SME_N1_oz','AdaptiveMean_N1_oz','Latency_N1_oz','MeanAmp_N1_oz','SME_P1_oz','AdaptiveMean_P1_oz','Latency_P1_oz','MeanAmp_P1_oz','SME_N2_oz','AdaptiveMean_N2_oz','Latency_N2_oz','MeanAmp_N2_oz'}, 'Condition');
+end
+
 writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPSummaryStats.csv']);
 writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPTrialMeasures.csv']);
 
