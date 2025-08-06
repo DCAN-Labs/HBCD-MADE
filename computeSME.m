@@ -13,16 +13,26 @@ jsonStr = fileread(json_file_name);
 % % Decode the JSON data into a MATLAB struct
 settingsData = jsondecode(jsonStr);
 
+% TM - new check for session label for choosing ERPs
+if strcmp(session_label, 'ses-V04')
+    %choose ses-v04 settings
+    s1 = s.ses_V04;
+
+elseif strcmp(session_label, 'ses-V03')
+    %choose ses-v03 settings
+    s1 = s.ses_V03;
+end
+
 %Grab task specific settings
 
-scoreROIs = s.score_ROIs;
-scoreAges = s.score_ages;
-erp_dirs = s.ERP_dirs; %NEW TM
-erp_nameslist = s.ERP_names; %NEW TM
+scoreROIs = s1.score_ROIs;
+scoreAges = s1.score_ages;
+erp_dirs = s1.ERP_dirs; %NEW TM
+erp_nameslist = s1.ERP_names; %NEW TM
 
 if isempty(scoreAges)
     %Assert that the correct number of parameters are present
-    scoreTimes = s.score_times;
+    scoreTimes = s1.score_times;
     assert(length(scoreTimes)== length(scoreROIs), "Must have the same number of score times and ROIs!")
     
 else
@@ -42,17 +52,17 @@ else
     end 
     if in_range==0
         if age < scoreAges(1,1)
-            age_bin=1;
+            age_bin=1; %less than 3 mo, less than 9 mo but still at v04 (ie.8.5)
     
         else
-            age_bin=2;
+            age_bin=2; %older than 9 but still at v03 (ie 9.5 mo), older than 15 mo
         end
     end
 
     if age_bin == 1
-        scoreTimes = s.score_times1;
+        scoreTimes = s1.score_times1;
     elseif age_bin == 2
-        scoreTimes = s.score_times2;
+        scoreTimes = s1.score_times2;
     end
 
 
@@ -103,8 +113,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_ui, PeakRange, roi_ind, direction);%NEW TM
-                %tab.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
                 tab.Condition(:) = "uprightInv"; %add condition variable
                 tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
@@ -118,8 +128,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_ui, PeakRange, roi_ind, direction);%NEW TM
-                %tab.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
                 tab.Condition(:) = "uprightInv"; %add condition variable
                 tab.("TrialNum") = EEG_ui_trialnums; %add trial num variable
@@ -139,8 +149,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_i, PeakRange, roi_ind, direction);%NEW TM
-                %tab2.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab2.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab2.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab2.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab2.Condition(:) = "inverted"; %add condition variable
@@ -155,8 +165,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_i, PeakRange, roi_ind, direction);%NEW TM
-                %tab2.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab2.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab2.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab2.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab2.Condition(:) = "inverted"; %add condition variable
@@ -177,8 +187,8 @@ for i=1:length(scoreTimes)
 
                 % TODO: Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_o, PeakRange, roi_ind, direction);%NEW TM
-                %tab3.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab3.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab3.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab3.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab3.Condition(:) = "object"; %add condition variable
@@ -193,8 +203,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_o, PeakRange, roi_ind, direction);%NEW TM
-                %tab3.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab3.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab3.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab3.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab3.Condition(:) = "object"; %add condition variable
@@ -215,8 +225,8 @@ for i=1:length(scoreTimes)
 
                 %Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_uo, PeakRange, roi_ind, direction);%NEW TM
-                %tab4.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab4.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab4.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab4.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab4.Condition(:) = "uprightObj"; %add condition variable
@@ -231,8 +241,8 @@ for i=1:length(scoreTimes)
 
                 % Insert peak latency function here
                 [AvgPeakScores, PeakLatencies] =  compute_peaks_latencies(EEG_uo, PeakRange, roi_ind, direction);%NEW TM
-                %tab4.(['Peak_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
-                %tab4.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
+                tab4.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = AvgPeakScores;
+                tab4.(['Latency_' char(erp_name) '_' char(Cluster)]) = PeakLatencies;
 
 
                 tab4.Condition(:) = "uprightObj"; %add condition variable
@@ -478,6 +488,8 @@ for i=1:length(scoreTimes)
 
     if strcmp(task, 'FACE')
         sme.(['MeanAmp_' char(erp_name) '_' char(Cluster)]) = meanVals;
+        sme.(['AdaptiveMean_' char(erp_name) '_' char(Cluster)]) = peakVals;
+        sme.(['Latency_' char(erp_name) '_' char(Cluster)]) = latVals;
     elseif strcmp(task, 'MMN')
         sme.(['MeanAmp_' char(erp_name) '_' char(Cluster)]) = meanVals;
     else
@@ -505,12 +517,38 @@ smeWide.Visit = repmat({session_label}, height(smeWide), 1);
 %Pivot data to wide format - TM 
 % NOTE THIS WILL NEED TO MANUALLY CHANGE EVERY TIME THE VARIABLE NAMES
 % CHANGE SORRY
-if strcmp(task, 'FACE')
-        smeWide = unstack(smeWide, {'NTrials','SME_N290_p8','MeanAmp_N290_p8','SME_N290_p7','MeanAmp_N290_p7','SME_P1_oz','MeanAmp_P1_oz','SME_N290_oz','MeanAmp_N290_oz','SME_P400_oz','MeanAmp_P400_oz','SME_NC_fcz','MeanAmp_NC_fcz'}, 'Condition');
-elseif strcmp(task, 'MMN')
-        smeWide = unstack(smeWide, {'NTrials','SME_MMN_t7t8','MeanAmp_MMN_t7t8','SME_MMN_f7f8','MeanAmp_MMN_f7f8','SME_MMN_fcz','MeanAmp_MMN_fcz'}, 'Condition');
-elseif strcmp(task, 'VEP')
-        smeWide = unstack(smeWide, {'NTrials','SME_N1_oz','AdaptiveMean_N1_oz','Latency_N1_oz','MeanAmp_N1_oz','SME_P1_oz','AdaptiveMean_P1_oz','Latency_P1_oz','MeanAmp_P1_oz','SME_N2_oz','AdaptiveMean_N2_oz','Latency_N2_oz','MeanAmp_N2_oz'}, 'Condition');
+if strcmp(session_label, 'ses-V03')
+    if strcmp(task, 'FACE')
+            smeWide = unstack(smeWide, {'NTrials', ...
+                'SME_N290_p8','MeanAmp_N290_p8', 'Latency_N290_p8','AdaptiveMean_N290_p8', ...
+                'SME_N290_p7','MeanAmp_N290_p7','Latency_N290_p7','AdaptiveMean_N290_p7', ...
+                'SME_P1_oz','MeanAmp_P1_oz','Latency_P1_oz','AdaptiveMean_P1_oz', ...
+                'SME_N290_oz','MeanAmp_N290_oz','Latency_N290_oz','AdaptiveMean_N290_oz', ...
+                'SME_P400_oz','MeanAmp_P400_oz','Latency_P400_oz','AdaptiveMean_P400_oz', ...
+                'SME_NC_fcz','MeanAmp_NC_fcz','Latency_NC_fcz','AdaptiveMean_NC_fcz'}, 'Condition');
+    elseif strcmp(task, 'MMN')
+            smeWide = unstack(smeWide, {'NTrials','SME_MMN_t7t8','MeanAmp_MMN_t7t8','SME_MMN_f7f8','MeanAmp_MMN_f7f8','SME_MMN_fcz','MeanAmp_MMN_fcz'}, 'Condition');
+    elseif strcmp(task, 'VEP')
+            smeWide = unstack(smeWide, {'NTrials','SME_N1_oz','AdaptiveMean_N1_oz','Latency_N1_oz','MeanAmp_N1_oz','SME_P1_oz','AdaptiveMean_P1_oz','Latency_P1_oz','MeanAmp_P1_oz','SME_N2_oz','AdaptiveMean_N2_oz','Latency_N2_oz','MeanAmp_N2_oz'}, 'Condition');
+    end
+end
+if strcmp(session_label, 'ses-V04')
+    if strcmp(task, 'FACE')
+            smeWide = unstack(smeWide, {'NTrials', ...
+                'SME_N1_oz','MeanAmp_N1_oz','Latency_N1_oz','AdaptiveMean_N1_oz', ...
+                'SME_P1_oz','MeanAmp_P1_oz','Latency_P1_oz','AdaptiveMean_P1_oz',...
+                'SME_N290_p8','MeanAmp_N290_p8','Latency_N290_p8','AdaptiveMean_N290_p8', ...
+                'SME_N290_p7','MeanAmp_N290_p7','Latency_N290_p7','AdaptiveMean_N290_p7', ...
+                'SME_N290_oz','MeanAmp_N290_oz','Latency_N290_oz','AdaptiveMean_N290_oz', ...
+                'SME_P400_p8','MeanAmp_P400_p8','Latency_P400_p8','AdaptiveMean_P400_p8', ...
+                'SME_P400_p7','MeanAmp_P400_p7','Latency_P400_p7','AdaptiveMean_P400_p7', ...
+                'SME_P400_oz','MeanAmp_P400_oz','Latency_P400_oz','AdaptiveMean_P400_oz', ...
+                'SME_NC_fcz','MeanAmp_NC_fcz','Latency_NC_fcz','AdaptiveMean_NC_fcz'}, 'Condition');
+    elseif strcmp(task, 'MMN')
+            smeWide = unstack(smeWide, {'NTrials','SME_MMN_t7t8','MeanAmp_MMN_t7t8','SME_MMN_f7f8','MeanAmp_MMN_f7f8','SME_MMN_f3f4','MeanAmp_MMN_f3f4', 'SME_MMN_fcz','MeanAmp_MMN_fcz', 'SME_MMR_t7t8','MeanAmp_MMR_t7t8','SME_MMR_f7f8','MeanAmp_MMR_f7f8','SME_MMR_f3f4','MeanAmp_MMR_f3f4', 'SME_MMR_fcz','MeanAmp_MMR_fcz'}, 'Condition');
+    elseif strcmp(task, 'VEP')
+            smeWide = unstack(smeWide, {'NTrials','SME_N1_oz','AdaptiveMean_N1_oz','Latency_N1_oz','MeanAmp_N1_oz','SME_P1_oz','AdaptiveMean_P1_oz','Latency_P1_oz','MeanAmp_P1_oz','SME_N2_oz','AdaptiveMean_N2_oz','Latency_N2_oz','MeanAmp_N2_oz'}, 'Condition');
+    end
 end
 
 writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPSummaryStats.csv']);
