@@ -73,8 +73,8 @@
       "E127",
       "E128"
     ],
-    "channel_locations": "C:/Users/kasenetz/Documents/GitHub/HBCD-MADE/0_2AverageNet128_v1.sfp",
-    "site_delay_file": "./mean_flag_delay_3-28-25",
+    "channel_locations": "C:/Users/tmahesh/Desktop/HBCD-MADE/0_2AverageNet128_v1.sfp",
+    "site_delay_file": "./mean_flag_delay_by_site",
     "down_sample": 0,
     "sampling_rate": 1000,
     "delete_outerlayer": 1,
@@ -153,11 +153,22 @@
     "marker_names": [
       "DIN3"
     ],
-    "ERP_dirs": [-1, 1, -1],
-    "score_ages": [[3,6],[6,9]],
-    "score_times1":[[40, 79], [80,140], [141, 300]],
-    "score_times2":[[40, 79], [80,120], [121, 170]],
-    "score_ROIs": ["oz", "oz", "oz"]
+    "ses-V03": {
+        "ERP_dirs": [-1, 1, -1],
+        "score_ages": [[3,6],[6,9]],
+        "score_times1":[[40, 79], [80,140], [141, 300]],
+        "score_times2":[[40, 79], [80,120], [121, 170]],
+        "score_ROIs": ["oz", "oz", "oz"],
+        "ERP_names": ["N1", "P1", "N2"]
+    },
+    "ses-V04": {
+        "ERP_dirs": [-1, 1, -1],
+        "score_ages": [[9,12],[12,15]],
+        "score_times1":[[40, 79], [80,120], [121, 170]],
+        "score_times2":[[40, 79], [80,120], [121, 170]],
+        "score_ROIs": ["oz", "oz", "oz"],
+        "ERP_names": ["N1", "P1", "N2"]
+    }
 
 
   },
@@ -172,10 +183,21 @@
     "marker_names": [
       "DIN2"
     ],
-    "ERP_dirs": [1, 1, 1],
-    "score_ages": [],
-    "score_times":[[200, 400], [200, 400], [200, 400]],
-    "score_ROIs": ["t7t8", "f7f8", "fcz"]
+    "ses-V03": {
+        "ERP_dirs": [1, 1, 1],
+        "score_ages": [],
+        "score_times":[[200, 400], [200, 400], [200, 400]],
+        "score_ROIs": ["t7t8", "f7f8", "fcz"],
+        "ERP_names": ["MMN", "MMN", "MMN"]
+    },
+    "ses-V04": {
+        "ERP_dirs": [1, 1, 1, 1, 1, 1, 1, 1],
+        "score_ages": [[9,12],[12,15]],
+        "score_times1":[[100, 200], [100, 200], [100, 200], [100, 200], [200, 450], [200, 450], [200, 450], [200, 450]],
+        "score_times2":[[100, 200], [100, 200], [100, 200], [100, 200], [200, 450], [200, 450], [200, 450], [200, 450]],
+        "score_ROIs": ["t7t8", "f7f8", "f3f4", "fcz", "t7t8", "f7f8", "f3f4", "fcz"],
+        "ERP_names": ["MMN", "MMN", "MMN", "MMN", "MMR", "MMR", "MMR", "MMR"]
+    }
   },
 
   "FACE": {
@@ -189,10 +211,21 @@
     "marker_names": [
       "DIN3"
     ],
-    "ERP_dirs": [-1, -1, 1, -1, 1, -1],
-    "score_ages": [[3,6],[6,9]],
-    "score_times1": [[200, 390], [200, 390], [75,125], [200, 390], [400, 600], [300, 650]],
-    "score_times2": [[200, 340], [200, 340], [75,125], [200, 340], [350, 600], [300, 650]],
-    "score_ROIs": ["p8", "p7", "oz", "oz", "oz", "fcz"]
+    "ses-V03": {
+        "ERP_dirs": [-1, -1, 1, -1, 1, -1],
+        "score_ages": [[3,6],[6,9]],
+        "score_times1": [[200, 390], [200, 390], [75,125], [200, 390], [400, 600], [300, 650]],
+        "score_times2": [[200, 340], [200, 340], [75,125], [200, 340], [350, 600], [300, 650]],
+        "score_ROIs": ["p8", "p7", "oz", "oz", "oz", "fcz"],
+        "ERP_names": ["N290", "N290", "P1", "N290", "P400", "NC"]
+    },
+    "ses-V04": {
+        "ERP_dirs": [-1, -1, -1, -1, 1, 1, 1, -1],
+        "score_ages": [[9,12],[12,15]],
+        "score_times1": [[40, 79], [200, 350], [200, 350], [200, 350], [350, 600], [350, 600], [350, 600], [300, 600]],
+        "score_times2": [[40, 79], [200, 350], [200, 350], [200, 350], [350, 600], [350, 600], [350, 600], [300, 600]],
+        "score_ROIs": ["oz", "p8", "p7", "oz", "p8", "p7", "oz", "fcz"],
+        "ERP_names": ["N1", "N290", "N290", "N290", "P400", "P400", "P400", "NC"]
+    }
   }
 }
