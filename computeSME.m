@@ -14,13 +14,13 @@ jsonStr = fileread(json_file_name);
 settingsData = jsondecode(jsonStr);
 
 % TM - new check for session label for choosing ERPs
-if strcmp(session_label, 'ses-V04')
-    %choose ses-v04 settings
-    s1 = s.ses_V04;
-
-elseif strcmp(session_label, 'ses-V03')
+if strcmp(session_label, 'ses-V03')
     %choose ses-v03 settings
     s1 = s.ses_V03;
+
+else
+    %choose ses-v04 settings
+    s1 = s.ses_V04;
 end
 
 %Grab task specific settings
@@ -544,7 +544,7 @@ if strcmp(session_label, 'ses-V03')
                 }, 'Condition');
     end
 end
-if strcmp(session_label, 'ses-V04')
+if ~strcmp(session_label, 'ses-V03')
     if strcmp(task, 'FACE')
             smeWide = unstack(smeWide, {'NTrials', ...
                 'SME_N290_p8','MeanAmp_N290_p8', ...
