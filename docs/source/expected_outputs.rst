@@ -12,6 +12,35 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
 
  The following output folders and files are created throughout processing within each subject’s output directory:
 
+ .. code-block::
+
+     |__ made/
+        |__ sub-<label>/ #individual subject folder
+        |   |__ ses-<label>/
+	|       |__ eeg/
+	|	    |__ filtered_data/	
+	|	        |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.set
+	|	        |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filtered_eeg.fdt
+	|	    |__ ica_data/
+	|		|__ sub-<label>_ses-<label>_adjustReport
+	|		|__ sub-<label>_ses-<label>_mergedICA_eeg.set
+	|		|__ sub-<label>_ses-<label>_mergedICA_eeg.fdt
+        |           |__ merged_data/
+	|		|__ sub-<label>_ses-<label>_merged_eeg.set
+	|		|__ sub-<label>_ses-<label>_merged_eeg.fdt
+        |           |__ processed_data/
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.set
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_desc-filteredprocessed_eeg.fdt
+	|		|__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run<label>_ERP.mat #for VEP, FACE, MMN
+	|		|__ sub-<label>_ses-<label>_task-RS_RS_spectra.mat #for RS
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_ERP.jpg 
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_diffERP.jpg 
+	|		|__ sub-<label>_ses-<label>_task-<label>_desc-<label>_topo.jpg 
+	|	    |__ sub-<label>_ses-<label>_acq-eeg_preprocessingReport.csv
+	|	    |__ sub-<label>_ses-<label>_task-<label>_acq-eeg_run-<label>_MADEspecification.csv		
+
+   
+
 - :ref:`./filtered_data <./filtered_data>`
 - :ref:`./merged_data <./merged_data>` 
 - :ref:`./ica_data <./ica_data>` 
@@ -21,7 +50,7 @@ The output of HBCD-MADE will primarily be found in ``.set`` `EEGLAB <https://eeg
 
 HBCD-MADE output contains the following file types:
 
-- ``JPEG``- topographic, spectral and ERP plots.
+- ``JPEG``- topographic and ERP plots.
 - ``MAT`` - MATLAB data files contain processing output.
 - ``CSV``- stores data in tabular format.
 - ``JSON``- stores metadata and saves task-specific configuration settings in a format that is easy for users to read and edit.
@@ -31,8 +60,8 @@ HBCD-MADE output contains the following file types:
 
 .. _./filtered_data:
 
-1. ``/filtered_data`` folder
--------------------------
+1. ``...filtered_data/`` folder
+---------------------------------
 
 **Description**
 
@@ -51,8 +80,8 @@ Each EEG task administered will have a corresponding ``.set`` and ``.fdt`` file 
 
 .. _./merged_data: 
 
-2. ``/merged_data`` folder
------------------------
+2. ``...merged_data/`` folder
+--------------------------------
 
 **Description**
 
@@ -64,8 +93,8 @@ Tasks present in the merged ``.fdt`` file are listed in the corresponding ``.jso
 
 .. _./ica_data:
 
-3. ``/ica_data`` folder
--------------------------
+3. ``...ica_data/`` folder
+-------------------------------
 
 **Description**
 
@@ -90,8 +119,8 @@ The ./ica_data folder contains the following:
 
 .. _./processed_data:
 
-4. ``/processed_data`` folder 
--------------------------
+4. ``...processed_data/`` folder 
+---------------------------------
 
 **Description** 
 
@@ -112,143 +141,12 @@ Each EEG file found in this folder will have a corresponding ``.json`` file in t
 
 **Contents**
 
-This folder contains all processed data and MADE output, described in detail below:
+This folder contains all processed data and MADE output, described below:
 
 a. EEG Data (``.fdt``, ``.set``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There is one .fdt and one corresponding .set file for each task containing fully processed data.
-
-b. CSV data files (``.csv``)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-For each task, two .csv files are automatically produced by MADE: a trial measures file and a summary statistics file.
-
-Click :download:`here <csv_data_dictionary.csv>` to download a data dictionary defining the fields in each .csv output file. 
-
-**I. Trial Measures**
-
-Output files ending in ``trialMeasures.csv`` are created for MMN, VEP, and FACE and contain the following output variables for each trial retained after processing: 
-
-	* ``MeanAmplitude``: Mean amplitude during specified measurement window
-
-	* ``AvgPeak``: The average peak, or adaptive mean peak, is calculated by finding the peak during the specified time window and averaging the amplitude across all sampling points within 1 standard deviation of the peak. 
-
-	* ``Latency``: Latency in ms to the peak amplitude during the specified time window
-
-
-.. list-table:: FACE Trial Measures Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - inverted, object, uprightInv, uprightObj
-   * - TrialNum
-     - trial
-   * - MeanAmplitude_200-300_p8
-     - Mean amplitude between 200-300 ms at P8 cluster.
-   * - MeanAmplitude_75-125_oz
-     - Mean amplitude between 75-125 ms at Oz cluster.
-   * - MeanAmplitude_200-300_oz
-     - Mean amplitude between 200-300 ms at Oz cluster.
-   * - MeanAmplitude_325-625_oz
-     - Mean amplitude between 325-625 OZ. 
-
-.. list-table:: MMN Trial Measures Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - standard, deviant, predeviant
-   * - TrialNum
-     - trial
-   * - MeanAmplitude_200-400_t7t8
-     - Mean amplitude between 200-400 ms at T7/T8 cluster.
-   * - MeanAmplitude_200-400_f7f8
-     - Mean amplitude between 200-400 ms at F7/F8 cluster.
-   * - MeanAmplitude_200-400_fcz
-     - Mean amplitude between 200-400 ms at FCz cluster.
-
-
-**II. Summary Statistics**
-	
-Output files ending in ``summaryStats.csv`` are created for each task and contain the following output variables: 
-
-	* ``SME``: Standard Measurement error. The SME is a universal measure of data quality for ERP data. See [Luck2021]_ for more information.
-
-	* ``Mean_Power``: mean power at each frequency bin ranging from 1-50Hz
-
-.. list-table:: FACE Summary Statistics Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - inverted, object, uprightInv, uprightObj
-   * - NTrials
-     - number of trials retained per condition
-   * - SME_200-300_p8
-     - SME during 200-300 ms at P8 cluster
-   * - SME_75-125_oz
-     - SME during 75-125 ms at Oz cluster
-   * - SME_200-300_oz
-     - SME during 200-300 ms at Oz cluster
-   * - SME_325-625_oz
-     - SME during 325-625 ms at Oz cluster
-
-.. list-table:: VEP Summary Statistics Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - VEP
-   * - NTrials
-     - number of trials retained
-   * - SME_40-79_oz
-     - SME during 40-79 ms at Oz cluster
-   * - SME_80-140_oz
-     - SME during 80-140 ms at Oz cluster
-   * - SME_141-300_oz
-     - SME during 141-300 ms at Oz cluster
-
-.. list-table:: MMN Summary Statistics Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Condition
-     - deviant, predeviant, standard
-   * - NTrials
-     - number of trials retained per condition
-   * - SME_200-400_t7t8
-     - SME during 200-400 ms at T7/T8 cluster
-   * - SME_200-400_f7f8
-     - SME during 200-400 ms at F7/F8 cluster
-   * - SME_200-400_fcz
-     - SME during 200-400 ms at FCz cluster
-
-.. list-table:: RS Summary Statistics Output
-   :widths: 31 50
-   :header-rows: 1
-
-   * - Variable Name
-     - Description
-   * - Frequency
-     - 1 Hz bins from 1-50 Hz
-   * - SME
-     - SME in each frequency bin
-   * - Mean_Power
-     - Mean power in each frequency bin
-   * - ID
-     - subject ID
 
 
 c. MATLAB Data files (``.mat``) 
@@ -259,6 +157,7 @@ c. MATLAB Data files (``.mat``)
 - Output for the VEP, FACE, and MMN tasks contain the ``allData`` matrix, which is structured as Conditions x Electrodes x Timepoints.
 
 - Output for the RS data contains the ``spectra_eo_db`` matrix, which is structured as Electrodes x Frequency. RS ``.mat`` output does not contain the time dimension.
+
 
 d. Figures (``.jpg``)
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -277,18 +176,7 @@ Example: Topo_Standard_MMN.jpg
 	Topographic map of average brain response 200-400 ms after presentation of standard stimulus during auditory mismatch negativity task across 446 trials. 
 
 
-**II. PSD plots represent the power spectral density at either all electrodes or specific regions of interest (ROIs). The number of trials represented are specified in the plot’s title.**
-
-
-.. image:: images/PSD_AllCh.jpg
-   :width: 500px
-   :alt: NA
-
-Example: PSD_AllCh.jpg
-	Power spectral density plot for all channels across 295 retained epochs (1s each).
-
-
-**III. ERP plots show the event-related potential wave across N trials at a specified ROI.**
+**II. ERP plots show the event-related potential wave across N trials at a specified ROI.**
 
 
 .. image:: images/ERP_oz_VEP.jpg
@@ -298,7 +186,7 @@ Example: PSD_AllCh.jpg
 Example: ERP_oz_VEP.jpg
 	ERP plot of visual evoked potential at Oz electrode cluster, averaged across 118 trials. 
 
-**IV. Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
+**III. Topo plots contain topographic maps of mean voltage across the scalp during a specified time window.**
 
 
 .. image:: images/Topo_Standard_MMN.jpg
@@ -308,7 +196,7 @@ Example: ERP_oz_VEP.jpg
 Example: Topo_Standard_MMN.jpg
 	Topographic plot of EEG between 200-400 ms after presentation of standard stimulus during mismatch negativity task.
 	
-**V. DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
+**IV. DiffTop plots represent the difference in mean voltage between two conditions during a specified time window.**
 
 
 .. image:: images/DiffTop_Inv_Vs_Upr_FACE.jpg
@@ -318,7 +206,7 @@ Example: Topo_Standard_MMN.jpg
 Example: DiffTop_Inv_Vs_Upr_FACE.jpg
 	Average difference in scalp distribution between 100-300 ms after presentation of Inverted vs Upright faces. For this task, 50 upright face trials were retained in the Upright/Inverted block, 48 inverted face trials were retained in the Upright/Inverted face block, 42 Object trials were retained in the Object/Upright face block, and 50 upright face trials were retained in the Object/Upright face block. For this plot, only the first two n values are relevant because the plot represents the difference between Inverted and Upright faces. 
 
-**VI. DiffERP plots display the difference in the ERP waveform between specified conditions.**
+**V. DiffERP plots display the difference in the ERP waveform between specified conditions.**
 
 
 .. image:: images/DiffERP_t7t8_MMN.jpg
@@ -334,7 +222,7 @@ Example: DiffTop_Inv_Vs_Upr_FACE.jpg
 
 .. _./...eeg_MADE_preprocessing_report.csv:
 
-5. ``./...MADE_preprocessing_report.csv``
+5. ``...MADE_preprocessing_report.csv``
 -------------------------------------------------------
 
 Processing report automatically generated by MADE for each session. The file ``MADE_preprocessing_report.csv`` will contain summary level statistics related to the processing of the data. Because the EEG data is merged across tasks for portions of the pre-processing, some of these entries will be the same for all tasks. See [Debnath2020]_ for more information on MADE preprocessing. The following variables are represented-
@@ -413,7 +301,7 @@ The following variables within the MADE processing report represent the number o
 
 .. _./...eeg_eeg_MADE_specification.csv:
 
-6. ``/...MADE_specification.csv``
+6. ``...MADE_specification.csv``
 --------------------------------------------------------------------
 
 A unique .json is produced for each task processed by HBCD-MADE and titled according to the task it represents. These files serve as a reference for the parameters used to process each task. For definitions of each parameter listed, see :doc:`Processing Settings and Configuration </json_configuration>`
