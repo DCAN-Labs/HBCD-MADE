@@ -1,0 +1,23 @@
+site_name: HBCD-EEG-UTILITIES
+
+theme:
+  name: readthedocs
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: '🔗'  
+
+plugins:
+  - search
+
+docs_dir: docs
+
+nav: 
+  - About: index.md
+  - Installation: installation.md
+  - Processing Settings and Configuration: proc_settings.md
+  - Usage & Tutorial: tutorial.md 
+  - Expected outputs: expected-outputs.md
+  - Derivatives and ERP specifications: derivatives_ERPspecs.md
+  - Help: help.md
