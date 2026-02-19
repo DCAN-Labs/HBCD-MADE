@@ -94,9 +94,9 @@ These supported global settings are specified in the proc_settings_HBCD_containe
 
 
 ### Age-Dependent ERP time windows
-Age-dependent time windows are defined in the [processing settings .json file](https://github.com/DCAN-Labs/HBCD-MADE/blob/main/proc_settings_HBCD.json). For each task, the first age bin specified (e.g. 3-6 months) corresponds to the list of time windows in `score_times1`. The number of time windows listed matches the number of `score_ROIs` and the list of `ERP_names`. 
+Some ERP components are scored with age-dependent time windows, which are defined in the [processing settings .json file](https://github.com/DCAN-Labs/HBCD-MADE/blob/main/proc_settings_HBCD.json). 
 
-Here's an example of how to interpret the code specifying the age-dependent ERP time windows:
+Here's an example of how to interpret the .json specifying the age-dependent ERP time windows:
 
  The code below states that for the VEP task in ses-V03, ERPs are scored as follows for participants who were 3-6 months old at EEG acquisition: 
 
@@ -106,7 +106,9 @@ Here's an example of how to interpret the code specifying the age-dependent ERP 
 
 - The N2 component is scored at the Oz cluster between 141 ms - 300 ms. 
 
-`score_times2` defines the time windows for participants who were 6-9 months old at EEG acquisition. Unlike the ERP time windows, the ROI clusters used to score any given ERP are stable across age groups.  
+`score_times2` defines the time windows for participants who were 6-9 months old at EEG acquisition. 
+
+Unlike the ERP time windows, the ROI clusters used to score any given ERP are stable across age groups.  
 
 ```
 "VEP": {
