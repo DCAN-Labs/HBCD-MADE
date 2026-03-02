@@ -86,7 +86,7 @@ This folder contains all data saved early in the processing pipeline after filte
 
 ### ./merged_data folder
 
-Immediately after filtering, tasks are merged together into one file and re-saved into this folder. Tasks present in the merged .fdt file are listed in the corresponding .json file.
+Immediately after filtering, tasks are merged alphabetically by file name into one file and re-saved into this folder. All tasks present in the merged .fdt file are listed in the corresponding .json file.
 
 
 ### ./ica_data folder
