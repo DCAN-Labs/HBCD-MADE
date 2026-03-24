@@ -16,11 +16,16 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 % Maureen Elizabeth Bowers (mbowers1@umd.edu)
 % Nathan A. Fox (fox@umd.edu)
 
-% Ongoing Contributors:
-% Lydia Yoder (lyoder@umd.edu)
+% Previous Contributors:
+% Martin Antunez Garcia (mantunez@umd.edu)
 % Erik Lee (leex6144@umn.edu)
-% Martin Antunez Garcia (mantunez@umd.edu )
 % Marco McSweeney (mmcsw1@umd.edu)
+% Lydia Yoder (lyoder@umd.edu)
+
+% Ongoing Contributors
+% Dylan Gilbreath (dylangil@umd.edu)
+% Trisha Maheshwari (tmahesh@umd.edu)
+% Alicia Vallorani (avallora@umd.edu)
 
 % MADE uses EEGLAB toolbox and some of its plugins. Before running the pipeline, you have to install the following:
 % EEGLab:  https://sccn.ucsd.edu/eeglab/downloadtoolbox.php/download.php
@@ -119,7 +124,8 @@ for run=1:length(datafile_names)
     %% TM - 8/6/2024: Impedances catch
     % Check if impedances were turned on and off -- if so pop out the
     % section with impedances and save
-    % will not catch if impdances was turned on before task was
+    % will not catch if impdances was turned on before task was -- but this
+    % is now caught in the following section on uniformity
     % started or aff after task was finished
 
     if numel(find(strcmp({EEG.event.type}, 'IBEG')))>0 && numel(find(strcmp({EEG.event.type}, 'IEND')))>0
@@ -135,10 +141,71 @@ for run=1:length(datafile_names)
         EEG = pop_select(EEG, 'rmtime', [impstart impend]);
     end
 
+    %% Uniformity Check - DG & AV
+    % File
+    X  = double(EEG.data)';
+
+    % Parameters
+    fs = EEG.srate;
+    win_sec    = 5;
+    step_sec   = 1;
+    corr_thr   = 0.95;   % mean correlation threshold
+    smooth_sec = 0.5;
+
+    win  = round(win_sec * fs);
+    step = round(step_sec * fs);
+    [nSamples, nCh] = size(X);
+
+    artifact_mask = false(nSamples,1);
+    mean_corr_all = [];
+    wcount = 0;
+
+    % Sliding window
+    for start_idx = 1:step:(nSamples - win + 1)
+        stop_idx = start_idx + win - 1;
+        segment = X(start_idx:stop_idx,:) - mean(X(start_idx:stop_idx,:),1);
+
+        % Correlation
+        ch_var = var(segment,0,1);
+        good_ch = ch_var > 1e-10;
+        segment_clean = segment(:,good_ch);
+
+        if sum(good_ch) > 1
+            R = corrcoef(segment_clean);
+            R_no_diag = R(~eye(size(R)));
+            mean_corr = mean(R_no_diag,'omitnan');
+        else
+            mean_corr = 0;
+        end
+
+        wcount = wcount + 1;
+        mean_corr_all(wcount) = mean_corr;
+
+        % Mark artifact window
+        if mean_corr > corr_thr
+            artifact_mask(start_idx:stop_idx) = true;
+        end
+    end
+
+    % Smooth mask
+    % artifact_mask is a vector containing all of the samples flagged as
+    % artifact.  Impedances shift throughout the file, so this will look like a
+    % step-wise function if plotted. Channels with uniformity for other reasons
+    % will also be flagged, this will probably look more oscillatory.
+    artifact_mask = smoothdata(double(artifact_mask), ...
+        'movmean', round(smooth_sec*fs)) > 0.5;
+    artifact_mask = logical(artifact_mask);
+
+    % 1 if any artifact detected, 0 if none
+    uniform_artifact_flag = double(any(artifact_mask)); % Drop file??
+
+    
+
     %% TM - 8/6/2024 Catch DRPS flag and throw error
     if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
         error('DrpS flag found, check raw data and fix manually please');
     end
+
 
     %% Step 1.25: Load settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
@@ -544,90 +611,107 @@ for run=1:length(datafile_names)
     end
     
     %% STEP 5.25: Label Task Variable and DIN conidtions if it is not already labeled
-    
-   if strcmp(EEG.event(3).Task, 'n/a')
-       if contains(EEG.filename, 'MMN')
-           task = 'MMN';
-           din2s = find(strcmp({EEG.event.type}, 'DIN2'));
-           for d =1:length(din2s) %label the DIN condition
-               EEG.event(din2s(d)).Condition = EEG.event(din2s(d)-1).Condition;
-           end
-           
-           num_stm = numel(find(strcmp({EEG.event.type}, 'stms')));
-           num_din = length(din2s);
-           if num_stm  < num_din %remove any extra DINs
-               for w = 1:length(din2s)
-                   if ~(strcmp({EEG.event(din2s(w)-1).type}, 'stms'))
-                       EEG.event(din2s(w)).type = 'EXTRA_DIN';
-                   end
-               end
-           end
-       elseif contains(EEG.filename, 'RS')
-           task = 'RS'; %no labeling needed
-       elseif contains(EEG.filename, 'VEP')
-           task = 'VEP';
-           din3s = find(strcmp({EEG.event.type}, 'DIN3'));
-           if din3s(1) == 1 %if the first flag in a file is a DIN remove it
-               EEG.event(din3s(1)).type = 'EXTRA_DIN';
-           end
-           for d =1:length(din3s) %label the DIN conditions
-               EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
-           end
-           
-       elseif contains(EEG.filename, 'FACE')
-           task = 'FACE';
-           dins = find(strcmp({EEG.event.type}, 'DIN3'));
-           %label Face Blocks
-           if length(dins) >= 100
-               block1 = EEG.event(1:dins(100));
-           else
-               block1 = EEG.event;
-           end
-           searchblock1_inverted = numel(find(strcmp({block1.Condition}, '2')))-1; %subtract 1 bc there is always 1 flag of each condition in the SESS rows
-           if searchblock1_inverted >=1
-               upright_condition_b1 = '1';
-               upright_condition_b2 = '4';
-           else
-               upright_condition_b1 = '4';
-               upright_condition_b2 = '1';
-           end
-           
-           for d =1:length(dins)
-               %The condition for the din is set equal to whatever the condition of preceding flag
-               EEG.event(dins(d)).Condition = EEG.event(dins(d)-1).Condition;
-               if d <=100
-                   EEG.event(dins(d)).Block = 1;
-                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
-                       EEG.event(dins(d)).Condition = upright_condition_b1;
-                       EEG.event(dins(d)-1).Condition = upright_condition_b1;
-                       EEG.event(dins(d)+1).Condition = upright_condition_b1;
-                   end
-               else
-                   EEG.event(dins(d)).Block = 2;
-                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
-                       EEG.event(dins(d)).Condition = upright_condition_b2;
-                       EEG.event(dins(d)-1).Condition = upright_condition_b2;
-                       EEG.event(dins(d)-2).Condition = upright_condition_b2;
-                   end
-               end
-               
-           end
-           num_stm = numel(find(strcmp({EEG.event.type}, 'stm+')));
-           num_din = length(dins);
-           if num_stm  < num_din
-               for w = 1:length(dins)
-                   if ~strcmp({EEG.event(dins(w)-1).type}, 'stm+')
-                       EEG.event(dins(w)).type = 'EXTRA_DIN';
-                   end
-               end
-           end
-           
-       end
-       
-       for i = 1:length(EEG.event)
-           EEG.event(i).Task = task; %label task variable
-       end
-       
+
+    if strcmp(EEG.event(3).Task, 'n/a')
+        % MMN V03-V06
+        if contains(EEG.filename, 'MMN')
+            task = 'MMN';
+            din2s = find(strcmp({EEG.event.type}, 'DIN2'));
+            for d =1:length(din2s) %label the DIN condition
+                EEG.event(din2s(d)).Condition = EEG.event(din2s(d)-1).Condition;
+            end
+
+            num_stm = numel(find(strcmp({EEG.event.type}, 'stms')));
+            num_din = length(din2s);
+            if num_stm  < num_din %remove any extra DINs
+                for w = 1:length(din2s)
+                    if ~(strcmp({EEG.event(din2s(w)-1).type}, 'stms'))
+                        EEG.event(din2s(w)).type = 'EXTRA_DIN';
+                    end
+                end
+            end
+
+            % VEP V03-V06
+        elseif contains(EEG.filename, 'VEP')
+            task = 'VEP';
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            if din3s(1) == 1 %if the first flag in a file is a DIN remove it
+                EEG.event(din3s(1)).type = 'EXTRA_DIN';
+            end
+            for d =1:length(din3s) %label the DIN conditions
+                EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
+            end
+
+            % FACE V03-V06
+        elseif contains(EEG.filename, 'FACE')
+            task = 'FACE';
+            dins = find(strcmp({EEG.event.type}, 'DIN3'));
+            %label Face Blocks
+            if length(dins) >= 100
+                block1 = EEG.event(1:dins(100));
+            else
+                block1 = EEG.event;
+            end
+            searchblock1_inverted = numel(find(strcmp({block1.Condition}, '2')))-1; %subtract 1 bc there is always 1 flag of each condition in the SESS rows
+            if searchblock1_inverted >=1
+                upright_condition_b1 = '1';
+                upright_condition_b2 = '4';
+            else
+                upright_condition_b1 = '4';
+                upright_condition_b2 = '1';
+            end
+
+            for d =1:length(dins)
+                %The condition for the din is set equal to whatever the condition of preceding flag
+                EEG.event(dins(d)).Condition = EEG.event(dins(d)-1).Condition;
+                if d <=100
+                    EEG.event(dins(d)).Block = 1;
+                    if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                        EEG.event(dins(d)).Condition = upright_condition_b1;
+                        EEG.event(dins(d)-1).Condition = upright_condition_b1;
+                        EEG.event(dins(d)+1).Condition = upright_condition_b1;
+                    end
+                else
+                    EEG.event(dins(d)).Block = 2;
+                    if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                        EEG.event(dins(d)).Condition = upright_condition_b2;
+                        EEG.event(dins(d)-1).Condition = upright_condition_b2;
+                        EEG.event(dins(d)-2).Condition = upright_condition_b2;
+                    end
+                end
+
+            end
+            num_stm = numel(find(strcmp({EEG.event.type}, 'stm+')));
+            num_din = length(dins);
+            if num_stm  < num_din
+                for w = 1:length(dins)
+                    if ~strcmp({EEG.event(dins(w)-1).type}, 'stm+')
+                        EEG.event(dins(w)).type = 'EXTRA_DIN';
+                    end
+                end
+            end
+            % RS V03-V08
+            if contains(EEG.filename, 'RS')
+
+                if contains(session_label, 'V08')
+                    task = 'RSV08';   % V08-specific labeling
+                else
+                    task = 'RS';      % V03–V06
+                end
+            end
+        % V08 tasks do not require labeling in this section at this time    
+        elseif contains(EEG.filename, 'MC')
+            task = 'MC';
+        elseif contains(EEG.filename, 'SL')
+            task = 'SL';
+        elseif contains(EEG.filename, 'EMO')
+            task = 'EMO';
+        end
+
+        for i = 1:length(EEG.event)
+            EEG.event(i).Task = task; %label task variable
+        end
+
     end
     
     %% STEP 5.5: Get Line Noise Measure
