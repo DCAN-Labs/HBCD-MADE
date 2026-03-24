@@ -1,4 +1,4 @@
-function [tEEG] = make_MADE_epochs(tEEG,eeg_file_name, json_file_name, task, siteinfo, site_delays)
+function [tEEG] = make_MADE_epochs(tEEG,eeg_file_name, json_file_name, task, siteinfo, site_delays, session_label)
 %MAKE_MADE_EPOCHS Function that epochs EEG data for MADE pipeline
 %   The function takes EEG, which is an EEGLAB structure with data
 %   for one EEG task. The eeg_file_name is the (absolute or relative)
@@ -44,7 +44,7 @@ if iscell(marker_names) == false
     error('Error: json value for marker_names should be a list/array');
 end
 
-if isfield(s,'make_dummy_events')
+if isfield(s,'make_dummy_events') % TM -- this chunk runs for RS v08 but only certain parts for din3 (v03/4/6)
     if s.make_dummy_events
         if length(marker_names) ~= 1
             error('Error: there should be exactly one marker name for rest-like files, made to indicate the point to start creating dummy events.');
@@ -64,21 +64,23 @@ if isfield(s,'make_dummy_events')
             end
         end
         
-        start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
-        if length(start_index) > 1 % TM add code to address error where there is an extra DIN3 at the end of RS (after TRSP)
-            tEEG.event(start_index(2)).type = 'EXTRA DIN';
+        if strcmp(marker_names(1), 'DIN3') %adding check here just in case TM
             start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            if length(start_index) > 1 % TM add code to address error where there is an extra DIN3 at the end of RS (after TRSP)
+                tEEG.event(start_index(2)).type = 'EXTRA DIN';
+                start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            end
         end
 
-        % if length(start_index) > 1
-        %     error('Error: there should only be one instance of DIN3 event in EEG file'); %TM patch
-        % end
-        if length(start_index) < 1 % TM add code to check for missing RS din3 and add it in
-            tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
-            start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+        % TM TODO add an if for if marker names is din3 (ie. V03, V04, V06)
+        % then run checkmissingdins code
+        if strcmp(marker_names(1), 'DIN3')
+            if length(start_index) < 1 % TM add code to check for missing RS din3 and add it in
+                tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
+                start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            end
+            start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
         end
-        start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
-
 
         num_dummy_events = s.num_dummy_events;
         dummy_event_spacing = s.dummy_event_spacing;
@@ -94,8 +96,11 @@ if isfield(s,'make_dummy_events')
 end
     
 %add kira's code here -- TM 8/1/24
-tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
-tEEG = eeg_checkset(tEEG);
+% TM - add check, if v03/v04/v06 run check missing dins
+if contains(session_label, 'V03') || contains(session_label, 'V04') || contains(session_label, 'V06')
+    tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
+    tEEG = eeg_checkset(tEEG);
+end
 
 epoch_length=[-1*pre_latency post_latency]; % define Epoch Length
 tEEG = eeg_checkset( tEEG );

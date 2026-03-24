@@ -908,7 +908,7 @@ for run = 1 : length(event_struct.file_names)
         end
     end
 
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays);
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays, session_label);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
