@@ -1,4 +1,4 @@
-function [tEEG] = make_MADE_epochs(EEG,eeg_file_name, json_file_name, task)
+function [tEEG] = make_MADE_epochs(tEEG,eeg_file_name, json_file_name, task, siteinfo, site_delays, session_label)
 %MAKE_MADE_EPOCHS Function that epochs EEG data for MADE pipeline
 %   The function takes EEG, which is an EEGLAB structure with data
 %   for one EEG task. The eeg_file_name is the (absolute or relative)
@@ -20,6 +20,9 @@ function [tEEG] = make_MADE_epochs(EEG,eeg_file_name, json_file_name, task)
 
 %   The returned output is a variable tEEG which contains the epoched data.
 
+%   TM - added in siteinfo to pull site information for
+%   check_missing_dins
+
 %Find the task label
 s = grab_settings(eeg_file_name, json_file_name);
 
@@ -27,9 +30,11 @@ s = grab_settings(eeg_file_name, json_file_name);
 marker_names = s.marker_names;
 pre_latency = s.pre_latency;
 post_latency = s.post_latency;
+erp_filter = s.erp_filter;
+erp_lowpass = s.erp_lowpass;
 
 %Make copy of EEG file
-tEEG = deal(EEG);
+tEEG = deal(tEEG);
 
 if pre_latency < 0
     error('Error: pre_latency should be defined as a positive value.');
@@ -39,16 +44,42 @@ if iscell(marker_names) == false
     error('Error: json value for marker_names should be a list/array');
 end
 
-if isfield(s,'make_dummy_events')
+if isfield(s,'make_dummy_events') % TM -- this chunk runs for RS v08 but only certain parts for din3 (v03/4/6)
     if s.make_dummy_events
         if length(marker_names) ~= 1
             error('Error: there should be exactly one marker name for rest-like files, made to indicate the point to start creating dummy events.');
         end
 
-        start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
-        start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
-        if length(start_index) > 1
-            error(['Error: there should only be one instance of ' marker_names(1) ' event in EEG file']);
+        if strcmp(marker_names(1), 'DIN3') %add code to address error where there is an extra DIN3 in RS before the bas+ flag
+            if numel(find(strcmp({tEEG.event.type}, 'DIN3')))>1
+                bas_lat = find(strcmp({tEEG.event.type}, 'bas+'));
+                din_lat = find(strcmp({tEEG.event.type}, 'DIN3'));
+                if numel(bas_lat) == 1
+                    for i=din_lat
+                        if i < bas_lat
+                            tEEG.event(i).type = 'EXTRA DIN';
+                        end
+                    end
+                end
+            end
+        end
+        
+        if strcmp(marker_names(1), 'DIN3') %adding check here just in case TM
+            start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            if length(start_index) > 1 % TM add code to address error where there is an extra DIN3 at the end of RS (after TRSP)
+                tEEG.event(start_index(2)).type = 'EXTRA DIN';
+                start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            end
+        end
+
+        % TM TODO add an if for if marker names is din3 (ie. V03, V04, V06)
+        % then run checkmissingdins code
+        if strcmp(marker_names(1), 'DIN3')
+            if length(start_index) < 1 % TM add code to check for missing RS din3 and add it in
+                tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
+                start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
+            end
+            start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
         end
 
         num_dummy_events = s.num_dummy_events;
@@ -64,14 +95,215 @@ if isfield(s,'make_dummy_events')
     end
 end
     
-epoch_length=[-1*pre_latency post_latency]; % define Epoch Length
-tEEG = eeg_checkset( tEEG );
-
-tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
-tEEG = pop_epoch( tEEG, marker_names, epoch_length, 'epochinfo', 'yes');
-tEEG = pop_selectevent( tEEG, 'latency','-.1 <= .1','deleteevents','on');
-
-
-
+%add kira's code here -- TM 8/1/24
+% TM - add check, if v03/v04/v06 run check missing dins
+if contains(session_label, 'V03') || contains(session_label, 'V04') || contains(session_label, 'V06')
+    tEEG = check_missing_dins(tEEG, task, siteinfo, site_delays);
+    tEEG = eeg_checkset(tEEG);
 end
 
+epoch_length=[-1*pre_latency post_latency]; % define Epoch Length
+tEEG = eeg_checkset( tEEG );
+%if ~strcmp(task, 'RS')
+%    tEEG = pop_selectevent( tEEG, 'Task', task,'deleteevents','on');
+%end
+
+% This section ONLY does low pass, NOT high pass
+% Remember to change the value of lowpass
+if erp_filter == 1
+% 7. Initialize the filters
+  %highpass = s.highpass; % High-pass frequency
+  %lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
+  lowpass  = erp_lowpass;
+  % STEP 6: Filter data
+    % Calculate filter order using the formula: m = dF / (df / fs), where m = filter order,
+    % df = transition band width, dF = normalized transition width, fs = sampling rate
+    % dF is specific for the window type. Hamming window dF = 3.3
+    
+    %high_transband = highpass; % high pass transition band
+    low_transband = 10; % low pass transition band
+    
+    %hp_fl_order = 3.3 / (high_transband / EEG.srate);
+    lp_fl_order = 3.3 / (low_transband / tEEG.srate);
+    
+    % Round filter order to next higher even integer. Filter order is always even integer.
+%     if mod(floor(hp_fl_order),2) == 0
+%         hp_fl_order=floor(hp_fl_order);
+%     elseif mod(floor(hp_fl_order),2) == 1
+%         hp_fl_order=floor(hp_fl_order)+1;
+%     end
+    
+    if mod(floor(lp_fl_order),2) == 0
+        lp_fl_order=floor(lp_fl_order)+2;
+    elseif mod(floor(lp_fl_order),2) == 1
+        lp_fl_order=floor(lp_fl_order)+1;
+    end
+    
+    % Calculate cutoff frequency
+    %high_cutoff = highpass/2;
+    low_cutoff = lowpass + (low_transband/2);
+    
+%     % Performing high pass filtering
+%     EEG = eeg_checkset( EEG );
+%     EEG = pop_firws(EEG, 'fcutoff', high_cutoff, 'ftype', 'highpass', 'wtype', 'hamming', 'forder', hp_fl_order, 'minphase', 0);
+%     EEG = eeg_checkset( EEG );
+    
+    
+    % pop_firws() - filter window type hamming ('wtype', 'hamming')
+    % pop_firws() - applying zero-phase (non-causal) filter ('minphase', 0)
+    
+    % Performing low pass filtering
+    tEEG = eeg_checkset( tEEG );
+    tEEG = pop_firws(tEEG, 'fcutoff', low_cutoff, 'ftype', 'lowpass', 'wtype', 'hamming', 'forder', lp_fl_order, 'minphase', 0);
+    tEEG = eeg_checkset( tEEG );
+    
+    % pop_firws() - transition band width: 10 Hz
+    % pop_firws() - filter window type hamming ('wtype', 'hamming')
+    % pop_firws() - applying zero-phase (non-causal) filter ('minphase', 0)    
+    
+end %if erp filter is turned on
+
+% --- Switch epoching style based on task ---
+if contains(eeg_file_name, 'SL')
+
+    % =========================
+    % SL-SPECIFIC EPOCHING
+    % =========================
+    % TRIM DATA FROM FIRST 'stms'
+    evt_types = {tEEG.event.type};
+    stms_idx  = find(strcmp(evt_types, 'stms'), 1, 'first');
+    if isempty(stms_idx)
+        error('No event with code ''stms'' found.');
+    end
+
+    start_point = tEEG.event(stms_idx).latency;
+    end_point   = tEEG.pnts;
+
+    tEEG = pop_select(tEEG, 'point', [round(start_point) end_point]);
+    tEEG = eeg_checkset(tEEG);
+
+    % ADD SYLL / WORD EVENTS
+    interval_sec = 0.300;   % 300 ms
+    srate        = tEEG.srate;
+    n_points     = tEEG.pnts;
+
+    duration_sec = (n_points - 1) / srate;
+    times_sec    = 0:interval_sec:duration_sec;
+    latencies    = (times_sec * srate) + 1;
+
+    if skip_first_latency_for_drum
+        latencies = latencies(2:end);
+    end
+
+    evt_idx = length(tEEG.event);
+
+    for i = 1:numel(latencies)
+
+        evt_idx = evt_idx + 1;
+        tEEG.event(evt_idx).latency = latencies(i);
+        tEEG.event(evt_idx).type    = 'syll';
+        tEEG.event(evt_idx).code    = 'syll';
+
+        if mod(i,3) == 0
+            evt_idx = evt_idx + 1;
+            tEEG.event(evt_idx).latency = latencies(i);
+            tEEG.event(evt_idx).type    = 'word';
+            tEEG.event(evt_idx).code    = 'word';
+        end
+    end
+
+    tEEG = tEEG_checkset(tEEG, 'eventconsistency');
+
+    keepEvents = arrayfun(@(e) strcmp(e.code,'word') || strcmp(e.code,'syll'), tEEG.event);
+    tEEG.event = tEEG.event(keepEvents);
+    tEEG = eeg_checkset(tEEG, 'makeur');
+
+    NumSyllablesPerEpoch = 36;
+    EpochLength = NumSyllablesPerEpoch * 0.3; % seconds
+    UnacceptableJitter = 80; % samples (500 Hz)
+
+    y = 2; % skip first syllable
+    while y < numel(tEEG.event)
+
+        if strcmp(tEEG.event(y).code, 'word')
+
+            CandidateEpochOnset = y;
+            syllablecounter = 0;
+
+            for z = y+1:numel(tEEG.event)
+
+                % Jitter / pause check
+                if tEEG.event(z).latency - tEEG.event(z-1).latency > UnacceptableJitter
+                    disp('break in auditory stimulation detected!')
+                    syllablecounter = 0;
+                    y = z;
+                    break
+                end
+
+                % Count syllables
+                if strcmp(tEEG.event(z).code, 'syll')
+                    syllablecounter = syllablecounter + 1;
+
+                    if syllablecounter == NumSyllablesPerEpoch
+                        tEEG = pop_editeventvals(tEEG, ...
+                            'changefield', {CandidateEpochOnset, 'type', 'NE'});
+                        y = z;
+                        break
+                    end
+
+                elseif strcmp(tEEG.event(z).code, 'word')
+                    % ignore overlapping word events
+
+                else
+                    % boundary condition
+                    syllablecounter = 0;
+                    y = z;
+                    break
+                end
+            end
+        end
+
+        y = y + 1;
+    end
+
+    % Epoch on constructed NE markers
+    tEEG = pop_epoch(tEEG, {'NE'}, [0 EpochLength], ...
+        'newname', tEEG.setname, 'epochinfo', 'yes');
+    tEEG = eeg_checkset(tEEG);
+
+    % Baseline
+    tEEG = pop_rmbase(tEEG, [tEEG.times(1) tEEG.times(end)]);
+    tEEG = eeg_checkset(tEEG);
+
+    % Sanity check
+    for x = 1:numel(tEEG.epoch)
+        NumSyllables = 0;
+
+        for y = 1:numel(tEEG.epoch(x).event)
+            if strcmp(tEEG.epoch(x).eventcode{y}, 'syll')
+                NumSyllables = NumSyllables + 1;
+            end
+        end
+
+% Version of syllabl
+        if NumSyllables < NumSyllablesPerEpoch - 1
+    error(['Epoch Error at epoch ' num2str(x) ...
+           ': only ' num2str(NumSyllables) ...
+           ' syllables found (expected at least ' num2str(NumSyllablesPerEpoch) ').']);
+
+        %if NumSyllables < NumSyllablesPerEpoch - 1
+            %disp(['Epoch Error! Epoch to Remove: ' num2str(x)])
+            %disp(['Epoch has only ' num2str(NumSyllables) ' syllables.'])
+        end
+    end
+
+else
+
+    % =========================
+    % DEFAULT EPOCHING (ALL OTHER TASKS)
+    % =========================
+
+    tEEG = pop_selectevent(tEEG, 'type', marker_names, 'deleteevents', 'on');
+    tEEG = pop_epoch(tEEG, marker_names, epoch_length, 'epochinfo', 'yes');
+    tEEG = pop_selectevent(tEEG, 'latency','-.1 <= .1','deleteevents','on');
+end
