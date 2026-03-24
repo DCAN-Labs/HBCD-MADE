@@ -273,6 +273,220 @@ for run=1:length(datafile_names)
 
     
     %% STEP 3: Adjust anti-aliasing and task related time offset
+    % TM - 3/24/26 -- V08 timing test functionality notes and TODO:
+    % adjust time offset -- delay
+    % anti-aliasing - EGI had problem with filter, told you how to much to adjust based on
+    % sampling rate -- new versions of EGI for HBCD takes care of this
+    % automatically 
+
+    % if ses-V08: then go through this loop
+    % rename old latency column and add a new latency column with correct
+    % name
+    % adjust stim line instead of adding a new line
+    % note: RS - keep original as v03/v04/v06 and do new one as RSV08 in
+    % json + in code look for RSV08 and ses-V08
+
+    %stim offset -- say yes to fix offset (ie v08), loop through and
+        %directly adjust stm latency
+
+    % read in site information - TM 3/24/26
+    %Pull site information from scans.tsv (site) - TM 12/20/2024
+    %outEEGname = outEEG.setname;
+
+    % TODO: need to update this to attempt to find amp info first then
+    % catch site
+    try
+        %first try getting siteinfo from scans.tsv
+        sitepath = [bids_dir filesep participant_label filesep session_label];
+        sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
+        try
+            siteinfo=sitetable.site(contains(sitetable.filename,'acq-eeg'));
+            siteinfo = siteinfo(1);
+        catch
+            error("Site data is missing in scans.tsv!")
+        end
+    catch
+        %otherwise try getting site info from local PSCID
+        try
+            outEEGname = outEEG.setname;
+            siteinfo = outEEGname(3:5);
+        catch
+            error("Site data is missing locally!")
+        end
+    end
+
+    % adjust delay based on task
+    if contains(session_label, 'V08')
+        [EEG.event(:).old_latency] = EEG.event(:).latency; %copy old column in case
+
+
+        if strcmp(task, 'EFACE') || strcmp(task, 'EMO')
+            emotionMap = struct('A', 'anger', ...
+                'F', 'fearful', ...
+                'C', 'calm', ...
+                'H', 'happy');
+            %new condition field with empty strings
+            emptyStrings = repmat({''}, 1, numel(EEG.event));
+            [EEG.event(:).Condition] = deal(emptyStrings{:});
+            [EEG.event(:).TrialNum] = EEG.event(:).mffkey_trl; %copy column with new name
+            %%% Loop through events to rename stim+ using next event's mffkey_imag
+            for i = 1:length(EEG.event)
+                % Check for stm+
+                if ~strcmpi(EEG.event(i).type, 'stm+')
+                    continue;
+                end
+                % Search forward for the next event that contains mffkey_imag
+                nextIdx = i + 1;
+                while nextIdx <= length(EEG.event) && ...
+                        (~isfield(EEG.event(nextIdx), 'mffkey_imag') || isempty(EEG.event(nextIdx).mffkey_imag))
+                    nextIdx = nextIdx + 1;
+                end
+                % If none found, skip
+                if nextIdx > length(EEG.event)
+                    EEG.event(i).type = 'stm_unknown';
+                    continue;
+                end
+                faceStr = EEG.event(nextIdx).mffkey_imag;
+                % Extract emotion letter at fixed position (6th char)
+                if length(faceStr) >= 6
+                    emoLetter = faceStr(6);
+                else
+                    emoLetter = '';
+                end
+                % Map to label
+                if isfield(emotionMap, emoLetter)
+                    newLabel = ['stm_' emotionMap.(emoLetter)];
+                else
+                    newLabel = 'stm_unknown';
+                end
+                % Assign back to stm line
+                EEG.event(i).Condition = newLabel;
+                EEG.event(i).mffkey_blk = EEG.event(nextIdx).mffkey_blk;
+                EEG.event(i).mffkey_bgim = EEG.event(nextIdx).mffkey_bgim;
+                EEG.event(i).mffkey_imag = EEG.event(nextIdx).mffkey_imag;
+                EEG.event(i).TrialNum = EEG.event(nextIdx).TrialNum;
+            end
+
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            if isempty(din3s)
+                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+                sitedelay = 1; %TM testing
+
+                stmlist = find(strcmp({EEG.event.type}, 'stm+'));
+
+                for i = 1:length(stmlist)
+                    %copy old latency, add site delay and put it into
+                    %adjust new latency column
+                    latency = EEG.event(stmlist(i)).old_latency;
+                    EEG.event(stmlist(i)).latency = latency + sitedelay;
+                end
+
+                EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            else
+                %THERE ARE ALREADY DINS THAT'S A PROBLEM
+                error('There are already dins in this file');
+            end
+
+        elseif strcmp(task, 'RS')
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+            if isempty(din3s)
+                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+                sitedelay = 1; %TM testing
+
+                trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
+                stmlist = find(strcmp({EEG.event.type}, 'bas+'));
+
+                %check for right task
+                if isempty(trsplist)
+                    error("are you sure this is RS?")
+                end
+
+                %check if the stimlist is more than one and error
+                if length(stmlist) > 1
+                    error("more than one bas+ flag, check raw data please")
+                elseif isempty(stmlist)
+                    error("no bas+ flag found, check raw data please")
+                end
+
+                latency = EEG.event(stmlist).old_latency;
+                EEG.event(stmlist).latency = latency + sitedelay;
+                EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            else
+                %THERE ARE ALREADY DINS THAT'S A PROBLEM
+                error('There are already dins in this file');
+            end
+
+        elseif strcmp(task, 'SL')
+            din2s = find(strcmp({EEG.event.type}, 'DIN2'));
+
+            if isempty(din2s)
+                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+                sitedelay = 1; %TM testing
+
+                trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
+                stmlist = find(strcmp({EEG.event.type}, 'stms'));
+
+                %check for right task
+                if isempty(trsplist)
+                    error("are you sure this is SL?")
+                end
+
+                %check if the stimlist is more than one and error
+                if length(stmlist) > 1
+                    error("more than one stms flag, check raw data please")
+                elseif isempty(stmlist)
+                    error("no stms flag found, check raw data please")
+                end
+
+                latency = EEG.event(stmlist).old_latency;
+                EEG.event(stmlist).latency = latency + sitedelay;
+                EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            else
+                %THERE ARE ALREADY DINS THAT'S A PROBLEM
+                error('There are already dins in this file');
+            end
+
+        elseif strcmp(task, 'MC')
+
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+            if isempty(din3s)
+                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+                sitedelay = 1; %TM testing
+
+                trsplist = find(contains({EEG.event.mffkey_movi}, 'V08MC'));
+                stmlist = find(strcmp({EEG.event.type}, 'soc+'));
+
+                %check for right task
+                if isempty(trsplist)
+                    error("are you sure this is MC?")
+                end
+
+                %check if the stimlist is more than one and error
+                if length(stmlist) > 1
+                    error("more than one soc+ flag, check raw data please")
+                elseif isempty(stmlist)
+                    error("no soc+ flag found, check raw data please")
+                end
+
+                latency = EEG.event(stmlist).old_latency;
+                EEG.event(stmlist).latency = latency + sitedelay;
+                EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            else
+                %THERE ARE ALREADY DINS THAT'S A PROBLEM
+                error('There are already dins in this file');
+            end
+
+        end
+    end
+
+
+        %OLD CODE FROM ORIGINAL MADE
     %if adjust_time_offset==1
         % adjust anti-aliasing filter time offset
         %if filter_timeoffset~=0
@@ -885,29 +1099,7 @@ for run = 1 : length(event_struct.file_names)
 
     Tasks(run) = string(task);
     
-    %Pull site information from scans.tsv (site) - TM 12/20/2024
-    %outEEGname = outEEG.setname;
-
-    try
-        %first try getting siteinfo from scans.tsv
-        sitepath = [bids_dir filesep participant_label filesep session_label];
-        sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
-        try
-            siteinfo=sitetable.site(contains(sitetable.filename,'eeg'));
-            siteinfo = siteinfo(1);
-        catch
-            error("Site data is missing!")
-        end
-    catch
-        %otherwise try getting site info from local PSCID
-        try
-            outEEGname = outEEG.setname;
-            siteinfo = outEEGname(3:5);
-        catch
-            error("Site data is missing locally!")
-        end
-    end
-
+    %site information pulled in step 3 - TM
     EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays, session_label);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
