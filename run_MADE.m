@@ -691,13 +691,11 @@ for run=1:length(datafile_names)
                 end
             end
             % RS V03-V08
-            if contains(EEG.filename, 'RS')
-
-                if contains(session_label, 'V08')
-                    task = 'RSV08';   % V08-specific labeling
-                else
-                    task = 'RS';      % V03–V06
-                end
+        elseif contains(EEG.filename, 'RS')
+            if contains(session_label, 'V08')
+                task = 'RSV08';   % V08-specific labeling
+            else
+                task = 'RS';      % V03–V06
             end
         % V08 tasks do not require labeling in this section at this time    
         elseif contains(EEG.filename, 'MC')
