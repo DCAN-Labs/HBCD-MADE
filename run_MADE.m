@@ -1403,7 +1403,7 @@ for run = 1 : length(event_struct.file_names)
             taskages=agetable.age(contains(agetable.filename,'acq-eeg'));
             age = taskages(1)*12;   
         catch
-            error("Age data is missing!")
+            error("1. Age data is missing!")
         end
     
     catch
@@ -1412,7 +1412,7 @@ for run = 1 : length(event_struct.file_names)
         try
             age = agetable.age(strcmp(agetable.participant_id, participant_label))*12; %if age is given in years?
         catch
-            error("Age data is missing!")
+            error("2. Age data is missing!")
         end
     end
     
