@@ -92,6 +92,9 @@ check_if_plugins_are_present(ext);
 %TM relative path patch
 currentWD = pwd;
 
+%% Initialize loop variables
+unusable_files = {};
+
 %% Loop over all data files
 for run=1:length(datafile_names)
     
@@ -128,17 +131,47 @@ for run=1:length(datafile_names)
     % is now caught in the following section on uniformity
     % started or aff after task was finished
 
-    if numel(find(strcmp({EEG.event.type}, 'IBEG')))>0 && numel(find(strcmp({EEG.event.type}, 'IEND')))>0
+    if numel(find(strcmp({EEG.event.type}, 'IBEG'))) > 0 && ...
+            numel(find(strcmp({EEG.event.type}, 'IEND'))) > 0
+
         startidx = find(strcmp({EEG.event.type}, 'IBEG'));
-        endidx = find(strcmp({EEG.event.type}, 'IEND'));
+        endidx   = find(strcmp({EEG.event.type}, 'IEND'));
+
         if length(startidx) == 1 && length(endidx) == 1
+
             impstart = EEG.event(startidx).onset - 0.1;
-            impend = EEG.event(endidx).onset;
+            impend   = EEG.event(endidx).onset;
+
         else
-            error('multiple Impedance flags, check raw data and fix manually please');
+            % =========================
+            % LOG + SAVE + SKIP
+            % =========================
+
+            fprintf('Skipping file (impedance issue): %s\n', EEG.filename);
+
+            unusable_files{end+1,1} = datafile_names{run};
+            unusable_files{end,2}   = 'impedance_issue';
+
+            % --- Save flagged file ---
+            if output_format == 1
+                EEG = eeg_checkset(EEG);
+                EEG = pop_editset(EEG, 'setname', ...
+                    strrep(datafile_names{run}, ext, '_impedance_issue'));
+
+                EEG = pop_saveset(EEG, ...
+                    'filename', strrep(datafile_names{run}, ext, '_impedance_issue.set'), ...
+                    'filepath', [output_location filesep 'processed_data' filesep]);
+
+            elseif output_format == 2
+                save([[output_location filesep 'processed_data' filesep] ...
+                    strrep(datafile_names{run}, ext, '_impedance_issue.mat')], 'EEG');
+            end
+
+            continue   % skip to next file
         end
 
         EEG = pop_select(EEG, 'rmtime', [impstart impend]);
+
     end
 
     %% Uniformity Check - DG & AV
@@ -197,9 +230,37 @@ for run=1:length(datafile_names)
     artifact_mask = logical(artifact_mask);
 
     % 1 if any artifact detected, 0 if none
-    uniform_artifact_flag = double(any(artifact_mask)); % Drop file??
+    uniform_artifact_flag = double(any(artifact_mask));
 
-    
+    if uniform_artifact_flag == 1
+
+        % =========================
+        % LOG + SAVE + SKIP
+        % =========================
+
+        fprintf('Skipping file (uniformity issue): %s\n', EEG.filename);
+
+        unusable_files{end+1,1} = datafile_names{run};
+        unusable_files{end,2}   = 'uniformity_issue';
+
+        % --- Save flagged file ---
+        if output_format == 1
+            EEG = eeg_checkset(EEG);
+            EEG = pop_editset(EEG, 'setname', ...
+                strrep(datafile_names{run}, ext, '_uniformity_issue'));
+
+            EEG = pop_saveset(EEG, ...
+                'filename', strrep(datafile_names{run}, ext, '_uniformity_issue.set'), ...
+                'filepath', [output_location filesep 'processed_data' filesep]);
+
+        elseif output_format == 2
+            save([[output_location filesep 'processed_data' filesep] ...
+                strrep(datafile_names{run}, ext, '_uniformity_issue.mat')], 'EEG');
+        end
+
+        continue   % skip to next file
+
+    end
 
     %% TM - 8/6/2024 Catch DRPS flag and throw error
     if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
@@ -792,6 +853,9 @@ for run=1:length(datafile_names)
     end
     
 end
+
+% Update datafile_names prior to merge
+datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
 
 %% Step 6.7: Merge Data (based off of shared script from lydia)
 [EEG, event_struct] = merge_data(output_location, file_extension, subses);
