@@ -610,7 +610,7 @@ for run=1:length(datafile_names)
         end
     end
     
-    %% STEP 5.25: Label Task Variable and DIN conidtions if it is not already labeled
+    %% STEP 5.25: Label Task Variable and DIN conditions if it is not already labeled
 
     if strcmp(EEG.event(3).Task, 'n/a')
         % MMN V03-V06
