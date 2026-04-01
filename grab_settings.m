@@ -24,6 +24,10 @@ post_task = temp_split{2};
 post_task_split = split(post_task, '_');
 task_label = post_task_split{1};
 
+if strcmp(task_label, 'RS') && contains(eeg_file_name, 'V08')
+    task_label = 'RSV08';
+end
+
 %Check if the task label is present in the json
 if isfield(json_contents, task_label) == 0
     error(['Error: the task ' task_label ' is not defined in the json structure ' json_file_name ', and therefore can not be processed.']);

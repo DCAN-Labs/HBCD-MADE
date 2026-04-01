@@ -93,7 +93,7 @@ check_if_plugins_are_present(ext);
 currentWD = pwd;
 
 %TM stimtracker deviation init column
-stimdev = zeroes(length(datafile_names));
+stimdev = zeros(length(datafile_names));
 
 %% Initialize loop variables
 unusable_files = {};
@@ -446,7 +446,7 @@ for run=1:length(datafile_names)
     catch
         %otherwise try getting site info from local PSCID
         try
-            outEEGname = outEEG.setname;
+            outEEGname = EEG.setname;
             siteinfo = outEEGname(3:5);
         catch
             error("Site data is missing locally!")
@@ -458,8 +458,10 @@ for run=1:length(datafile_names)
     if contains(session_label, 'V08')
         [EEG.event(:).old_latency] = EEG.event(:).latency; %copy old column in case
 
+        %Add a column for Task
+        [EEG.event(:).Task] = deal([]);
 
-        if strcmp(task, 'EFACE') || strcmp(task, 'EMO')
+        if contains(EEG.filename, 'EFACE') || contains(EEG.filename, 'EMO')
             emotionMap = struct('A', 'anger', ...
                 'F', 'fearful', ...
                 'C', 'calm', ...
@@ -526,7 +528,7 @@ for run=1:length(datafile_names)
                 stimdev(run) = 1; % mark that there is a deviation
             end
 
-        elseif strcmp(task, 'RS')
+        elseif contains(EEG.filename, 'RS')
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
 
             %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
@@ -556,7 +558,7 @@ for run=1:length(datafile_names)
                 stimdev(run) = 1;
             end
 
-        elseif strcmp(task, 'SL')
+        elseif contains(EEG.filename, 'SL')
             din2s = find(strcmp({EEG.event.type}, 'DIN2'));
 
             %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
@@ -586,7 +588,7 @@ for run=1:length(datafile_names)
                 stimdev(run) = 1;
             end
 
-        elseif strcmp(task, 'MC')
+        elseif contains(EEG.filename, 'MC')
 
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
             %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
@@ -879,7 +881,9 @@ for run=1:length(datafile_names)
 end
 
 % Update datafile_names prior to merge
-datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
+if ~isempty(unusable_files)
+    datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
+end
 
 %% Step 6.7: Merge Data (based off of shared script from lydia)
 [EEG, event_struct] = merge_data(output_location, file_extension, subses);
@@ -1259,12 +1263,20 @@ for run = 1 : length(event_struct.file_names)
     
     if contains(event_struct.file_names{run}, 'MMN')
         task = 'MMN';
+    elseif contains(event_struct.file_names{run}, 'RS') && contains(event_struct.file{run}, 'V08')
+        task = 'RSV08';
     elseif contains(event_struct.file_names{run}, 'RS')
         task = 'RS';
     elseif contains(event_struct.file_names{run}, 'VEP')
         task = 'VEP';
     elseif contains(event_struct.file_names{run}, 'FACE')
         task = 'FACE';
+    elseif contains(event_struct.file_names{run}, 'EMO')
+        task = 'EMO';
+    elseif contains(event_struct.file_names{run}, 'MC')
+        task = 'MC';
+    elseif contains(event_struct.file_names{run}, 'SL')
+        task = 'SL';
     end
 
     Tasks(run) = string(task);
