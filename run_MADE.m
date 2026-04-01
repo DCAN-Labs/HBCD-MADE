@@ -92,6 +92,9 @@ check_if_plugins_are_present(ext);
 %TM relative path patch
 currentWD = pwd;
 
+%TM stimtracker deviation init column
+stimdev = zeroes(length(datafile_names));
+
 %% Initialize loop variables
 unusable_files = {};
 
@@ -257,6 +260,9 @@ for run=1:length(datafile_names)
             save([[output_location filesep 'processed_data' filesep] ...
                 strrep(datafile_names{run}, ext, '_uniformity_issue.mat')], 'EEG');
         end
+        
+        %if you drop file, remake the stimdev list - 1 from the end
+        stimdev = stimdev(1:end-1); 
 
         continue   % skip to next file
 
@@ -421,8 +427,12 @@ for run=1:length(datafile_names)
     %Pull site information from scans.tsv (site) - TM 12/20/2024
     %outEEGname = outEEG.setname;
 
+    % TODO only check for amp during V08
+    %if contains(session_label, 'V08')
+
     % TODO: need to update this to attempt to find amp info first then
     % catch site
+    %else 
     try
         %first try getting siteinfo from scans.tsv
         sitepath = [bids_dir filesep participant_label filesep session_label];
@@ -442,6 +452,7 @@ for run=1:length(datafile_names)
             error("Site data is missing locally!")
         end
     end
+    %end
 
     % adjust delay based on task
     if contains(session_label, 'V08')
@@ -496,118 +507,113 @@ for run=1:length(datafile_names)
             end
 
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
-            if isempty(din3s)
-                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
-                sitedelay = 1; %TM testing
+            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            sitedelay = 1; %TM testing
 
-                stmlist = find(strcmp({EEG.event.type}, 'stm+'));
+            stmlist = find(strcmp({EEG.event.type}, 'stm+'));
 
-                for i = 1:length(stmlist)
-                    %copy old latency, add site delay and put it into
-                    %adjust new latency column
-                    latency = EEG.event(stmlist(i)).old_latency;
-                    EEG.event(stmlist(i)).latency = latency + sitedelay;
-                end
+            for i = 1:length(stmlist)
+                %copy old latency, add site delay and put it into
+                %adjust new latency column
+                latency = EEG.event(stmlist(i)).old_latency;
+                EEG.event(stmlist(i)).latency = latency + sitedelay;
+            end
 
-                EEG = eeg_checkset(EEG, 'eventconsistency');
+            EEG = eeg_checkset(EEG, 'eventconsistency');
 
-            else
-                %THERE ARE ALREADY DINS THAT'S A PROBLEM
-                error('There are already dins in this file');
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1; % mark that there is a deviation
             end
 
         elseif strcmp(task, 'RS')
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
 
-            if isempty(din3s)
-                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
-                sitedelay = 1; %TM testing
+            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            sitedelay = 1; %TM testing
 
-                trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
-                stmlist = find(strcmp({EEG.event.type}, 'bas+'));
+            trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
+            stmlist = find(strcmp({EEG.event.type}, 'bas+'));
 
-                %check for right task
-                if isempty(trsplist)
-                    error("are you sure this is RS?")
-                end
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is RS?")
+            end
 
-                %check if the stimlist is more than one and error
-                if length(stmlist) > 1
-                    error("more than one bas+ flag, check raw data please")
-                elseif isempty(stmlist)
-                    error("no bas+ flag found, check raw data please")
-                end
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one bas+ flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no bas+ flag found, check raw data please")
+            end
 
-                latency = EEG.event(stmlist).old_latency;
-                EEG.event(stmlist).latency = latency + sitedelay;
-                EEG = eeg_checkset(EEG, 'eventconsistency');
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
 
-            else
-                %THERE ARE ALREADY DINS THAT'S A PROBLEM
-                error('There are already dins in this file');
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
             end
 
         elseif strcmp(task, 'SL')
             din2s = find(strcmp({EEG.event.type}, 'DIN2'));
 
-            if isempty(din2s)
-                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
-                sitedelay = 1; %TM testing
+            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            sitedelay = 1; %TM testing
 
-                trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
-                stmlist = find(strcmp({EEG.event.type}, 'stms'));
+            trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
+            stmlist = find(strcmp({EEG.event.type}, 'stms'));
 
-                %check for right task
-                if isempty(trsplist)
-                    error("are you sure this is SL?")
-                end
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is SL?")
+            end
 
-                %check if the stimlist is more than one and error
-                if length(stmlist) > 1
-                    error("more than one stms flag, check raw data please")
-                elseif isempty(stmlist)
-                    error("no stms flag found, check raw data please")
-                end
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one stms flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no stms flag found, check raw data please")
+            end
 
-                latency = EEG.event(stmlist).old_latency;
-                EEG.event(stmlist).latency = latency + sitedelay;
-                EEG = eeg_checkset(EEG, 'eventconsistency');
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
 
-            else
-                %THERE ARE ALREADY DINS THAT'S A PROBLEM
-                error('There are already dins in this file');
+            if ~isempty(din2s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
             end
 
         elseif strcmp(task, 'MC')
 
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            sitedelay = 1; %TM testing
 
-            if isempty(din3s)
-                %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
-                sitedelay = 1; %TM testing
+            trsplist = find(contains({EEG.event.mffkey_movi}, 'V08MC'));
+            stmlist = find(strcmp({EEG.event.type}, 'soc+'));
 
-                trsplist = find(contains({EEG.event.mffkey_movi}, 'V08MC'));
-                stmlist = find(strcmp({EEG.event.type}, 'soc+'));
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is MC?")
+            end
 
-                %check for right task
-                if isempty(trsplist)
-                    error("are you sure this is MC?")
-                end
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one soc+ flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no soc+ flag found, check raw data please")
+            end
 
-                %check if the stimlist is more than one and error
-                if length(stmlist) > 1
-                    error("more than one soc+ flag, check raw data please")
-                elseif isempty(stmlist)
-                    error("no soc+ flag found, check raw data please")
-                end
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
 
-                latency = EEG.event(stmlist).old_latency;
-                EEG.event(stmlist).latency = latency + sitedelay;
-                EEG = eeg_checkset(EEG, 'eventconsistency');
-
-            else
-                %THERE ARE ALREADY DINS THAT'S A PROBLEM
-                error('There are already dins in this file');
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
             end
 
         end
@@ -692,6 +698,10 @@ for run=1:length(datafile_names)
                 end
             end
 
+            if isempty(din2s) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
+            end
+
             % VEP V03-V06
         elseif contains(EEG.filename, 'VEP')
             task = 'VEP';
@@ -701,6 +711,10 @@ for run=1:length(datafile_names)
             end
             for d =1:length(din3s) %label the DIN conditions
                 EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
+            end
+
+            if isempty(din3s) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
             end
 
             % FACE V03-V06
@@ -751,12 +765,22 @@ for run=1:length(datafile_names)
                     end
                 end
             end
+
+            if isempty(dins) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
+            end
+
             % RS V03-V08
         elseif contains(EEG.filename, 'RS')
             if contains(session_label, 'V08')
                 task = 'RSV08';   % V08-specific labeling
             else
                 task = 'RS';      % V03–V06
+                dins = find(strcmp({EEG.event.type}, 'DIN3'));
+                if isempty(dins) %check for missing dins -- stimtracker deviation
+                    stimdev(run) = 1;
+                end
+
             end
         % V08 tasks do not require labeling in this section at this time    
         elseif contains(EEG.filename, 'MC')
@@ -1520,11 +1544,11 @@ end % end of run loop
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
 report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp');
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej'};
+    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation'};
 writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
 
 %%% Delete the interem results if the user doesnt want them
