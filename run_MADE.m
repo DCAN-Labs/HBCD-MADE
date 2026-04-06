@@ -1263,7 +1263,7 @@ for run = 1 : length(event_struct.file_names)
     
     if contains(event_struct.file_names{run}, 'MMN')
         task = 'MMN';
-    elseif contains(event_struct.file_names{run}, 'RS') && contains(event_struct.file{run}, 'V08')
+    elseif contains(event_struct.file_names{run}, 'RS') && contains(event_struct.file_names{run}, 'V08')
         task = 'RSV08';
     elseif contains(event_struct.file_names{run}, 'RS')
         task = 'RS';

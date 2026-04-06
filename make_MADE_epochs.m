@@ -70,6 +70,8 @@ if isfield(s,'make_dummy_events') % TM -- this chunk runs for RS v08 but only ce
                 tEEG.event(start_index(2)).type = 'EXTRA DIN';
                 start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
             end
+        else
+            start_index = find(strcmp({tEEG.event.type}, marker_names(1))); %V08 find start index for bas+ or soc+
         end
 
         % TM TODO add an if for if marker names is din3 (ie. V03, V04, V06)
@@ -80,6 +82,8 @@ if isfield(s,'make_dummy_events') % TM -- this chunk runs for RS v08 but only ce
                 start_index = find(strcmp({tEEG.event.type}, marker_names(1)));
             end
             start_latency = (tEEG.event(start_index).latency)/tEEG.srate;
+        else
+            start_latency = (tEEG.event(start_index).latency)/tEEG.srate; %V08 find start latency
         end
 
         num_dummy_events = s.num_dummy_events;
