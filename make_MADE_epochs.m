@@ -195,9 +195,10 @@ if contains(eeg_file_name, 'SL')
     times_sec    = 0:interval_sec:duration_sec;
     latencies    = (times_sec * srate) + 1;
 
-    if skip_first_latency_for_drum
-        latencies = latencies(2:end);
-    end
+    % if skip_first_latency_for_drum % if you have a drum at the start the
+    % % set this setting to true
+    %     latencies = latencies(2:end);
+    % end
 
     evt_idx = length(tEEG.event);
 
