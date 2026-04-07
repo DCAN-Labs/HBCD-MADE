@@ -217,7 +217,7 @@ if contains(eeg_file_name, 'SL')
         end
     end
 
-    tEEG = tEEG_checkset(tEEG, 'eventconsistency');
+    tEEG = eeg_checkset(tEEG, 'eventconsistency');
 
     keepEvents = arrayfun(@(e) strcmp(e.code,'word') || strcmp(e.code,'syll'), tEEG.event);
     tEEG.event = tEEG.event(keepEvents);
