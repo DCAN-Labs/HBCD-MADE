@@ -126,6 +126,11 @@ for run=1:length(datafile_names)
 %     EEG = pop_biosig([rawdata_location, filesep, datafile_names{run}]);
 %     EEG = eeg_checkset(EEG);
 %     EEG = pop_select( EEG,'nochannel', 65:72); % delete redundant channels
+    
+    %% define variable earlier so that the impedances and uniformity catch
+    % works - TM
+    s = grab_settings(datafile_names{run}, json_settings_file);
+    output_format = s.output_format;
 
     %% TM - 8/6/2024: Impedances catch
     % Check if impedances were turned on and off -- if so pop out the
@@ -469,7 +474,7 @@ for run=1:length(datafile_names)
             %new condition field with empty strings
             emptyStrings = repmat({''}, 1, numel(EEG.event));
             [EEG.event(:).Condition] = deal(emptyStrings{:});
-            [EEG.event(:).TrialNum] = EEG.event(:).mffkey_trl; %copy column with new name
+            % [EEG.event(:).TrialNum] = EEG.event(:).mffkey_trl; %copy column with new name
             %%% Loop through events to rename stim+ using next event's mffkey_imag
             for i = 1:length(EEG.event)
                 % Check for stm+
@@ -479,7 +484,7 @@ for run=1:length(datafile_names)
                 % Search forward for the next event that contains mffkey_imag
                 nextIdx = i + 1;
                 while nextIdx <= length(EEG.event) && ...
-                        (~isfield(EEG.event(nextIdx), 'mffkey_imag') || isempty(EEG.event(nextIdx).mffkey_imag))
+                        (~isfield(EEG.event(nextIdx), 'face_img') || isempty(EEG.event(nextIdx).face_img))
                     nextIdx = nextIdx + 1;
                 end
                 % If none found, skip
@@ -487,7 +492,7 @@ for run=1:length(datafile_names)
                     EEG.event(i).type = 'stm_unknown';
                     continue;
                 end
-                faceStr = EEG.event(nextIdx).mffkey_imag;
+                faceStr = EEG.event(nextIdx).face_img;
                 % Extract emotion letter at fixed position (6th char)
                 if length(faceStr) >= 6
                     emoLetter = faceStr(6);
@@ -503,8 +508,8 @@ for run=1:length(datafile_names)
                 % Assign back to stm line
                 EEG.event(i).Condition = newLabel;
                 EEG.event(i).mffkey_blk = EEG.event(nextIdx).mffkey_blk;
-                EEG.event(i).mffkey_bgim = EEG.event(nextIdx).mffkey_bgim;
-                EEG.event(i).mffkey_imag = EEG.event(nextIdx).mffkey_imag;
+                EEG.event(i).face_background = EEG.event(nextIdx).face_background;
+                EEG.event(i).face_img = EEG.event(nextIdx).face_img;
                 EEG.event(i).TrialNum = EEG.event(nextIdx).TrialNum;
             end
 
