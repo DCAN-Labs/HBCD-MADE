@@ -93,7 +93,7 @@ check_if_plugins_are_present(ext);
 currentWD = pwd;
 
 %TM stimtracker deviation init column
-stimdev = zeros(length(datafile_names));
+stimdev = zeros(size(datafile_names));
 
 %% Initialize loop variables
 unusable_files = {};

@@ -174,134 +174,66 @@ if contains(eeg_file_name, 'SL')
     % SL-SPECIFIC EPOCHING
     % =========================
     % TRIM DATA FROM FIRST 'stms'
+    NumSyllablesPerEpoch = 36;
+    interval_sec = 0.300;
+    EpochLength  = NumSyllablesPerEpoch * interval_sec;   % seconds
+
+    % Trim to first 'stms' event
     evt_types = {tEEG.event.type};
     stms_idx  = find(strcmp(evt_types, 'stms'), 1, 'first');
     if isempty(stms_idx)
-        error('No event with code ''stms'' found.');
+        error('sl_epoch_overhauled: no ''stms'' event found.');
     end
 
     start_point = tEEG.event(stms_idx).latency;
-    end_point   = tEEG.pnts;
-
-    tEEG = pop_select(tEEG, 'point', [round(start_point) end_point]);
+    tEEG = pop_select(tEEG, 'point', [round(start_point) tEEG.pnts]);
     tEEG = eeg_checkset(tEEG);
 
-    % ADD SYLL / WORD EVENTS
-    interval_sec = 0.300;   % 300 ms
+    % Create latencies every 300 ms, at each theoretical syllable onset
     srate        = tEEG.srate;
-    n_points     = tEEG.pnts;
-
-    duration_sec = (n_points - 1) / srate;
+    duration_sec = (tEEG.pnts - 1) / srate;
     times_sec    = 0:interval_sec:duration_sec;
     latencies    = (times_sec * srate) + 1;
 
-    % if skip_first_latency_for_drum % if you have a drum at the start the
-    % % set this setting to true
-    %     latencies = latencies(2:end);
-    % end
-
+    % Place NE markers directly every NumSyllablesPerEpoch 
     evt_idx = length(tEEG.event);
-
     for i = 1:numel(latencies)
-
-        evt_idx = evt_idx + 1;
-        tEEG.event(evt_idx).latency = latencies(i);
-        tEEG.event(evt_idx).type    = 'syll';
-        tEEG.event(evt_idx).code    = 'syll';
-
-        if mod(i,3) == 0
+        if mod(i-1, NumSyllablesPerEpoch) == 0
             evt_idx = evt_idx + 1;
             tEEG.event(evt_idx).latency = latencies(i);
-            tEEG.event(evt_idx).type    = 'word';
-            tEEG.event(evt_idx).code    = 'word';
+            tEEG.event(evt_idx).type    = 'NE';
+            tEEG.event(evt_idx).code    = 'NE';
         end
     end
 
     tEEG = eeg_checkset(tEEG, 'eventconsistency');
 
-    keepEvents = arrayfun(@(e) strcmp(e.code,'word') || strcmp(e.code,'syll'), tEEG.event);
+    % Keep only NE events
+    keepEvents = arrayfun(@(e) strcmp(e.code, 'NE'), tEEG.event);
     tEEG.event = tEEG.event(keepEvents);
     tEEG = eeg_checkset(tEEG, 'makeur');
 
-    NumSyllablesPerEpoch = 36;
-    EpochLength = NumSyllablesPerEpoch * 0.3; % seconds
-    UnacceptableJitter = 80; % samples (500 Hz)
-
-    y = 2; % skip first syllable
-    while y < numel(tEEG.event)
-
-        if strcmp(tEEG.event(y).code, 'word')
-
-            CandidateEpochOnset = y;
-            syllablecounter = 0;
-
-            for z = y+1:numel(tEEG.event)
-
-                % Jitter / pause check
-                if tEEG.event(z).latency - tEEG.event(z-1).latency > UnacceptableJitter
-                    disp('break in auditory stimulation detected!')
-                    syllablecounter = 0;
-                    y = z;
-                    break
-                end
-
-                % Count syllables
-                if strcmp(tEEG.event(z).code, 'syll')
-                    syllablecounter = syllablecounter + 1;
-
-                    if syllablecounter == NumSyllablesPerEpoch
-                        tEEG = pop_editeventvals(tEEG, ...
-                            'changefield', {CandidateEpochOnset, 'type', 'NE'});
-                        y = z;
-                        break
-                    end
-
-                elseif strcmp(tEEG.event(z).code, 'word')
-                    % ignore overlapping word events
-
-                else
-                    % boundary condition
-                    syllablecounter = 0;
-                    y = z;
-                    break
-                end
-            end
-        end
-
-        y = y + 1;
-    end
-
-    % Epoch on constructed NE markers
+    % Epoch on 'NE' markers
     tEEG = pop_epoch(tEEG, {'NE'}, [0 EpochLength], ...
         'newname', tEEG.setname, 'epochinfo', 'yes');
     tEEG = eeg_checkset(tEEG);
 
-    % Baseline
+    % Baseline correction
     tEEG = pop_rmbase(tEEG, [tEEG.times(1) tEEG.times(end)]);
     tEEG = eeg_checkset(tEEG);
 
-    % Sanity check
-    for x = 1:numel(tEEG.epoch)
-        NumSyllables = 0;
-
-        for y = 1:numel(tEEG.epoch(x).event)
-            if strcmp(tEEG.epoch(x).eventcode{y}, 'syll')
-                NumSyllables = NumSyllables + 1;
-            end
-        end
-
-        % Version of epoch check as error
-        if NumSyllables < NumSyllablesPerEpoch - 1
-            error(['Epoch Error at epoch ' num2str(x) ...
-                ': only ' num2str(NumSyllables) ...
-                ' syllables found (expected at least ' num2str(NumSyllablesPerEpoch) ').']);
-
-         % Version of epoch check as warning
-         %if NumSyllables < NumSyllablesPerEpoch - 1
-         %disp(['Epoch Error! Epoch to Remove: ' num2str(x)])
-         %disp(['Epoch has only ' num2str(NumSyllables) ' syllables.'])
-        end
+    % Sanity check — verify epoch count matches expectation
+    expected_epochs = floor((numel(latencies) - 1) / NumSyllablesPerEpoch);
+    actual_epochs   = numel(tEEG.epoch);
+    if actual_epochs < expected_epochs - 1
+        error('Epoch count mismatch: expected %d epochs but got %d.', ...
+            expected_epochs, actual_epochs);
+    elseif actual_epochs == expected_epochs - 1
+        fprintf('Note: last epoch dropped by pop_epoch (recording too short for full epoch window). Got %d of %d expected epochs.\n', ...
+            actual_epochs, expected_epochs);
     end
+
+    fprintf('sl_epoch_overhauled: %d epochs created.\n', actual_epochs);
 
 else
 
