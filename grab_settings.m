@@ -24,7 +24,7 @@ post_task = temp_split{2};
 post_task_split = split(post_task, '_');
 task_label = post_task_split{1};
 
-if strcmp(task_label, 'RS') && contains(eeg_file_name, 'V08')
+if strcmp(task_label, 'RS') && (contains(eeg_file_name, 'V08') || contains(eeg_file_name, 'P08'))
     task_label = 'RSV08';
 end
 

@@ -265,7 +265,7 @@ for run=1:length(datafile_names)
             save([[output_location filesep 'processed_data' filesep] ...
                 strrep(datafile_names{run}, ext, '_uniformity_issue.mat')], 'EEG');
         end
-        
+
         %if you drop file, remake the stimdev list - 1 from the end
         stimdev = stimdev(1:end-1); 
 
@@ -460,7 +460,7 @@ for run=1:length(datafile_names)
     %end
 
     % adjust delay based on task
-    if contains(session_label, 'V08')
+    if contains(session_label, 'V08') || contains(session_label, 'P08')
         [EEG.event(:).old_latency] = EEG.event(:).latency; %copy old column in case
 
         %Add a column for Task
@@ -779,7 +779,7 @@ for run=1:length(datafile_names)
 
             % RS V03-V08
         elseif contains(EEG.filename, 'RS')
-            if contains(session_label, 'V08')
+            if contains(session_label, 'V08') || contains(session_label, 'P08')
                 task = 'RSV08';   % V08-specific labeling
             else
                 task = 'RS';      % V03–V06
@@ -1268,7 +1268,7 @@ for run = 1 : length(event_struct.file_names)
     
     if contains(event_struct.file_names{run}, 'MMN')
         task = 'MMN';
-    elseif contains(event_struct.file_names{run}, 'RS') && contains(event_struct.file_names{run}, 'V08')
+    elseif contains(event_struct.file_names{run}, 'RS') && (contains(event_struct.file_names{run}, 'V08') || contains(event_struct.file_names{run}, 'P08'))
         task = 'RSV08';
     elseif contains(event_struct.file_names{run}, 'RS')
         task = 'RS';
