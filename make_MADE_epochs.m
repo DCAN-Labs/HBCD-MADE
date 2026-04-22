@@ -218,6 +218,16 @@ if contains(eeg_file_name, 'SL')
         'newname', tEEG.setname, 'epochinfo', 'yes');
     tEEG = eeg_checkset(tEEG);
 
+    % Keep only the time-locking event in each epoch
+    keepIdx = false(1, length(tEEG.event));
+    for n = 1:tEEG.trials
+        lats   = cell2mat(tEEG.epoch(n).eventlatency);
+        evIdx  = tEEG.epoch(n).event;
+        keepIdx(evIdx(lats == 0)) = true;
+    end
+    tEEG.event = tEEG.event(keepIdx);
+    tEEG = eeg_checkset(tEEG);
+
     % Baseline correction
     tEEG = pop_rmbase(tEEG, [tEEG.times(1) tEEG.times(end)]);
     tEEG = eeg_checkset(tEEG);
