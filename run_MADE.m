@@ -484,7 +484,7 @@ for run=1:length(datafile_names)
                 % Search forward for the next event that contains mffkey_imag
                 nextIdx = i + 1;
                 while nextIdx <= length(EEG.event) && ...
-                        (~isfield(EEG.event(nextIdx), 'face_img') || isempty(EEG.event(nextIdx).face_img))
+                        (~isfield(EEG.event(nextIdx), 'face_img') || strcmp(EEG.event(nextIdx).face_img, 'n/a'))
                     nextIdx = nextIdx + 1;
                 end
                 % If none found, skip
