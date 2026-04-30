@@ -127,10 +127,104 @@ for run=1:length(datafile_names)
 %     EEG = eeg_checkset(EEG);
 %     EEG = pop_select( EEG,'nochannel', 65:72); % delete redundant channels
     
-    %% define variable earlier so that the impedances and uniformity catch
-    % works - TM
+    
+    %% TM - 8/6/2024 Catch DRPS flag and throw error
+    if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
+        error('DrpS flag found, check raw data and fix manually please');
+    end
+
+
+    %% Step 1.25: Load settings for processing
+    % 2. Enter the path of the folder where you want to save the processed data
     s = grab_settings(datafile_names{run}, json_settings_file);
-    output_format = s.output_format;
+    
+    %NEW - to cover case where boundary marker changes
+    boundary_marker = s.boundary_marker;
+    
+    %NEW - to cover case where EKG channel is present
+    if isfield(s, 'ekg_channels')
+        ekg_channels = s.ekg_channels;
+    else
+        ekg_channels = {};
+    end
+
+    % 3. Enter the path of the channel location file
+    %channel_locations = ['path to eeglab folder' filesep 'sample_locs' filesep 'GSN128.sfp'];
+    channel_locations = s.channel_locations;
+
+    % TM - 4/1/25 Read in Site Delays file earlier as a relative path (You
+    % must be in the correct Working Directory or this will error)
+    site_delay_file = s.site_delay_file;
+    cd(currentWD); %change this to wherever it is saved
+    try
+        site_delays = readtable(site_delay_file);
+    catch
+        disp(currentWD);
+        error("No Site delay file present, please check working directory");
+    end
+
+    % 5. Do you want to down sample the data?
+    down_sample = s.down_sample; % 0 = NO (no down sampling), 1 = YES (down sampling)
+    sampling_rate = s.sampling_rate; % set sampling rate (in Hz), if you want to down sample
+
+    % 6. Do you want to delete the outer layer of the channels? (Rationale has been described in MADE manuscript)
+    %    This fnction can also be used to down sample electrodes. For example, if EEG was recorded with 128 channels but you would
+    %    like to analyse only 64 channels, you can assign the list of channnels to be excluded in the 'outerlayer_channel' variable.    
+    delete_outerlayer = s.delete_outerlayer; % 0 = NO (do not delete outer layer), 1 = YES (delete outerlayer);
+    % If you want to delete outer layer, make a list of channels to be deleted
+    outerlayer_channel = s.outerlayer_channel; % list of channels
+    % recommended list for EGI 128 chanenl net: {'E17' 'E38' 'E43' 'E44' 'E48' 'E49' 'E113' 'E114' 'E119' 'E120' 'E121' 'E125' 'E126' 'E127' 'E128' 'E56' 'E63' 'E68' 'E73' 'E81' 'E88' 'E94' 'E99' 'E107'}
+
+    % 7. Initialize the filters
+    highpass = s.highpass; % High-pass frequency
+    lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
+
+    % 14. Do you want to rereference your data?
+    rerefer_data = s.rerefer_data; % 0 = NO, 1 = YES
+    reref=s.reref; % Enter electrode name/s or number/s to be used for rereferencing
+    % For channel name/s enter, reref = {'channel_name', 'channel_name'};
+    % For channel number/s enter, reref = [channel_number, channel_number];
+    % For average rereference enter, reref = []; default is average rereference
+
+    % 16. How do you want to save your data? .set or .mat
+    output_format = s.output_format; % 1 = .set (EEGLAB data structure), 2 = .mat (Matlab data structure)
+    
+    %% Step 1.3 Create output folders to save data
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%Format the output path to be the same as the input path at %%%%%%%
+    %%%%%the level of the run folder onwards %%%%%%%%%%%%%%%%%%%%%%%%%%
+    partial_path_index = strfind(rawdata_location, '/sub');
+    if length(partial_path_index) > 1
+        partial_path_index = partial_path_index(end);
+    end
+    output_location = fullfile(output_dir_name, rawdata_location(partial_path_index:end));
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    if ischar(save_interim_result)
+        save_interim_result = str2double(save_interim_result);
+    end
+    
+    if exist(output_location, 'dir') == 0
+        mkdir(output_location);
+    end
+        
+    if exist([output_location filesep 'filtered_data'], 'dir') == 0
+        mkdir([output_location filesep 'filtered_data'])
+    end
+    if exist([output_location filesep 'ica_data'], 'dir') == 0
+        mkdir([output_location filesep 'ica_data'])
+    end
+
+    if exist([output_location filesep 'processed_data'], 'dir') == 0
+        mkdir([output_location filesep 'processed_data'])
+    end
+    
+    if exist([output_location filesep 'merged_data'], 'dir') == 0
+        mkdir([output_location filesep 'merged_data'])
+    end
+    
+    cd(output_location); %Go to output dir
 
     %% TM - 8/6/2024: Impedances catch
     % Check if impedances were turned on and off -- if so pop out the
@@ -273,103 +367,6 @@ for run=1:length(datafile_names)
 
     end
 
-    %% TM - 8/6/2024 Catch DRPS flag and throw error
-    if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
-        error('DrpS flag found, check raw data and fix manually please');
-    end
-
-
-    %% Step 1.25: Load settings for processing
-    % 2. Enter the path of the folder where you want to save the processed data
-    s = grab_settings(datafile_names{run}, json_settings_file);
-    
-    %NEW - to cover case where boundary marker changes
-    boundary_marker = s.boundary_marker;
-    
-    %NEW - to cover case where EKG channel is present
-    if isfield(s, 'ekg_channels')
-        ekg_channels = s.ekg_channels;
-    else
-        ekg_channels = {};
-    end
-
-    % 3. Enter the path of the channel location file
-    %channel_locations = ['path to eeglab folder' filesep 'sample_locs' filesep 'GSN128.sfp'];
-    channel_locations = s.channel_locations;
-
-    % TM - 4/1/25 Read in Site Delays file earlier as a relative path (You
-    % must be in the correct Working Directory or this will error)
-    site_delay_file = s.site_delay_file;
-    cd(currentWD); %change this to wherever it is saved
-    try
-        site_delays = readtable(site_delay_file);
-    catch
-        disp(currentWD);
-        error("No Site delay file present, please check working directory");
-    end
-
-    % 5. Do you want to down sample the data?
-    down_sample = s.down_sample; % 0 = NO (no down sampling), 1 = YES (down sampling)
-    sampling_rate = s.sampling_rate; % set sampling rate (in Hz), if you want to down sample
-
-    % 6. Do you want to delete the outer layer of the channels? (Rationale has been described in MADE manuscript)
-    %    This fnction can also be used to down sample electrodes. For example, if EEG was recorded with 128 channels but you would
-    %    like to analyse only 64 channels, you can assign the list of channnels to be excluded in the 'outerlayer_channel' variable.    
-    delete_outerlayer = s.delete_outerlayer; % 0 = NO (do not delete outer layer), 1 = YES (delete outerlayer);
-    % If you want to delete outer layer, make a list of channels to be deleted
-    outerlayer_channel = s.outerlayer_channel; % list of channels
-    % recommended list for EGI 128 chanenl net: {'E17' 'E38' 'E43' 'E44' 'E48' 'E49' 'E113' 'E114' 'E119' 'E120' 'E121' 'E125' 'E126' 'E127' 'E128' 'E56' 'E63' 'E68' 'E73' 'E81' 'E88' 'E94' 'E99' 'E107'}
-
-    % 7. Initialize the filters
-    highpass = s.highpass; % High-pass frequency
-    lowpass  = s.lowpass; % Low-pass frequency. We recommend low-pass filter at/below line noise frequency (see manuscript for detail)
-
-    % 14. Do you want to rereference your data?
-    rerefer_data = s.rerefer_data; % 0 = NO, 1 = YES
-    reref=s.reref; % Enter electrode name/s or number/s to be used for rereferencing
-    % For channel name/s enter, reref = {'channel_name', 'channel_name'};
-    % For channel number/s enter, reref = [channel_number, channel_number];
-    % For average rereference enter, reref = []; default is average rereference
-
-    % 16. How do you want to save your data? .set or .mat
-    output_format = s.output_format; % 1 = .set (EEGLAB data structure), 2 = .mat (Matlab data structure)
-    
-    %% Step 1.3 Create output folders to save data
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%Format the output path to be the same as the input path at %%%%%%%
-    %%%%%the level of the run folder onwards %%%%%%%%%%%%%%%%%%%%%%%%%%
-    partial_path_index = strfind(rawdata_location, '/sub');
-    if length(partial_path_index) > 1
-        partial_path_index = partial_path_index(end);
-    end
-    output_location = fullfile(output_dir_name, rawdata_location(partial_path_index:end));
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    if ischar(save_interim_result)
-        save_interim_result = str2double(save_interim_result);
-    end
-    
-    if exist(output_location, 'dir') == 0
-        mkdir(output_location);
-    end
-        
-    if exist([output_location filesep 'filtered_data'], 'dir') == 0
-        mkdir([output_location filesep 'filtered_data'])
-    end
-    if exist([output_location filesep 'ica_data'], 'dir') == 0
-        mkdir([output_location filesep 'ica_data'])
-    end
-
-    if exist([output_location filesep 'processed_data'], 'dir') == 0
-        mkdir([output_location filesep 'processed_data'])
-    end
-    
-    if exist([output_location filesep 'merged_data'], 'dir') == 0
-        mkdir([output_location filesep 'merged_data'])
-    end
-    
-    cd(output_location); %Go to output dir
     %% Step 1.4: Save specification
     save_specification(s, output_location, datafile_names{run});
     
