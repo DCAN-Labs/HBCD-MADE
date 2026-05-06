@@ -803,6 +803,9 @@ for run=1:length(datafile_names)
     
     %% STEP 5.5: Get Line Noise Measure
     % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
+    % Please note we are tracking but not removing line noise. In
+    % discussion with Nathan Fox and Santiago Morales, it is agreed this
+    % should not be changed at this time - 5/6/2026 AV
         lineNoiseIn = struct('lineNoiseMethod', 'clean', ...
             'lineNoiseChannels', 1:EEG.nbchan, 'Fs', EEG.srate, ...
             'lineFrequencies', [60 120], 'p', 0.01, 'fScanBandWidth', 2, ...
@@ -1434,6 +1437,10 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {'n/a'};
             MMN_PreDev(run) = {'n/a'};
             MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
         elseif contains(event_struct.file_names{run}, 'MMN')
             FACE_UpInv(run) = {'n/a'};
             FACE_Inv(run) = {'n/a'};
@@ -1442,6 +1449,23 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {sum(strcmp({EEG.event.Condition}, '1'))};
             MMN_PreDev(run) = {sum(strcmp({EEG.event.Condition}, '2'))};
             MMN_Dev(run) = {sum(strcmp({EEG.event.Condition}, '3'))};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
+            total_epochs_after_artifact_rejection(run)= EEG.trials;
+        elseif contains(event_struct.file_names{run}, 'EMO')
+            FACE_UpInv(run) = {'n/a'};
+            FACE_Inv(run) = {'n/a'};
+            FACE_Object(run) = {'n/a'};
+            FACE_UpObj(run) = {'n/a'};
+            MMN_Standard(run) = {'n/a'};
+            MMN_PreDev(run) = {'n/a'};
+            MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {sum(strcmp({EEG.event.Condition}, 'stm_anger'))};
+            EMO_Calm(run) = {sum(strcmp({EEG.event.Condition}, 'stm_calm'))};
+            EMO_Fearful(run) = {sum(strcmp({EEG.event.Condition}, 'stm_fearful'))};
+            EMO_Happy(run) = {sum(strcmp({EEG.event.Condition}, 'stm_happy'))};
             total_epochs_after_artifact_rejection(run)= EEG.trials;
         else
             FACE_UpInv(run) = {'n/a'};
@@ -1451,6 +1475,10 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {'n/a'};
             MMN_PreDev(run) = {'n/a'};
             MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
             total_epochs_after_artifact_rejection(run)=EEG.trials;
         end
     end
@@ -1558,11 +1586,11 @@ end % end of run loop
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
 report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev');
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation'};
+    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation'};
 writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
 
 %%% Delete the interem results if the user doesnt want them
