@@ -97,6 +97,7 @@ stimdev = zeros(size(datafile_names));
 
 %% Initialize loop variables
 unusable_files = {};
+lineNoise = {};
 
 %% Loop over all data files
 for run=1:length(datafile_names)
@@ -258,15 +259,15 @@ for run=1:length(datafile_names)
             if output_format == 1
                 EEG = eeg_checkset(EEG);
                 EEG = pop_editset(EEG, 'setname', ...
-                    strrep(datafile_names{run}, ext, '_impedance_issue'));
+                    strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg'));
 
                 EEG = pop_saveset(EEG, ...
-                    'filename', strrep(datafile_names{run}, ext, '_impedance_issue.set'), ...
+                    'filename', strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg.set'), ...
                     'filepath', [output_location filesep 'processed_data' filesep]);
 
             elseif output_format == 2
                 save([[output_location filesep 'processed_data' filesep] ...
-                    strrep(datafile_names{run}, ext, '_impedance_issue.mat')], 'EEG');
+                    strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg.mat')], 'EEG');
             end
 
             continue   % skip to next file
@@ -349,15 +350,15 @@ for run=1:length(datafile_names)
         if output_format == 1
             EEG = eeg_checkset(EEG);
             EEG = pop_editset(EEG, 'setname', ...
-                strrep(datafile_names{run}, ext, '_uniformity_issue'));
+                strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg'));
 
             EEG = pop_saveset(EEG, ...
-                'filename', strrep(datafile_names{run}, ext, '_uniformity_issue.set'), ...
+                'filename', strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg.set'), ...
                 'filepath', [output_location filesep 'processed_data' filesep]);
 
         elseif output_format == 2
             save([[output_location filesep 'processed_data' filesep] ...
-                strrep(datafile_names{run}, ext, '_uniformity_issue.mat')], 'EEG');
+                strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg.mat')], 'EEG');
         end
 
         %if you drop file, remake the stimdev list - 1 from the end
@@ -825,7 +826,7 @@ for run=1:length(datafile_names)
             size(EEG.data, 1), []), reshape(outEEG.data, size(outEEG.data,1), ...
             []), lnMeans, EEG.srate, [neighbors lnParams_harms_frequs]) ;
         
-        lineNoise{run,1} = lnMeans(3); %grab only the 60 hz pre/post r value
+        lineNoise{end+1} = lnMeans(3); %grab only the 60 hz pre/post r value
     
     %% STEP 6: Filter data
     % Calculate filter order using the formula: m = dF / (df / fs), where m = filter order,
@@ -888,6 +889,8 @@ end
 % Update datafile_names prior to merge
 if ~isempty(unusable_files)
     datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
+    sub_id = resize(sub_id, length(datafile_names));
+    run = length(datafile_names);
 end
 
 %% Step 6.7: Merge Data (based off of shared script from lydia)
@@ -1585,7 +1588,7 @@ end % end of run loop
 
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
-report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
+report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
     total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
