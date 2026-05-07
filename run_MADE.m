@@ -1594,6 +1594,26 @@ report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
     'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation'};
+
+if ~isempty(unusable_files)
+    for i=1:length(unusable_files)
+        newrow = report_table(1,:);
+        newrow.datafile_name = unusable_files(i);
+        newrow.task = string(extractBetween(newrow.datafile_name, 'task-', '_acq-eeg'));
+        newrow.line_noise = {[]}; 
+        newrow.faster_bad_channels = {'n/a'};
+        newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'};
+        newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
+        newrow.FACE_UpInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UpObj = {'n/a'};
+        newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'};
+        newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
+        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN;
+        newrow.StimTracker_Deviation = NaN;
+
+        report_table(end+1,:) = newrow;
+    end
+end
+
 writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
 
 %%% Delete the interem results if the user doesnt want them
