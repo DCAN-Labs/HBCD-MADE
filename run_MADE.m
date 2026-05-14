@@ -428,14 +428,16 @@ for run=1:length(datafile_names)
 
     % read in site information - TM 3/24/26
     %Pull site information from scans.tsv (site) - TM 12/20/2024
-    %outEEGname = outEEG.setname;
+    
 
     % TODO only check for amp during V08
     %if contains(session_label, 'V08')
+    % get amp info from current file, then use specific V08 amp delay file
 
-    % TODO: need to update this to attempt to find amp info first then
-    % catch site
+    
     %else 
+    %pull site info and find corresponding row
+
     try
         %first try getting siteinfo from scans.tsv
         sitepath = [bids_dir filesep participant_label filesep session_label];
@@ -456,6 +458,8 @@ for run=1:length(datafile_names)
         end
     end
     %end
+
+    %add code to use amp or site info to get row index from V08 csv
 
     % adjust delay based on task
     if contains(session_label, 'V08') || contains(session_label, 'P08')
@@ -512,7 +516,7 @@ for run=1:length(datafile_names)
             end
 
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_EMO_delay').mean_EMO_delay;
             sitedelay = 1; %TM testing
 
             stmlist = find(strcmp({EEG.event.type}, 'stm+'));
@@ -534,7 +538,7 @@ for run=1:length(datafile_names)
         elseif contains(EEG.filename, 'RS')
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
 
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_RS_delay').mean_RS_delay;
             sitedelay = 1; %TM testing
 
             trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
@@ -564,7 +568,7 @@ for run=1:length(datafile_names)
         elseif contains(EEG.filename, 'SL')
             din2s = find(strcmp({EEG.event.type}, 'DIN2'));
 
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_SL_delay').mean_SL_delay;
             sitedelay = 1; %TM testing
 
             trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
