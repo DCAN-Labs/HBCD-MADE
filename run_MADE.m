@@ -1538,9 +1538,13 @@ for run = 1 : length(event_struct.file_names)
         agetable = readtable([tsvpath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
         try
             taskages=agetable.age(contains(agetable.filename,'acq-eeg'));
-            age = taskages(1)*12;   
+            try
+                age = taskages(1)*12; 
+            catch
+                error("Age is n/a?")
+            end
         catch
-            error("1. Age data is missing!")
+            error("1. Age data is missing in scans.tsv!")
         end
     
     catch
@@ -1549,7 +1553,7 @@ for run = 1 : length(event_struct.file_names)
         try
             age = agetable.age(strcmp(agetable.participant_id, participant_label))*12; %if age is given in years?
         catch
-            error("2. Age data is missing!")
+            error("2. Age data is missing in participants.tsv!")
         end
     end
     
