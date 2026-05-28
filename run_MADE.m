@@ -933,7 +933,7 @@ if isempty(datafile_names)
         newrow.line_noise = {[]}; newrow.reference_for_faster = {'Cz'}; newrow.faster_bad_channels = {'n/a'}; newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'}; newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
 
         newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'}; newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'}; newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
-        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN; newrow.StimTracker_Deviation = NaN; newrow.Strimtracker_Artifact_present = NaN; newrow.Strimtracker_Artifact_fixed = NaN;
+        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN; newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
 
         report_table(end+1,:) = newrow;
 
