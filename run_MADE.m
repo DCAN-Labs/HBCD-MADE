@@ -19,8 +19,10 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 % Previous Contributors:
 % Martin Antunez Garcia (mantunez@umd.edu)
 % Erik Lee (leex6144@umn.edu)
+% Jack Liu (Yanchen.Liu@cchmc.org) - coding for SL task
 % Marco McSweeney (mmcsw1@umd.edu)
 % Lydia Yoder (lyoder@umd.edu)
+
 
 % Ongoing Contributors
 % Dylan Gilbreath (dylangil@umd.edu)
@@ -332,8 +334,9 @@ for run=1:length(datafile_names)
         'movmean', round(smooth_sec*fs)) > 0.5;
     artifact_mask = logical(artifact_mask);
 
-    % 1 if any artifact detected, 0 if none
-    uniform_artifact_flag = double(any(artifact_mask));
+    % 1 if any artifact detected > 50% of task
+    uniform_artifact_flag = ...
+            double(mean(artifact_mask) > 0.50);
 
     if uniform_artifact_flag == 1
 
@@ -1557,7 +1560,7 @@ for run = 1 : length(event_struct.file_names)
         catch
             continue
         end
-    elseif contains(event_struct.file_names{run}, 'RS')
+    elseif any(contains(event_struct.file_names{run}, {'RS','MC'})) % We are currently treating MC like RS and might add additional analyses for dr.4.0 - AV 5/11/2026
         try
             RS_ERP_Topo_Indv();
             clear allData;
@@ -1576,6 +1579,13 @@ for run = 1 : length(event_struct.file_names)
         try
             computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'FACE', output_location, participant_label, session_label, age)
             FACE_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
+    elseif contains(event_struct.file_names{run}, 'SL') 
+        try
+            SL_ERP_Topo_Indv();
             clear allData;
         catch
             continue
