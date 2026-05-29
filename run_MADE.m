@@ -272,6 +272,9 @@ for run=1:length(datafile_names)
                     strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg.mat')], 'EEG');
             end
 
+            %if you drop file, remake the stimdev list - 1 from the end
+            stimdev = stimdev(1:end-1); 
+
             continue   % skip to next file
         end
 
@@ -431,14 +434,16 @@ for run=1:length(datafile_names)
 
     % read in site information - TM 3/24/26
     %Pull site information from scans.tsv (site) - TM 12/20/2024
-    %outEEGname = outEEG.setname;
+    
 
     % TODO only check for amp during V08
     %if contains(session_label, 'V08')
+    % get amp info from current file, then use specific V08 amp delay file
 
-    % TODO: need to update this to attempt to find amp info first then
-    % catch site
+    
     %else 
+    %pull site info and find corresponding row
+
     try
         %first try getting siteinfo from scans.tsv
         sitepath = [bids_dir filesep participant_label filesep session_label];
@@ -459,6 +464,8 @@ for run=1:length(datafile_names)
         end
     end
     %end
+
+    %add code to use amp or site info to get row index from V08 csv
 
     % adjust delay based on task
     if contains(session_label, 'V08') || contains(session_label, 'P08')
@@ -515,7 +522,7 @@ for run=1:length(datafile_names)
             end
 
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_EMO_delay').mean_EMO_delay;
             sitedelay = 1; %TM testing
 
             stmlist = find(strcmp({EEG.event.type}, 'stm+'));
@@ -537,7 +544,7 @@ for run=1:length(datafile_names)
         elseif contains(EEG.filename, 'RS')
             din3s = find(strcmp({EEG.event.type}, 'DIN3'));
 
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_RS_delay').mean_RS_delay;
             sitedelay = 1; %TM testing
 
             trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
@@ -567,7 +574,7 @@ for run=1:length(datafile_names)
         elseif contains(EEG.filename, 'SL')
             din2s = find(strcmp({EEG.event.type}, 'DIN2'));
 
-            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            %sitedelay = site_delays(index, 'mean_SL_delay').mean_SL_delay;
             sitedelay = 1; %TM testing
 
             trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
@@ -894,6 +901,49 @@ if ~isempty(unusable_files)
     datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
     sub_id = resize(sub_id, length(datafile_names));
     run = length(datafile_names);
+end
+%TM FOR TESTING - REMOVE WITH DG's PATCH
+artifact_detected = zeros(size(datafile_names));
+stimtracker_interp_applied = zeros(size(datafile_names));
+
+%% if all files are marked as unusable then stop running made and end!
+% patch for if all files turn out unusable then just mark them, make a
+% report, and finish -- TM 5.27.26
+if isempty(datafile_names)
+    report_table=table('Size', [0, 30], ...
+        'VariableTypes', {'cell','cell', 'string', 'cell','cell', 'cell', ...
+    'cell', 'double', 'double', 'cell', 'double', ...
+    'double', 'cell','cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'double', 'double', 'double', 'double', 'double', 'double', 'double'});
+
+    report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
+    'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
+    'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed'};
+
+    for i = 1:length(unusable_files)
+
+        % handle empty report_table
+        if isempty(report_table)
+            newrow = cell2table(cell(1,width(report_table)), ...
+                'VariableNames', report_table.Properties.VariableNames);
+        else
+            newrow = report_table(1,:);
+        end
+
+        newrow.datafile_name = unusable_files(i);
+        newrow.subject_id = {participant_label};
+        newrow.task = string(extractBetween(newrow.datafile_name, 'task-', '_acq-eeg'));
+
+        newrow.line_noise = {[]}; newrow.reference_for_faster = {'Cz'}; newrow.faster_bad_channels = {'n/a'}; newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'}; newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
+
+        newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'}; newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'}; newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
+        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN; newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
+
+        report_table(end+1,:) = newrow;
+
+    end
+
+    writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
+    return    
 end
 
 %% Step 6.7: Merge Data (based off of shared script from lydia)
@@ -1537,9 +1587,13 @@ for run = 1 : length(event_struct.file_names)
         agetable = readtable([tsvpath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
         try
             taskages=agetable.age(contains(agetable.filename,'acq-eeg'));
-            age = taskages(1)*12;   
+            try
+                age = taskages(1)*12; 
+            catch
+                error("Age is n/a?")
+            end
         catch
-            error("1. Age data is missing!")
+            error("1. Age data is missing in scans.tsv!")
         end
     
     catch
@@ -1548,7 +1602,7 @@ for run = 1 : length(event_struct.file_names)
         try
             age = agetable.age(strcmp(agetable.participant_id, participant_label))*12; %if age is given in years?
         catch
-            error("2. Age data is missing!")
+            error("2. Age data is missing in participants.tsv!")
         end
     end
     
@@ -1598,12 +1652,15 @@ end % end of run loop
 
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
+%if datafile names is empty and there are no tasks with data, that is
+%handled earlier and will not make it to this point
 report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev');
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', ...
+    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected', stimtracker_interp_applied');
 
-report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
-    'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation'};
+report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', 'ica_prep_bad_channels', 'length_ica_data', ...
+    'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', 'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', ...
+    'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed'};
 
 if ~isempty(unusable_files)
     for i=1:length(unusable_files)
@@ -1614,11 +1671,11 @@ if ~isempty(unusable_files)
         newrow.faster_bad_channels = {'n/a'};
         newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'};
         newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
-        newrow.FACE_UpInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UpObj = {'n/a'};
+        newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'};
         newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'};
         newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
         newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN;
-        newrow.StimTracker_Deviation = NaN;
+        newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
 
         report_table(end+1,:) = newrow;
     end
