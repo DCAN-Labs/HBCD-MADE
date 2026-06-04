@@ -91,11 +91,17 @@ datafile_names={datafile_names.name};
 %% Check whether EEGLAB and all necessary plugins are in Matlab path.
 check_if_plugins_are_present(ext);
 
-%TM relative path patch
+% TM relative path patch
 currentWD = pwd;
 
-%TM stimtracker deviation init column
+% TM stimtracker deviation init column
 stimdev = zeros(size(datafile_names));
+
+% AV uniformity detected init column
+uniform_detected = zeros(size(datafile_names));
+
+% AV uniformity time init column
+uniform_time = zeros(size(datafile_names));
 
 %% Initialize loop variables
 unusable_files = {};
@@ -273,7 +279,9 @@ for run=1:length(datafile_names)
             end
 
             %if you drop file, remake the stimdev list - 1 from the end
-            stimdev = stimdev(1:end-1); 
+            stimdev = stimdev(1:end-1);
+            uniform_detected = uniform_detected(1:end-1);
+            uniform_time = uniform_time(1:end-1);
 
             continue   % skip to next file
         end
@@ -337,40 +345,15 @@ for run=1:length(datafile_names)
         'movmean', round(smooth_sec*fs)) > 0.5;
     artifact_mask = logical(artifact_mask);
 
-    % 1 if any artifact detected > 50% of task
+    % 1 if any artifact detected 
     uniform_artifact_flag = ...
-            double(mean(artifact_mask) > 0.50);
+            double(any(artifact_mask));
 
     if uniform_artifact_flag == 1
 
-        % =========================
-        % LOG + SAVE + SKIP
-        % =========================
-
-        fprintf('Skipping file (uniformity issue): %s\n', EEG.filename);
-
-        unusable_files{end+1,1} = datafile_names{run};
-        unusable_files{end,2}   = 'uniformity_issue';
-
-        % --- Save flagged file ---
-        if output_format == 1
-            EEG = eeg_checkset(EEG);
-            EEG = pop_editset(EEG, 'setname', ...
-                strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg'));
-
-            EEG = pop_saveset(EEG, ...
-                'filename', strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg.set'), ...
-                'filepath', [output_location filesep 'processed_data' filesep]);
-
-        elseif output_format == 2
-            save([[output_location filesep 'processed_data' filesep] ...
-                strrep(datafile_names{run}, ext, '_desc-uniformityissue_eeg.mat')], 'EEG');
-        end
-
-        %if you drop file, remake the stimdev list - 1 from the end
-        stimdev = stimdev(1:end-1); 
-
-        continue   % skip to next file
+        % add the time and detected to the list that we made already
+        uniform_detected(run) = 1;
+        uniform_time(run) = sum(artifact_mask)/fs;
 
     end
 
@@ -910,14 +893,14 @@ stimtracker_interp_applied = zeros(size(datafile_names));
 % patch for if all files turn out unusable then just mark them, make a
 % report, and finish -- TM 5.27.26
 if isempty(datafile_names)
-    report_table=table('Size', [0, 30], ...
+    report_table=table('Size', [0, 32], ...
         'VariableTypes', {'cell','cell', 'string', 'cell','cell', 'cell', ...
     'cell', 'double', 'double', 'cell', 'double', ...
-    'double', 'cell','cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'double', 'double', 'double', 'double', 'double', 'double', 'double'});
+    'double', 'cell','cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'});
 
     report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
     'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed'};
+    'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed', 'Uniform_detected', 'Uniform_time'};
 
     for i = 1:length(unusable_files)
 
@@ -937,6 +920,7 @@ if isempty(datafile_names)
 
         newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'}; newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'}; newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
         newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN; newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
+        newrow.Uniform_detected = NaN; newrow.Uniform_time = NaN;
 
         report_table(end+1,:) = newrow;
 
@@ -1656,11 +1640,11 @@ end % end of run loop
 %handled earlier and will not make it to this point
 report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
     total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', ...
-    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected', stimtracker_interp_applied');
+    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected', stimtracker_interp_applied', uniform_detected', uniform_time');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', 'ica_prep_bad_channels', 'length_ica_data', ...
     'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', 'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', ...
-    'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed'};
+    'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed', 'Uniform_detected', 'Uniform_time'};
 
 if ~isempty(unusable_files)
     for i=1:length(unusable_files)
@@ -1676,6 +1660,7 @@ if ~isempty(unusable_files)
         newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
         newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN;
         newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
+        newrow.Uniform_detected = NaN; newrow.Uniform_time = NaN;
 
         report_table(end+1,:) = newrow;
     end
