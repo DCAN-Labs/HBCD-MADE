@@ -794,7 +794,54 @@ for run=1:length(datafile_names)
         end
 
     end
-    
+ 
+    %% STEP 5.3 Do linear interpolation of stimtracker artifact
+    % This section of code automatically detects the presence or absence of
+    % the artfact currently associated with the use of the stimtracker
+    % to generate DINs.  Currently, this interpolation is run on all files
+    % regardless of presence/absence of artifact for consistency.  To run
+    % only on files with the artfact, set the first conditional in the
+    % function to 'false'.  Detection of the artifact and overall
+    % interpolation are added to the subject-level preprocessing reports.
+
+    artifact_detected = NaN;
+    stimtracker_interp_applied = 0;
+
+    try
+
+        if ~any(contains(session_label, {'V08','P08'})) && ...
+                any(strcmp(task_label, {'task-MMN','task-FACE','task-VEP'}))
+
+            [EEG, artifact_detected, stimtracker_interp_applied] = ...
+                stimtracker_artifact_interpolation( ...
+                EEG, ...
+                task_label, ...
+                true, ...
+                true);
+
+        end
+
+    catch ME
+
+        warning('Stimtracker interpolation failed for %s:\n%s', ...
+            filename, ME.message);
+
+        artifact_detected = NaN;
+        stimtracker_interp_applied = 0;
+
+    end
+
+    if isnan(artifact_detected)
+        artifact_detected_all(run) = NaN;
+    else
+        artifact_detected_all(run) = double(artifact_detected);
+    end
+
+    if isempty(stimtracker_interp_applied) || isnan(stimtracker_interp_applied)
+        stimtracker_interp_applied_all(run) = 0;
+    else
+        stimtracker_interp_applied_all(run) = double(stimtracker_interp_applied);
+    end
     %% STEP 5.5: Get Line Noise Measure
     % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
     % Please note we are tracking but not removing line noise. In
@@ -886,8 +933,8 @@ if ~isempty(unusable_files)
     run = length(datafile_names);
 end
 %TM FOR TESTING - REMOVE WITH DG's PATCH
-artifact_detected = zeros(size(datafile_names));
-stimtracker_interp_applied = zeros(size(datafile_names));
+%artifact_detected = zeros(size(datafile_names));
+%stimtracker_interp_applied = zeros(size(datafile_names));
 
 %% if all files are marked as unusable then stop running made and end!
 % patch for if all files turn out unusable then just mark them, make a
@@ -1640,7 +1687,7 @@ end % end of run loop
 %handled earlier and will not make it to this point
 report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
     total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', ...
-    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected', stimtracker_interp_applied', uniform_detected', uniform_time');
+    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected_all', stimtracker_interp_applied_all', uniform_detected', uniform_time');
 
 report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', 'ica_prep_bad_channels', 'length_ica_data', ...
     'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', 'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', ...
