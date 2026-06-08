@@ -1,0 +1,30 @@
+﻿Output File Name,Relevant Task(s),Name,Description,Data Type
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,FACE,condition,"Stimulus condition: inverted, object, uprightInv, uprightObj in the Faces task.",String
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,MMN,condition,"Stimulus condition: standard, deviant, predeviant in the MMN task.",String
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",Latency_<time-window>_<ROI>,Latency to peak/adaptive mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",ntrials,Number of trials per condition retained after processing.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",MeanAmp_<time-window>_<ROI>,Mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",Peak_<time-window>_<ROI>,Peak/adpative mean amplitude within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPSummaryStats,"FACE, VEP, MMN",SME_<time-window>_<ROI>,Standardized measurement error within specified time window (in ms) at the specified region of interest. Values are averaged across trials for each condition.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",Latency_<time-window>_<ROI>,Latency to peak/adaptive mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Integer
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",MeanAmplitude_<time-window>_<ROI>,Mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,VEP,condition,Stimulus condition: VEP has only one condition.,String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",id,Subject ID,String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",condition,"Stimulus condition: standard, deviant, predeviant in the MMN task.",String
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",Peak_<time-window>_<ROI>,Peak/adpative mean amplitude within specified time window (in ms) at the specified region of interest. Values are provided for each trial.,Float
+sub-<label>_ses-<label>_task-<label>_ERPTrialMeasures,"FACE, VEP, MMN",trial_num,Trial number,Integer
+sub-<label>_task-RS_AbsPowerSpectra,RS,electrode,Electrode label,String
+sub-<label>_task-RS_AbsPowerSpectra,RS,1.0 Hz,Sum of absolute power centered at 1 Hz (within the 0.5hz to 1.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_AbsPowerSpectra,RS,2.0 Hz,Sum of absolute power centered at 2 Hz (within the 1.5hz to 2.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_AbsPowerSpectra,RS,3.0 Hz,Sum of absolute power centered at 3 Hz (within the 2.5hz to 3.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_AbsPowerSpectra,RS,50.0 Hz,Sum of absolute power in μV² centered at 50 Hz (within the 49.5hz to 50.5hz freq range) at corresponding electrode site ,Float
+sub-<label>_task-RS_LogPowerSpectra,RS,electrode,Electrode label,String
+sub-<label>_task-RS_LogPowerSpectra,RS,1.0 Hz,Sum of natural log power centered at 1 Hz (within the 0.5hz to 1.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_LogPowerSpectra,RS,2.0 Hz,Sum of natural log power centered at 2 Hz (within the 1.5hz to 2.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_LogPowerSpectra,RS,3.0 Hz,Sum of natural log power centered at 3 Hz (within the 2.5hz to 3.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_AbsPowerSpectra,RS,50.0 Hz,Sum of absolute power in μV² centered at 50 Hz (within the 49.5hz to 50.5hz freq range) at corresponding electrode site ,Float
+sub-<label>_task-RS_dbPowerSpectra,RS,electrode,Electrode label,String
+sub-<label>_task-RS_dbPowerSpectra,RS,1.0 Hz,Sum of power in db centered at 1 Hz (within the 0.5hz to 1.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_dbPowerSpectra,RS,2.0 Hz,Sum of power in db centered at 2 Hz (within the 1.5hz to 2.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_dbPowerSpectra,RS,3.0 Hz,Sum of power in db centered at 3 Hz (within the 2.5hz to 3.5hz freq range) at corresponding electrode site,Float
+sub-<label>_task-RS_AbsPowerSpectra,RS,50.0 Hz,Sum of absolute power in μV² centered at 50 Hz (within the 49.5hz to 50.5hz freq range) at corresponding electrode site ,Float
