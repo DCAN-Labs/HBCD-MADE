@@ -16,11 +16,18 @@ function run_MADE(output_dir_name, bids_dir, participant_label, ...
 % Maureen Elizabeth Bowers (mbowers1@umd.edu)
 % Nathan A. Fox (fox@umd.edu)
 
-% Ongoing Contributors:
-% Lydia Yoder (lyoder@umd.edu)
+% Previous Contributors:
+% Martin Antunez Garcia (mantunez@umd.edu)
 % Erik Lee (leex6144@umn.edu)
-% Martin Antunez Garcia (mantunez@umd.edu )
+% Jack Liu (Yanchen.Liu@cchmc.org) - coding for SL task
 % Marco McSweeney (mmcsw1@umd.edu)
+% Lydia Yoder (lyoder@umd.edu)
+
+
+% Ongoing Contributors
+% Dylan Gilbreath (dylangil@umd.edu)
+% Trisha Maheshwari (tmahesh@umd.edu)
+% Alicia Vallorani (avallora@umd.edu)
 
 % MADE uses EEGLAB toolbox and some of its plugins. Before running the pipeline, you have to install the following:
 % EEGLab:  https://sccn.ucsd.edu/eeglab/downloadtoolbox.php/download.php
@@ -84,8 +91,21 @@ datafile_names={datafile_names.name};
 %% Check whether EEGLAB and all necessary plugins are in Matlab path.
 check_if_plugins_are_present(ext);
 
-%TM relative path patch
+% TM relative path patch
 currentWD = pwd;
+
+% TM stimtracker deviation init column
+stimdev = zeros(size(datafile_names));
+
+% AV uniformity detected init column
+uniform_detected = zeros(size(datafile_names));
+
+% AV uniformity time init column
+uniform_time = zeros(size(datafile_names));
+
+%% Initialize loop variables
+unusable_files = {};
+lineNoise = {};
 
 %% Loop over all data files
 for run=1:length(datafile_names)
@@ -115,30 +135,13 @@ for run=1:length(datafile_names)
 %     EEG = pop_biosig([rawdata_location, filesep, datafile_names{run}]);
 %     EEG = eeg_checkset(EEG);
 %     EEG = pop_select( EEG,'nochannel', 65:72); % delete redundant channels
-
-    %% TM - 8/6/2024: Impedances catch
-    % Check if impedances were turned on and off -- if so pop out the
-    % section with impedances and save
-    % will not catch if impdances was turned on before task was
-    % started or aff after task was finished
-
-    if numel(find(strcmp({EEG.event.type}, 'IBEG')))>0 && numel(find(strcmp({EEG.event.type}, 'IEND')))>0
-        startidx = find(strcmp({EEG.event.type}, 'IBEG'));
-        endidx = find(strcmp({EEG.event.type}, 'IEND'));
-        if length(startidx) == 1 && length(endidx) == 1
-            impstart = EEG.event(startidx).onset - 0.1;
-            impend = EEG.event(endidx).onset;
-        else
-            error('multiple Impedance flags, check raw data and fix manually please');
-        end
-
-        EEG = pop_select(EEG, 'rmtime', [impstart impend]);
-    end
-
+    
+    
     %% TM - 8/6/2024 Catch DRPS flag and throw error
     if numel(find(strcmp({EEG.event.type}, 'DrpS')))>0
         error('DrpS flag found, check raw data and fix manually please');
     end
+
 
     %% Step 1.25: Load settings for processing
     % 2. Enter the path of the folder where you want to save the processed data
@@ -231,6 +234,129 @@ for run=1:length(datafile_names)
     end
     
     cd(output_location); %Go to output dir
+
+    %% TM - 8/6/2024: Impedances catch
+    % Check if impedances were turned on and off -- if so pop out the
+    % section with impedances and save
+    % will not catch if impdances was turned on before task was -- but this
+    % is now caught in the following section on uniformity
+    % started or aff after task was finished
+
+    if numel(find(strcmp({EEG.event.type}, 'IBEG'))) > 0 && ...
+            numel(find(strcmp({EEG.event.type}, 'IEND'))) > 0
+
+        startidx = find(strcmp({EEG.event.type}, 'IBEG'));
+        endidx   = find(strcmp({EEG.event.type}, 'IEND'));
+
+        if length(startidx) == 1 && length(endidx) == 1
+
+            impstart = EEG.event(startidx).onset - 0.1;
+            impend   = EEG.event(endidx).onset;
+
+        else
+            % =========================
+            % LOG + SAVE + SKIP
+            % =========================
+
+            fprintf('Skipping file (impedance issue): %s\n', EEG.filename);
+
+            unusable_files{end+1,1} = datafile_names{run};
+            unusable_files{end,2}   = 'impedance_issue';
+
+            % --- Save flagged file ---
+            if output_format == 1
+                EEG = eeg_checkset(EEG);
+                EEG = pop_editset(EEG, 'setname', ...
+                    strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg'));
+
+                EEG = pop_saveset(EEG, ...
+                    'filename', strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg.set'), ...
+                    'filepath', [output_location filesep 'processed_data' filesep]);
+
+            elseif output_format == 2
+                save([[output_location filesep 'processed_data' filesep] ...
+                    strrep(datafile_names{run}, ext, '_desc-impedanceissue_eeg.mat')], 'EEG');
+            end
+
+            %if you drop file, remake the stimdev list - 1 from the end
+            stimdev = stimdev(1:end-1);
+            uniform_detected = uniform_detected(1:end-1);
+            uniform_time = uniform_time(1:end-1);
+
+            continue   % skip to next file
+        end
+
+        EEG = pop_select(EEG, 'rmtime', [impstart impend]);
+
+    end
+
+    %% Uniformity Check - DG & AV
+    % File
+    X  = double(EEG.data)';
+
+    % Parameters
+    fs = EEG.srate;
+    win_sec    = 5;
+    step_sec   = 1;
+    corr_thr   = 0.95;   % mean correlation threshold
+    smooth_sec = 0.5;
+
+    win  = round(win_sec * fs);
+    step = round(step_sec * fs);
+    [nSamples, nCh] = size(X);
+
+    artifact_mask = false(nSamples,1);
+    mean_corr_all = [];
+    wcount = 0;
+
+    % Sliding window
+    for start_idx = 1:step:(nSamples - win + 1)
+        stop_idx = start_idx + win - 1;
+        segment = X(start_idx:stop_idx,:) - mean(X(start_idx:stop_idx,:),1);
+
+        % Correlation
+        ch_var = var(segment,0,1);
+        good_ch = ch_var > 1e-10;
+        segment_clean = segment(:,good_ch);
+
+        if sum(good_ch) > 1
+            R = corrcoef(segment_clean);
+            R_no_diag = R(~eye(size(R)));
+            mean_corr = mean(R_no_diag,'omitnan');
+        else
+            mean_corr = 0;
+        end
+
+        wcount = wcount + 1;
+        mean_corr_all(wcount) = mean_corr;
+
+        % Mark artifact window
+        if mean_corr > corr_thr
+            artifact_mask(start_idx:stop_idx) = true;
+        end
+    end
+
+    % Smooth mask
+    % artifact_mask is a vector containing all of the samples flagged as
+    % artifact.  Impedances shift throughout the file, so this will look like a
+    % step-wise function if plotted. Channels with uniformity for other reasons
+    % will also be flagged, this will probably look more oscillatory.
+    artifact_mask = smoothdata(double(artifact_mask), ...
+        'movmean', round(smooth_sec*fs)) > 0.5;
+    artifact_mask = logical(artifact_mask);
+
+    % 1 if any artifact detected 
+    uniform_artifact_flag = ...
+            double(any(artifact_mask));
+
+    if uniform_artifact_flag == 1
+
+        % add the time and detected to the list that we made already
+        uniform_detected(run) = 1;
+        uniform_time(run) = sum(artifact_mask)/fs;
+
+    end
+
     %% Step 1.4: Save specification
     save_specification(s, output_location, datafile_names{run});
     
@@ -273,6 +399,226 @@ for run=1:length(datafile_names)
 
     
     %% STEP 3: Adjust anti-aliasing and task related time offset
+    % TM - 3/24/26 -- V08 timing test functionality notes and TODO:
+    % adjust time offset -- delay
+    % anti-aliasing - EGI had problem with filter, told you how to much to adjust based on
+    % sampling rate -- new versions of EGI for HBCD takes care of this
+    % automatically 
+
+    % if ses-V08: then go through this loop
+    % rename old latency column and add a new latency column with correct
+    % name
+    % adjust stim line instead of adding a new line
+    % note: RS - keep original as v03/v04/v06 and do new one as RSV08 in
+    % json + in code look for RSV08 and ses-V08
+
+    %stim offset -- say yes to fix offset (ie v08), loop through and
+        %directly adjust stm latency
+
+    % read in site information - TM 3/24/26
+    %Pull site information from scans.tsv (site) - TM 12/20/2024
+    
+
+    % TODO only check for amp during V08
+    %if contains(session_label, 'V08')
+    % get amp info from current file, then use specific V08 amp delay file
+
+    
+    %else 
+    %pull site info and find corresponding row
+
+    try
+        %first try getting siteinfo from scans.tsv
+        sitepath = [bids_dir filesep participant_label filesep session_label];
+        sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
+        try
+            siteinfo=sitetable.site(contains(sitetable.filename,'acq-eeg'));
+            siteinfo = siteinfo(1);
+        catch
+            error("Site data is missing in scans.tsv!")
+        end
+    catch
+        %otherwise try getting site info from local PSCID
+        try
+            outEEGname = EEG.setname;
+            siteinfo = outEEGname(3:5);
+        catch
+            error("Site data is missing locally!")
+        end
+    end
+    %end
+
+    %add code to use amp or site info to get row index from V08 csv
+
+    % adjust delay based on task
+    if contains(session_label, 'V08') || contains(session_label, 'P08')
+        [EEG.event(:).old_latency] = EEG.event(:).latency; %copy old column in case
+
+        %Add a column for Task
+        [EEG.event(:).Task] = deal([]);
+
+        if contains(EEG.filename, 'EFACE') || contains(EEG.filename, 'EMO')
+            emotionMap = struct('A', 'anger', ...
+                'F', 'fearful', ...
+                'C', 'calm', ...
+                'H', 'happy');
+            %new condition field with empty strings
+            emptyStrings = repmat({''}, 1, numel(EEG.event));
+            [EEG.event(:).Condition] = deal(emptyStrings{:});
+            % [EEG.event(:).TrialNum] = EEG.event(:).mffkey_trl; %copy column with new name
+            %%% Loop through events to rename stim+ using next event's mffkey_imag
+            for i = 1:length(EEG.event)
+                % Check for stm+
+                if ~strcmpi(EEG.event(i).type, 'stm+')
+                    continue;
+                end
+                % Search forward for the next event that contains mffkey_imag
+                nextIdx = i + 1;
+                while nextIdx <= length(EEG.event) && ...
+                        (~isfield(EEG.event(nextIdx), 'face_img') || strcmp(EEG.event(nextIdx).face_img, 'n/a'))
+                    nextIdx = nextIdx + 1;
+                end
+                % If none found, skip
+                if nextIdx > length(EEG.event)
+                    EEG.event(i).type = 'stm_unknown';
+                    continue;
+                end
+                faceStr = EEG.event(nextIdx).face_img;
+                % Extract emotion letter at fixed position (6th char)
+                if length(faceStr) >= 6
+                    emoLetter = faceStr(6);
+                else
+                    emoLetter = '';
+                end
+                % Map to label
+                if isfield(emotionMap, emoLetter)
+                    newLabel = ['stm_' emotionMap.(emoLetter)];
+                else
+                    newLabel = 'stm_unknown';
+                end
+                % Assign back to stm line
+                EEG.event(i).Condition = newLabel;
+                EEG.event(i).mffkey_blk = EEG.event(nextIdx).mffkey_blk;
+                EEG.event(i).face_background = EEG.event(nextIdx).face_background;
+                EEG.event(i).face_img = EEG.event(nextIdx).face_img;
+                EEG.event(i).TrialNum = EEG.event(nextIdx).TrialNum;
+            end
+
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            %sitedelay = site_delays(index, 'mean_EMO_delay').mean_EMO_delay;
+            sitedelay = 1; %TM testing
+
+            stmlist = find(strcmp({EEG.event.type}, 'stm+'));
+
+            for i = 1:length(stmlist)
+                %copy old latency, add site delay and put it into
+                %adjust new latency column
+                latency = EEG.event(stmlist(i)).old_latency;
+                EEG.event(stmlist(i)).latency = latency + sitedelay;
+            end
+
+            EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1; % mark that there is a deviation
+            end
+
+        elseif contains(EEG.filename, 'RS')
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+
+            %sitedelay = site_delays(index, 'mean_RS_delay').mean_RS_delay;
+            sitedelay = 1; %TM testing
+
+            trsplist = find(contains({EEG.event.mffkey_movi}, 'V08construction'));
+            stmlist = find(strcmp({EEG.event.type}, 'bas+'));
+
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is RS?")
+            end
+
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one bas+ flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no bas+ flag found, check raw data please")
+            end
+
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
+            end
+
+        elseif contains(EEG.filename, 'SL')
+            din2s = find(strcmp({EEG.event.type}, 'DIN2'));
+
+            %sitedelay = site_delays(index, 'mean_SL_delay').mean_SL_delay;
+            sitedelay = 1; %TM testing
+
+            trsplist = find(contains({EEG.event.mffkey_swav}, 'SL'));
+            stmlist = find(strcmp({EEG.event.type}, 'stms'));
+
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is SL?")
+            end
+
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one stms flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no stms flag found, check raw data please")
+            end
+
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            if ~isempty(din2s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
+            end
+
+        elseif contains(EEG.filename, 'MC')
+
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            %sitedelay = site_delays(index, 'mean_MC_delay').mean_MC_delay;
+            sitedelay = 1; %TM testing
+
+            trsplist = find(contains({EEG.event.mffkey_movi}, 'V08MC'));
+            stmlist = find(strcmp({EEG.event.type}, 'soc+'));
+
+            %check for right task
+            if isempty(trsplist)
+                error("are you sure this is MC?")
+            end
+
+            %check if the stimlist is more than one and error
+            if length(stmlist) > 1
+                error("more than one soc+ flag, check raw data please")
+            elseif isempty(stmlist)
+                error("no soc+ flag found, check raw data please")
+            end
+
+            latency = EEG.event(stmlist).old_latency;
+            EEG.event(stmlist).latency = latency + sitedelay;
+            EEG = eeg_checkset(EEG, 'eventconsistency');
+
+            if ~isempty(din3s)
+                %THERE ARE DINS THAT'S A PROBLEM
+                stimdev(run) = 1;
+            end
+
+        end
+    end
+
+
+        %OLD CODE FROM ORIGINAL MADE
     %if adjust_time_offset==1
         % adjust anti-aliasing filter time offset
         %if filter_timeoffset~=0
@@ -329,95 +675,178 @@ for run=1:length(datafile_names)
         end
     end
     
-    %% STEP 5.25: Label Task Variable and DIN conidtions if it is not already labeled
-    
-   if strcmp(EEG.event(3).Task, 'n/a')
-       if contains(EEG.filename, 'MMN')
-           task = 'MMN';
-           din2s = find(strcmp({EEG.event.type}, 'DIN2'));
-           for d =1:length(din2s) %label the DIN condition
-               EEG.event(din2s(d)).Condition = EEG.event(din2s(d)-1).Condition;
-           end
-           
-           num_stm = numel(find(strcmp({EEG.event.type}, 'stms')));
-           num_din = length(din2s);
-           if num_stm  < num_din %remove any extra DINs
-               for w = 1:length(din2s)
-                   if ~(strcmp({EEG.event(din2s(w)-1).type}, 'stms'))
-                       EEG.event(din2s(w)).type = 'EXTRA_DIN';
-                   end
-               end
-           end
-       elseif contains(EEG.filename, 'RS')
-           task = 'RS'; %no labeling needed
-       elseif contains(EEG.filename, 'VEP')
-           task = 'VEP';
-           din3s = find(strcmp({EEG.event.type}, 'DIN3'));
-           if din3s(1) == 1 %if the first flag in a file is a DIN remove it
-               EEG.event(din3s(1)).type = 'EXTRA_DIN';
-           end
-           for d =1:length(din3s) %label the DIN conditions
-               EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
-           end
-           
-       elseif contains(EEG.filename, 'FACE')
-           task = 'FACE';
-           dins = find(strcmp({EEG.event.type}, 'DIN3'));
-           %label Face Blocks
-           if length(dins) >= 100
-               block1 = EEG.event(1:dins(100));
-           else
-               block1 = EEG.event;
-           end
-           searchblock1_inverted = numel(find(strcmp({block1.Condition}, '2')))-1; %subtract 1 bc there is always 1 flag of each condition in the SESS rows
-           if searchblock1_inverted >=1
-               upright_condition_b1 = '1';
-               upright_condition_b2 = '4';
-           else
-               upright_condition_b1 = '4';
-               upright_condition_b2 = '1';
-           end
-           
-           for d =1:length(dins)
-               %The condition for the din is set equal to whatever the condition of preceding flag
-               EEG.event(dins(d)).Condition = EEG.event(dins(d)-1).Condition;
-               if d <=100
-                   EEG.event(dins(d)).Block = 1;
-                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
-                       EEG.event(dins(d)).Condition = upright_condition_b1;
-                       EEG.event(dins(d)-1).Condition = upright_condition_b1;
-                       EEG.event(dins(d)+1).Condition = upright_condition_b1;
-                   end
-               else
-                   EEG.event(dins(d)).Block = 2;
-                   if strcmp(EEG.event(dins(d)-1).Condition, '1')
-                       EEG.event(dins(d)).Condition = upright_condition_b2;
-                       EEG.event(dins(d)-1).Condition = upright_condition_b2;
-                       EEG.event(dins(d)-2).Condition = upright_condition_b2;
-                   end
-               end
-               
-           end
-           num_stm = numel(find(strcmp({EEG.event.type}, 'stm+')));
-           num_din = length(dins);
-           if num_stm  < num_din
-               for w = 1:length(dins)
-                   if ~strcmp({EEG.event(dins(w)-1).type}, 'stm+')
-                       EEG.event(dins(w)).type = 'EXTRA_DIN';
-                   end
-               end
-           end
-           
-       end
-       
-       for i = 1:length(EEG.event)
-           EEG.event(i).Task = task; %label task variable
-       end
-       
+    %% STEP 5.25: Label Task Variable and DIN conditions if it is not already labeled
+
+    if strcmp(EEG.event(3).Task, 'n/a')
+        % MMN V03-V06
+        if contains(EEG.filename, 'MMN')
+            task = 'MMN';
+            din2s = find(strcmp({EEG.event.type}, 'DIN2'));
+            for d =1:length(din2s) %label the DIN condition
+                EEG.event(din2s(d)).Condition = EEG.event(din2s(d)-1).Condition;
+            end
+
+            num_stm = numel(find(strcmp({EEG.event.type}, 'stms')));
+            num_din = length(din2s);
+            if num_stm  < num_din %remove any extra DINs
+                for w = 1:length(din2s)
+                    if ~(strcmp({EEG.event(din2s(w)-1).type}, 'stms'))
+                        EEG.event(din2s(w)).type = 'EXTRA_DIN';
+                    end
+                end
+            end
+
+            if isempty(din2s) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
+            end
+
+            % VEP V03-V06
+        elseif contains(EEG.filename, 'VEP')
+            task = 'VEP';
+            din3s = find(strcmp({EEG.event.type}, 'DIN3'));
+            if din3s(1) == 1 %if the first flag in a file is a DIN remove it
+                EEG.event(din3s(1)).type = 'EXTRA_DIN';
+            end
+            for d =1:length(din3s) %label the DIN conditions
+                EEG.event(din3s(d)).Condition = EEG.event(din3s(d)-1).Condition;
+            end
+
+            if isempty(din3s) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
+            end
+
+            % FACE V03-V06
+        elseif contains(EEG.filename, 'FACE')
+            task = 'FACE';
+            dins = find(strcmp({EEG.event.type}, 'DIN3'));
+            %label Face Blocks
+            if length(dins) >= 100
+                block1 = EEG.event(1:dins(100));
+            else
+                block1 = EEG.event;
+            end
+            searchblock1_inverted = numel(find(strcmp({block1.Condition}, '2')))-1; %subtract 1 bc there is always 1 flag of each condition in the SESS rows
+            if searchblock1_inverted >=1
+                upright_condition_b1 = '1';
+                upright_condition_b2 = '4';
+            else
+                upright_condition_b1 = '4';
+                upright_condition_b2 = '1';
+            end
+
+            for d =1:length(dins)
+                %The condition for the din is set equal to whatever the condition of preceding flag
+                EEG.event(dins(d)).Condition = EEG.event(dins(d)-1).Condition;
+                if d <=100
+                    EEG.event(dins(d)).Block = 1;
+                    if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                        EEG.event(dins(d)).Condition = upright_condition_b1;
+                        EEG.event(dins(d)-1).Condition = upright_condition_b1;
+                        EEG.event(dins(d)+1).Condition = upright_condition_b1;
+                    end
+                else
+                    EEG.event(dins(d)).Block = 2;
+                    if strcmp(EEG.event(dins(d)-1).Condition, '1')
+                        EEG.event(dins(d)).Condition = upright_condition_b2;
+                        EEG.event(dins(d)-1).Condition = upright_condition_b2;
+                        EEG.event(dins(d)-2).Condition = upright_condition_b2;
+                    end
+                end
+
+            end
+            num_stm = numel(find(strcmp({EEG.event.type}, 'stm+')));
+            num_din = length(dins);
+            if num_stm  < num_din
+                for w = 1:length(dins)
+                    if ~strcmp({EEG.event(dins(w)-1).type}, 'stm+')
+                        EEG.event(dins(w)).type = 'EXTRA_DIN';
+                    end
+                end
+            end
+
+            if isempty(dins) %check for missing dins -- stimtracker deviation
+                stimdev(run) = 1;
+            end
+
+            % RS V03-V08
+        elseif contains(EEG.filename, 'RS')
+            if contains(session_label, 'V08') || contains(session_label, 'P08')
+                task = 'RSV08';   % V08-specific labeling
+            else
+                task = 'RS';      % V03–V06
+                dins = find(strcmp({EEG.event.type}, 'DIN3'));
+                if isempty(dins) %check for missing dins -- stimtracker deviation
+                    stimdev(run) = 1;
+                end
+
+            end
+        % V08 tasks do not require labeling in this section at this time    
+        elseif contains(EEG.filename, 'MC')
+            task = 'MC';
+        elseif contains(EEG.filename, 'SL')
+            task = 'SL';
+        elseif contains(EEG.filename, 'EMO')
+            task = 'EMO';
+        end
+
+        for i = 1:length(EEG.event)
+            EEG.event(i).Task = task; %label task variable
+        end
+
     end
-    
+ 
+    %% STEP 5.3 Do linear interpolation of stimtracker artifact
+    % This section of code automatically detects the presence or absence of
+    % the artfact currently associated with the use of the stimtracker
+    % to generate DINs.  Currently, this interpolation is run on all files
+    % regardless of presence/absence of artifact for consistency.  To run
+    % only on files with the artfact, set the first conditional in the
+    % function to 'false'.  Detection of the artifact and overall
+    % interpolation are added to the subject-level preprocessing reports.
+
+    artifact_detected = NaN;
+    stimtracker_interp_applied = 0;
+
+    try
+
+        if ~any(contains(session_label, {'V08','P08'})) && ...
+                any(strcmp(task_label, {'task-MMN','task-FACE','task-VEP'}))
+
+            [EEG, artifact_detected, stimtracker_interp_applied] = ...
+                stimtracker_artifact_interpolation( ...
+                EEG, ...
+                task_label, ...
+                true, ...
+                true);
+
+        end
+
+    catch ME
+
+        warning('Stimtracker interpolation failed for %s:\n%s', ...
+            filename, ME.message);
+
+        artifact_detected = NaN;
+        stimtracker_interp_applied = 0;
+
+    end
+
+    if isnan(artifact_detected)
+        artifact_detected_all(run) = NaN;
+    else
+        artifact_detected_all(run) = double(artifact_detected);
+    end
+
+    if isempty(stimtracker_interp_applied) || isnan(stimtracker_interp_applied)
+        stimtracker_interp_applied_all(run) = 0;
+    else
+        stimtracker_interp_applied_all(run) = double(stimtracker_interp_applied);
+    end
     %% STEP 5.5: Get Line Noise Measure
     % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
+    % Please note we are tracking but not removing line noise. In
+    % discussion with Nathan Fox and Santiago Morales, it is agreed this
+    % should not be changed at this time - 5/6/2026 AV
         lineNoiseIn = struct('lineNoiseMethod', 'clean', ...
             'lineNoiseChannels', 1:EEG.nbchan, 'Fs', EEG.srate, ...
             'lineFrequencies', [60 120], 'p', 0.01, 'fScanBandWidth', 2, ...
@@ -437,7 +866,7 @@ for run=1:length(datafile_names)
             size(EEG.data, 1), []), reshape(outEEG.data, size(outEEG.data,1), ...
             []), lnMeans, EEG.srate, [neighbors lnParams_harms_frequs]) ;
         
-        lineNoise{run,1} = lnMeans(3); %grab only the 60 hz pre/post r value
+        lineNoise{end+1} = lnMeans(3); %grab only the 60 hz pre/post r value
     
     %% STEP 6: Filter data
     % Calculate filter order using the formula: m = dF / (df / fs), where m = filter order,
@@ -495,6 +924,57 @@ for run=1:length(datafile_names)
         save([[output_location filesep 'filtered_data' filesep ] strrep(datafile_names{run}, '_eeg.set', '_desc-filtered_eeg.mat')], 'EEG'); % save .mat format
     end
     
+end
+
+% Update datafile_names prior to merge
+if ~isempty(unusable_files)
+    datafile_names = datafile_names(~ismember(datafile_names, unusable_files(:,1)));
+    sub_id = resize(sub_id, length(datafile_names));
+    run = length(datafile_names);
+end
+%TM FOR TESTING - REMOVE WITH DG's PATCH
+%artifact_detected = zeros(size(datafile_names));
+%stimtracker_interp_applied = zeros(size(datafile_names));
+
+%% if all files are marked as unusable then stop running made and end!
+% patch for if all files turn out unusable then just mark them, make a
+% report, and finish -- TM 5.27.26
+if isempty(datafile_names)
+    report_table=table('Size', [0, 32], ...
+        'VariableTypes', {'cell','cell', 'string', 'cell','cell', 'cell', ...
+    'cell', 'double', 'double', 'cell', 'double', ...
+    'double', 'cell','cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'cell', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'});
+
+    report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
+    'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
+    'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', 'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed', 'Uniform_detected', 'Uniform_time'};
+
+    for i = 1:length(unusable_files)
+
+        % handle empty report_table
+        if isempty(report_table)
+            newrow = cell2table(cell(1,width(report_table)), ...
+                'VariableNames', report_table.Properties.VariableNames);
+        else
+            newrow = report_table(1,:);
+        end
+
+        newrow.datafile_name = unusable_files(i);
+        newrow.subject_id = {participant_label};
+        newrow.task = string(extractBetween(newrow.datafile_name, 'task-', '_acq-eeg'));
+
+        newrow.line_noise = {[]}; newrow.reference_for_faster = {'Cz'}; newrow.faster_bad_channels = {'n/a'}; newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'}; newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
+
+        newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'}; newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'}; newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
+        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN; newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
+        newrow.Uniform_detected = NaN; newrow.Uniform_time = NaN;
+
+        report_table(end+1,:) = newrow;
+
+    end
+
+    writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
+    return    
 end
 
 %% Step 6.7: Merge Data (based off of shared script from lydia)
@@ -875,40 +1355,26 @@ for run = 1 : length(event_struct.file_names)
     
     if contains(event_struct.file_names{run}, 'MMN')
         task = 'MMN';
+    elseif contains(event_struct.file_names{run}, 'RS') && (contains(event_struct.file_names{run}, 'V08') || contains(event_struct.file_names{run}, 'P08'))
+        task = 'RSV08';
     elseif contains(event_struct.file_names{run}, 'RS')
         task = 'RS';
     elseif contains(event_struct.file_names{run}, 'VEP')
         task = 'VEP';
     elseif contains(event_struct.file_names{run}, 'FACE')
         task = 'FACE';
+    elseif contains(event_struct.file_names{run}, 'EMO')
+        task = 'EMO';
+    elseif contains(event_struct.file_names{run}, 'MC')
+        task = 'MC';
+    elseif contains(event_struct.file_names{run}, 'SL')
+        task = 'SL';
     end
 
     Tasks(run) = string(task);
     
-    %Pull site information from scans.tsv (site) - TM 12/20/2024
-    %outEEGname = outEEG.setname;
-
-    try
-        %first try getting siteinfo from scans.tsv
-        sitepath = [bids_dir filesep participant_label filesep session_label];
-        sitetable = readtable([sitepath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
-        try
-            siteinfo=sitetable.site(contains(sitetable.filename,'eeg'));
-            siteinfo = siteinfo(1);
-        catch
-            error("Site data is missing!")
-        end
-    catch
-        %otherwise try getting site info from local PSCID
-        try
-            outEEGname = outEEG.setname;
-            siteinfo = outEEGname(3:5);
-        catch
-            error("Site data is missing locally!")
-        end
-    end
-
-    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays);
+    %site information pulled in step 3 - TM
+    EEG = make_MADE_epochs(EEG, event_struct.file_names{run}, json_settings_file, task, siteinfo, site_delays, session_label);
     total_epochs_before_artifact_rejection(run)=EEG.trials;
     
     %% STEP 13: Remove baseline
@@ -1058,6 +1524,10 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {'n/a'};
             MMN_PreDev(run) = {'n/a'};
             MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
         elseif contains(event_struct.file_names{run}, 'MMN')
             FACE_UpInv(run) = {'n/a'};
             FACE_Inv(run) = {'n/a'};
@@ -1066,6 +1536,23 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {sum(strcmp({EEG.event.Condition}, '1'))};
             MMN_PreDev(run) = {sum(strcmp({EEG.event.Condition}, '2'))};
             MMN_Dev(run) = {sum(strcmp({EEG.event.Condition}, '3'))};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
+            total_epochs_after_artifact_rejection(run)= EEG.trials;
+        elseif contains(event_struct.file_names{run}, 'EMO')
+            FACE_UpInv(run) = {'n/a'};
+            FACE_Inv(run) = {'n/a'};
+            FACE_Object(run) = {'n/a'};
+            FACE_UpObj(run) = {'n/a'};
+            MMN_Standard(run) = {'n/a'};
+            MMN_PreDev(run) = {'n/a'};
+            MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {sum(strcmp({EEG.event.Condition}, 'stm_anger'))};
+            EMO_Calm(run) = {sum(strcmp({EEG.event.Condition}, 'stm_calm'))};
+            EMO_Fearful(run) = {sum(strcmp({EEG.event.Condition}, 'stm_fearful'))};
+            EMO_Happy(run) = {sum(strcmp({EEG.event.Condition}, 'stm_happy'))};
             total_epochs_after_artifact_rejection(run)= EEG.trials;
         else
             FACE_UpInv(run) = {'n/a'};
@@ -1075,6 +1562,10 @@ for run = 1 : length(event_struct.file_names)
             MMN_Standard(run) = {'n/a'};
             MMN_PreDev(run) = {'n/a'};
             MMN_Dev(run) = {'n/a'};
+            EMO_Anger(run) = {'n/a'};
+            EMO_Calm(run) = {'n/a'};
+            EMO_Fearful(run) = {'n/a'};
+            EMO_Happy(run) = {'n/a'};
             total_epochs_after_artifact_rejection(run)=EEG.trials;
         end
     end
@@ -1127,9 +1618,13 @@ for run = 1 : length(event_struct.file_names)
         agetable = readtable([tsvpath filesep participant_label '_' session_label '_scans.tsv'],"Filetype","text",'Delimiter','\t');
         try
             taskages=agetable.age(contains(agetable.filename,'acq-eeg'));
-            age = taskages(1)*12;   
+            try
+                age = taskages(1)*12; 
+            catch
+                error("Age is n/a?")
+            end
         catch
-            error("Age data is missing!")
+            error("1. Age data is missing in scans.tsv!")
         end
     
     catch
@@ -1138,7 +1633,7 @@ for run = 1 : length(event_struct.file_names)
         try
             age = agetable.age(strcmp(agetable.participant_id, participant_label))*12; %if age is given in years?
         catch
-            error("Age data is missing!")
+            error("2. Age data is missing in participants.tsv!")
         end
     end
     
@@ -1150,7 +1645,7 @@ for run = 1 : length(event_struct.file_names)
         catch
             continue
         end
-    elseif contains(event_struct.file_names{run}, 'RS')
+    elseif any(contains(event_struct.file_names{run}, {'RS','MC'})) % We are currently treating MC like RS and might add additional analyses for dr.4.0 - AV 5/11/2026
         try
             RS_ERP_Topo_Indv();
             clear allData;
@@ -1173,6 +1668,13 @@ for run = 1 : length(event_struct.file_names)
         catch
             continue
         end
+    elseif contains(event_struct.file_names{run}, 'SL') 
+        try
+            SL_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
     end
     
     
@@ -1181,12 +1683,36 @@ end % end of run loop
 
 
 %% Create the report table for all the data files with relevant preprocessing outputs.
-report_table=table(datafile_names', sub_id', Tasks', lineNoise, reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
-    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', total_channels_interpolated', avginterp', stdinterp', rangeinterp');
+%if datafile names is empty and there are no tasks with data, that is
+%handled earlier and will not make it to this point
+report_table=table(datafile_names', sub_id', Tasks', lineNoise', reference_used_for_faster', faster_bad_channels', ica_preparation_bad_channels', length_ica_data', ...
+    total_ICs', ICs_removed', total_epochs_before_artifact_rejection', total_epochs_after_artifact_rejection',FACE_UpInv',FACE_Inv', FACE_Object', FACE_UpObj', MMN_Standard', MMN_PreDev', MMN_Dev', EMO_Anger', EMO_Calm', EMO_Fearful', EMO_Happy', ...
+    total_channels_interpolated', avginterp', stdinterp', rangeinterp', stimdev', artifact_detected_all', stimtracker_interp_applied_all', uniform_detected', uniform_time');
 
-report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', ...
-    'ica_prep_bad_channels', 'length_ica_data', 'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', ...
-    'total_epochs_post_artifact_rej', 'FACE_UpInv','FACE_Inv', 'FACE_Obj', 'FACE_UpObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev','total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej'};
+report_table.Properties.VariableNames={'datafile_name','subject_id', 'task', 'line_noise','reference_for_faster', 'faster_bad_channels', 'ica_prep_bad_channels', 'length_ica_data', ...
+    'total_ICs', 'ICs_removed', 'total_epochs_pre_artifact_rej', 'total_epochs_post_artifact_rej', 'FACE_UprightInv','FACE_Inv', 'FACE_Obj', 'FACE_UprightObj', 'MMN_Standard', 'MMN_PreDev', 'MMN_Dev', 'EMO_Anger', 'EMO_Calm', 'EMO_Fearful', 'EMO_Happy', ...
+    'total_channels_interp', 'avg_chan_interp_artifact_rej', 'std_chan_interp_artifact_rej', 'range_chan_interp_artifact_rej', 'StimTracker_Deviation', 'Stimtracker_Artifact_present', 'Stimtracker_Artifact_fixed', 'Uniform_detected', 'Uniform_time'};
+
+if ~isempty(unusable_files)
+    for i=1:length(unusable_files)
+        newrow = report_table(1,:);
+        newrow.datafile_name = unusable_files(i);
+        newrow.task = string(extractBetween(newrow.datafile_name, 'task-', '_acq-eeg'));
+        newrow.line_noise = {[]}; 
+        newrow.faster_bad_channels = {'n/a'};
+        newrow.ica_prep_bad_channels = {'n/a'}; newrow.length_ica_data = NaN; newrow.total_ICs = NaN; newrow.ICs_removed = {'n/a'};
+        newrow.total_epochs_pre_artifact_rej = NaN; newrow.total_epochs_post_artifact_rej = NaN;
+        newrow.FACE_UprightInv = {'n/a'}; newrow.FACE_Inv = {'n/a'}; newrow.FACE_Obj = {'n/a'}; newrow.FACE_UprightObj = {'n/a'};
+        newrow.MMN_Standard = {'n/a'}; newrow.MMN_PreDev = {'n/a'}; newrow.MMN_Dev = {'n/a'};
+        newrow.EMO_Anger = {'n/a'}; newrow.EMO_Calm = {'n/a'}; newrow.EMO_Fearful = {'n/a'}; newrow.EMO_Happy = {'n/a'};
+        newrow.total_channels_interp = NaN; newrow.avg_chan_interp_artifact_rej = NaN; newrow.std_chan_interp_artifact_rej = NaN; newrow.range_chan_interp_artifact_rej = NaN;
+        newrow.StimTracker_Deviation = NaN; newrow.Stimtracker_Artifact_present = NaN; newrow.Stimtracker_Artifact_fixed = NaN;
+        newrow.Uniform_detected = NaN; newrow.Uniform_time = NaN;
+
+        report_table(end+1,:) = newrow;
+    end
+end
+
 writetable(report_table, fullfile(output_location, [participant_label '_' session_label '_acq-eeg_preprocessingReport.csv']));
 
 %%% Delete the interem results if the user doesnt want them

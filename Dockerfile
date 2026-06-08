@@ -34,7 +34,7 @@ RUN pip install numpy
 #on S3
 RUN mkdir /mcr_path
 RUN df -h \
-    && wget https://s3.msi.umn.edu/leex6144-public/v912.zip -O /mcr_path/mcr.zip \
+    && wget https://s3.msi.umn.edu/pandh015-public/v912.zip -O /mcr_path/mcr.zip \
     && cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
     && rm /mcr_path/mcr.zip
 
@@ -42,7 +42,7 @@ RUN df -h \
 
 #Download the unique code for this project
 RUN mkdir /python_code
-RUN wget https://s3.msi.umn.edu/leex6144-public/HBCD-MADE-v161.zip -O /python_code/code.zip \
+RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-v170.zip -O /python_code/code.zip \
     && cd /python_code && unzip -q ./code.zip \
     && rm /python_code/code.zip
 

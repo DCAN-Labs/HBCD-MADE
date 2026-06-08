@@ -93,9 +93,9 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = 'task-VEP_topo.jpg';
+Plot_Name = 'topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_',Plot_Name]; % 
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 
 %%
@@ -138,6 +138,6 @@ hold off;
 
 
 cd(save_path)
-save_plot_name = strcat(name, '_task-VEP_desc-', ROIname, '_ERP.jpg'); %name, '_
-saveas(erp, save_plot_name);
+save_plot_name = strcat('desc-', ROIname, '_ERP.jpg'); 
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', save_plot_name)]);
 

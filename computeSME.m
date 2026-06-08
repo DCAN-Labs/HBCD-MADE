@@ -575,6 +575,6 @@ if ~strcmp(session_label, 'ses-V03')
     end
 end
 
-writetable(smeWide, [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPSummaryStats.csv']);
-writetable(tabWide,  [output_location filesep 'processed_data' filesep participant_label '_' session_label '_task-' task '_ERPTrialMeasures.csv']);
+writetable(smeWide, [output_location filesep 'processed_data' filesep strrep(eeg_file_name, 'desc-filtered_eeg.set', 'ERPSummaryStats.csv')]);
+writetable(tabWide,  [output_location filesep 'processed_data' filesep strrep(eeg_file_name, 'desc-filtered_eeg.set', 'ERPTrialMeasures.csv')]);
 
