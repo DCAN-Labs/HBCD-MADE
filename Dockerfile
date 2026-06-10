@@ -34,7 +34,7 @@ RUN pip install numpy
 #on S3
 RUN mkdir /mcr_path
 RUN df -h \
-    && wget https://s3.msi.umn.edu/pandh015-public/v912.zip -O /mcr_path/mcr.zip \
+    && wget https://s3.msi.umn.edu/pandh015-public/R2023b_mcr.zip -O /mcr_path/mcr.zip \
     && cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
     && rm /mcr_path/mcr.zip
 
@@ -42,7 +42,7 @@ RUN df -h \
 
 #Download the unique code for this project
 RUN mkdir /python_code
-RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-v170.zip -O /python_code/code.zip \
+RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-v170-R2023b.zip -O /python_code/code.zip \
     && cd /python_code && unzip -q ./code.zip \
     && rm /python_code/code.zip
 
@@ -53,9 +53,9 @@ RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_june24_24.zip  -O /s
     && rm /sample_locs/sample_locs.zip
 
 #Export paths (make sure LD_LIBRARY_PATH is set to the correct version)
-ENV MCR_PATH=/mcr_path/v912
+ENV MCR_PATH=/mcr_path/R2023b
 ENV EXECUTABLE_PATH=/python_code/run_compiled.sh
-ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/v912/runtime/glnxa64:/mcr_path/v912/bin/glnxa64:/mcr_path/v912/sys/os/glnxa64:/mcr_path/v912/extern/bin/glnxa64"
+ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/R2023b/runtime/glnxa64:/mcr_path/R2023b/bin/glnxa64:/mcr_path/R2023b/sys/os/glnxa64:/mcr_path/R2023b/extern/bin/glnxa64"
 
 
 #Add code dir to path
