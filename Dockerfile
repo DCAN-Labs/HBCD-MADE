@@ -33,6 +33,12 @@ RUN pip install numpy
 #of MCR, install it, zip it, and upload the new path to a public bucket
 #on S3
 RUN mkdir /mcr_path
+### uncomment to copy from local file instead of downloading from S3
+# COPY V232_mcr.zip /mcr_path/mcr.zip
+# RUN cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
+#     && rm /mcr_path/mcr.zip
+
+## uncomment to download from S3 instead of copying from local file
 RUN df -h \
     && wget https://s3.msi.umn.edu/pandh015-public/R2023b_mcr.zip -O /mcr_path/mcr.zip \
     && cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
