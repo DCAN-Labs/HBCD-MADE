@@ -67,6 +67,7 @@ ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/R2023b/runtime/glnxa64:/mcr_p
 #Add code dir to path
 ENV PATH="${PATH}:/python_code"
 ENV pipeline_name=made
+ENV PYTHONUNBUFFERED=1
 COPY ./python_code/run.py /python_code/$pipeline_name
 COPY ./python_code/run.py /python_code/run.py
 
