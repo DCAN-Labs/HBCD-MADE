@@ -106,6 +106,8 @@ uniform_time = zeros(size(datafile_names));
 %% Initialize loop variables
 unusable_files = {};
 lineNoise = {};
+artifact_detected_all = [];
+stimtracker_interp_applied_all = [];
 
 %% Loop over all data files
 for run=1:length(datafile_names)
@@ -261,7 +263,7 @@ for run=1:length(datafile_names)
             fprintf('Skipping file (impedance issue): %s\n', EEG.filename);
 
             unusable_files{end+1,1} = datafile_names{run};
-            unusable_files{end,2}   = 'impedance_issue';
+            %unusable_files{end,2}   = 'impedance_issue';
 
             % --- Save flagged file ---
             if output_format == 1
@@ -832,15 +834,15 @@ for run=1:length(datafile_names)
     end
 
     if isnan(artifact_detected)
-        artifact_detected_all(run) = NaN;
+        artifact_detected_all(end+1) = NaN;
     else
-        artifact_detected_all(run) = double(artifact_detected);
+        artifact_detected_all(end+1) = double(artifact_detected);
     end
 
     if isempty(stimtracker_interp_applied) || isnan(stimtracker_interp_applied)
-        stimtracker_interp_applied_all(run) = 0;
+        stimtracker_interp_applied_all(end+1) = 0;
     else
-        stimtracker_interp_applied_all(run) = double(stimtracker_interp_applied);
+        stimtracker_interp_applied_all(end+1) = double(stimtracker_interp_applied);
     end
     %% STEP 5.5: Get Line Noise Measure
     % from HAPPE pipeline: see https://github.com/PINE-Lab/HAPPE for details
@@ -1645,13 +1647,7 @@ for run = 1 : length(event_struct.file_names)
         catch
             continue
         end
-    elseif any(contains(event_struct.file_names{run}, {'RS','MC'})) % We are currently treating MC like RS and might add additional analyses for dr.4.0 - AV 5/11/2026
-        try
-            RS_ERP_Topo_Indv();
-            clear allData;
-        catch
-            continue
-        end
+    
     elseif contains(event_struct.file_names{run}, 'VEP')
         try
             computeSME(EEG, event_struct.file_names{run}, json_settings_file, 'VEP', output_location, participant_label, session_label, age)
@@ -1671,6 +1667,14 @@ for run = 1 : length(event_struct.file_names)
     elseif contains(event_struct.file_names{run}, 'SL') 
         try
             SL_ERP_Topo_Indv();
+            clear allData;
+        catch
+            continue
+        end
+
+    elseif any(contains(event_struct.file_names{run}, {'RS','MC'})) % We are currently treating MC like RS and might add additional analyses for dr.4.0 - AV 5/11/2026
+        try
+            RS_ERP_Topo_Indv();
             clear allData;
         catch
             continue
