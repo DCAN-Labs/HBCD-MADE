@@ -125,9 +125,9 @@ title(strcat('Standard',infoSafeTitle_s), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = 'task-MMN_desc-standard_topo.jpg';
+Plot_Name = 'desc-standard_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 erp = figure;
 infoSafeTitle_d = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_d_trials);
@@ -136,9 +136,9 @@ title(strcat('PreDeviant',infoSafeTitle_d), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = 'task-MMN_desc-preDeviant_topo.jpg';
+Plot_Name = 'desc-preDeviant_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 erp = figure;
 infoSafeTitle_n = strcat('-',PeakStart_n,'-',PeakEnd_n,' ', ' n= ', EEG_n_trials);
@@ -147,9 +147,9 @@ title(strcat('Deviant',infoSafeTitle_n), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = 'task-MMN_desc-deviant_topo.jpg';
+Plot_Name = 'desc-deviant_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 % Difference wave
 
@@ -159,9 +159,9 @@ title(strcat('Deviant vs Standard',infoSafeTitle), 'FontSize', 20);
 cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 cd(save_path)
-Plot_Name = 'task-MMN_desc-diffDevVsSta_topo.jpg';
+Plot_Name = 'desc-diffDevVsSta_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 erp = figure;
 topoplot(PeakData_Nov - PeakData_Dev, EEG.chanlocs, 'maplimits', [-5 5.0], 'electrodes', 'on', 'gridscale', 100)
@@ -170,9 +170,9 @@ cbar('vert',0,[-.05 .05]*max(abs(date)));
 
 
 cd(save_path)
-Plot_Name = 'task-MMN_desc-diffDevVsPre_topo.jpg';
+Plot_Name = 'desc-diffDevVsPre_topo.jpg';
 merged_Plot_Name = [subject_ID, '_', session_label, '_', Plot_Name];
-saveas(erp, merged_Plot_Name);
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', Plot_Name)]);
 
 %%%TOPO ENDS HERE
 
@@ -222,8 +222,8 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_task-MMN_desc-', ROIname, '_ERP.jpg');
-saveas(erp, save_plot_name);
+save_plot_name = strcat('desc-', ROIname, '_ERP.jpg');
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', save_plot_name)]);
 
 %Difference
 novMinusstand = novel-standard; % 3 minus 4 %Object Vs Upright2 %3 vs 1 Deviant vs Standard
@@ -243,8 +243,8 @@ set(legendHandle, 'box', 'off', 'FontSize', 10);
 hold off;
 
 cd(save_path)
-save_plot_name = strcat(name, '_task-MMN_desc-', ROIname, '_diffERP.jpg');
-saveas(erp, save_plot_name);
+save_plot_name = strcat('desc-', ROIname, '_diffERP.jpg');
+saveas(erp, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', save_plot_name)]);
 
 
 %%Individual ERPs ends here

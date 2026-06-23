@@ -119,7 +119,7 @@ hold off;
 % Save PSD plot
 save_plot_name = strcat(subject_ID, '_', session_label, '_task-RS_desc-allCh_PSD',  '.jpg');
 full_save_path = fullfile(save_path, save_plot_name);
-saveas(psd, full_save_path);
+saveas(psd, [strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'desc-allCh_PSD.jpg')]);
 close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,7 +138,7 @@ spectra_table = array2table(avg_abs_pow, 'VariableNames', freq_labels, 'RowNames
 % Add 'Electrode' label to top-left corner of the table for CSV export
 spectra_table.Properties.DimensionNames{1} = 'Electrode';
 % Create the output file name with the subject_ID
-output_file = sprintf([subject_ID,'_', session_label, '_task-RS_AbsPowerSpectra', '.csv']); 
+output_file = sprintf([strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'AbsPowerSpectra.csv')]); 
 % Save the table to a CSV file
 writetable(spectra_table, output_file, 'WriteRowNames', true);
 % disp(['Spectra saved to ' output_file]);
@@ -149,7 +149,7 @@ spectra_table = array2table(avg_log_pow, 'VariableNames', freq_labels, 'RowNames
 % Add 'Electrode' label to top-left corner of the table for CSV export
 spectra_table.Properties.DimensionNames{1} = 'Electrode';
 % Create the output file name with the subject_ID
-output_file = sprintf([subject_ID,'_', session_label, '_task-RS_LogPowerSpectra', '.csv']); 
+output_file = sprintf([strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'LogPowerSpectra.csv')]); 
 % Save the table to a CSV file
 writetable(spectra_table, output_file, 'WriteRowNames', true);
 
@@ -159,7 +159,7 @@ spectra_table = array2table(avg_db_pow, 'VariableNames', freq_labels, 'RowNames'
 % Add 'Electrode' label to top-left corner of the table for CSV export
 spectra_table.Properties.DimensionNames{1} = 'Electrode';
 % Create the output file name with the subject_ID
-output_file = sprintf([subject_ID,'_', session_label, '_task-RS_dbPowerSpectra', '.csv']); 
+output_file = sprintf([strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'dbPowerSpectra.csv')]); 
 % Save the table to a CSV file
 writetable(spectra_table, output_file, 'WriteRowNames', true);
 
@@ -199,7 +199,7 @@ for epoch = 1:n_epochs
 end
 
 % Save the data into the .mat file
-output_file_mat = sprintf([subject_ID,'_', session_label, '_task-RS_spectra.mat']); 
+output_file_mat = sprintf([strrep(event_struct.file_names{run}, 'desc-filtered_eeg.set', 'spectra.mat')]); 
 
 % Save the data, including the epoch-level power matrices
 save(output_file_mat, 'subject_ID', 'n_epochs', 'Fs', 'chan_locs', 'avg_abs_pow',...

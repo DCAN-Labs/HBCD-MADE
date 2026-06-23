@@ -142,6 +142,21 @@
       "DIN3"
     ]
   },
+"RSV08": {
+    "ROI_of_interest": "oz", 
+    "make_dummy_events": true,
+    "remove_baseline": 0,
+    "lowpass": 50,
+    "erp_filter": 0,
+    "erp_lowpass": 0,
+    "pre_latency": 0.5,
+    "post_latency": 0.5,
+    "num_dummy_events": 360,
+    "dummy_event_spacing": 0.5,
+    "marker_names": [
+      "bas+"
+    ]
+  },
   "VEP": {
     "ROI_of_interest": "oz", 
     "erp_filter": 1,
@@ -169,7 +184,6 @@
         "score_ROIs": ["oz", "oz", "oz"],
         "ERP_names": ["N1", "P1", "N2"]
     }
-
 
   },
   "MMN": {
@@ -227,5 +241,44 @@
         "score_ROIs": ["p8", "p7", "oz", "p8", "p7", "oz", "fcz"],
         "ERP_names": ["N290", "N290", "N290", "P400", "P400", "P400", "NC"]
     }
+  },
+"MC": {
+    "ROI_of_interest": "oz", 
+    "make_dummy_events": true,
+    "remove_baseline": 0,
+    "lowpass": 50,
+    "erp_filter": 0,
+    "erp_lowpass": 0,
+    "pre_latency": 0.5,
+    "post_latency": 0.5,
+    "num_dummy_events": 900,
+    "dummy_event_spacing": 0.5,
+    "marker_names": [
+      "soc+"
+    ]
+  },
+"SL": {
+    "ROI_of_interest": "oz", 
+    "remove_baseline": 0,
+    "lowpass": 50,
+    "erp_filter": 0,
+    "erp_lowpass": 0,
+    "pre_latency": 0.5,
+    "post_latency": 0.5,
+    "marker_names": [
+      "stms"
+    ]
+  },
+"EMO": {
+    "ROI_of_interest": "oz", 
+    "pre_latency": 0.1,
+    "post_latency": 0.7,
+    "ERP_window_start": 0.1,
+    "ERP_window_end": 0.3,
+    "erp_filter": 1,
+    "erp_lowpass": 30,
+    "marker_names": [
+      "stm+"
+    ]
   }
 }
