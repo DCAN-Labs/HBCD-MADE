@@ -48,7 +48,7 @@ RUN cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
 
 RUN mkdir /python_code
 #Download the unique code for this project
-RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-V170-R2023b-beta2.zip -O /python_code/code.zip \
+RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-V170-R2023b-beta3.zip -O /python_code/code.zip \
     && cd /python_code && unzip -q ./code.zip \
     && rm /python_code/code.zip
 
