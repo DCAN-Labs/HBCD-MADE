@@ -134,10 +134,10 @@ The MADE preprocessing report is automatically generated for each session and co
 | std_chan_interp_artifact_rej | standard deviation of the number of channels removed per epoch for each task. |
 | range_chan_interp_artifact_rej | range of number of channels interpolated per epoch. |
 | StimTracker_Deviation | denotes whether StimTracker was used correctly during task (ON for V03, V04, V06 ERP tasks and OFF for V08 ERP tasks). 1 indicates correct use of StimTracker, 0 indicates incorrect use. |
-| Stimtracker_Artifact_present | was StimTracker arftifact identified in the task? 0 = no, 1 = yes|
-| Stimtracker_Artifact_fixed | was StimTracker artifact corrected with linear interpolation? 0 = no, 1 = yes  |
+| Stimtracker_Artifact_present | was StimTracker arftifact identified in the task? 0 = no, 1 = yes |
+| Stimtracker_Artifact_fixed | was linear interpolation applied to this task? 0 = no, 1 = yes  |
 | Uniform_detected | was signal uniformity identified? |
-| Uniform_time | length of signal uniformity |
+| Uniform_time | length of signal uniformity (in seconds) |
 
 The following variables within the MADE preprocessing report represent the number of trials retained after artifact rejection from each condition of each task.
 
