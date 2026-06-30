@@ -49,14 +49,15 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with EEG fi
 * Savannah McNair (smcnair1@umd.edu)
 * Jessica Norris (jnorri10@umd.edu)
 * Erik Lee (eex6144@umn.edu)
+* Kira Ashton (kashton7@umd.edu)
+* Trisha Maheshwari (tmahesh@umd.edu)
+* Whitney E. Kasenetz (kasenetz@umd.edu)
 
 **Ongoing Contributors:**
 
 * Alicia Vallorani (avallora@umd.edu)
-* Kira Ashton (kashton7@umd.edu)
-* Trisha Maheshwari (tmahesh@umd.edu)
-* Whitney E. Kasenetz (kasenetz@umd.edu)
 * Dylan Gilbreath (dylangil@umd.edu)
+* Katherine Manning (kmannin4@umd.edu)
             
 ## Contents 
 
