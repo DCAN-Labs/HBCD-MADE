@@ -289,8 +289,7 @@ if plot_debug
 
     ylabel('\muV');
 
-    title(sprintf('Artifact Interpolation Debug\n%s', ...
-        filename), ...
+    title('Artifact Interpolation Debug', ...
         'Interpreter', 'none');
 
     saveas(gcf, fullfile(pwd, [filename '_stimtrackerQC.png']));

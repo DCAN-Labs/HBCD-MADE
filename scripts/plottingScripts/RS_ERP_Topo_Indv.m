@@ -95,7 +95,7 @@ avg_elec_db_pow = mean(avg_db_pow, 1);
 %% Added MM 05/07/2025
 % PLOT PSD HERE
 % Plot PSD in dB power
-title_figure = strcat(subject_ID, ' PSD N epochs = ', num2str(n_epochs));
+title_figure = strcat(' PSD N epochs = ', num2str(n_epochs));
 psd = figure;
 % Plot each channel PSD
 plot(freqs, avg_db_pow,'LineWidth', 3); 
