@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.6
+
 #The base image is the latest ubuntu docker image
 FROM python:3.9.16-slim-bullseye
 
@@ -27,56 +29,47 @@ RUN apt-get update && \
 RUN python3 -m pip install --upgrade pip
 RUN pip install numpy
 
-#Setup MCR - this grabs v912 of MCR that was downloaded from the matlab
-#website, installed at MSI, and then zipped. If you want to use a
-#different version of matlab then download the corresponding version
-#of MCR, install it, zip it, and upload the new path to a public bucket
-#on S3
-RUN mkdir /mcr_path
-### uncomment to copy from local file instead of downloading from S3
-COPY R2023b_mcr.zip /mcr_path/mcr.zip
-RUN cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
-    && rm /mcr_path/mcr.zip
+# -----------------------------
+# MATLAB Runtime (optimized)
+# -----------------------------
+RUN mkdir -p /mcr_path
 
-# ## uncomment to download from S3 instead of copying from local file
-# RUN df -h \
-#     && wget https://s3.msi.umn.edu/pandh015-public/R2023b_mcr.zip -O /mcr_path/mcr.zip \
-#     && cd /mcr_path && unzip -q ./mcr.zip || { echo "Unzip failed"; exit 1; } \
-#     && rm /mcr_path/mcr.zip
+# Stream extraction (NO COPY layer, no ZIP retained in image)
+RUN --mount=type=bind,source=R2023b_mcr.zip,target=/tmp/mcr.zip \
+    cd /mcr_path && \
+    unzip -q /tmp/mcr.zip || { echo "Unzip failed"; exit 1; }
 
-
-
+# -----------------------------
+# Python code
+# -----------------------------
 RUN mkdir /python_code
-#Download the unique code for this project
 RUN wget https://s3.msi.umn.edu/pandh015-public/HBCD-MADE-V170-R2023b-beta3.zip -O /python_code/code.zip \
     && cd /python_code && unzip -q ./code.zip \
     && rm /python_code/code.zip
 
-# ### uncomment to copy from local file instead of downloading from S3
-# COPY HBCD-MADE-V170-R2023b-beta1.zip /python_code/code.zip
-# RUN cd /python_code && unzip -q ./code.zip \
-#     && rm /python_code/code.zip
-
-#Download the sample locations/electrode files
+# -----------------------------
+# Sample locations
+# -----------------------------
 RUN mkdir /sample_locs
 RUN wget https://s3.msi.umn.edu/leex6144-public/sample_locs_june24_24.zip  -O /sample_locs/sample_locs.zip \
     && cd /sample_locs && unzip -q ./sample_locs.zip \
     && rm /sample_locs/sample_locs.zip
 
-#Export paths (make sure LD_LIBRARY_PATH is set to the correct version)
+# -----------------------------
+# Environment variables
+# -----------------------------
 ENV MCR_PATH=/mcr_path/R2023b
 ENV EXECUTABLE_PATH=/python_code/run_compiled.sh
-ENV LD_LIBRARY_PATH ="${LD_LIBRARY_PATH}:/mcr_path/R2023b/runtime/glnxa64:/mcr_path/R2023b/bin/glnxa64:/mcr_path/R2023b/sys/os/glnxa64:/mcr_path/R2023b/extern/bin/glnxa64"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/mcr_path/R2023b/runtime/glnxa64:/mcr_path/R2023b/bin/glnxa64:/mcr_path/R2023b/sys/os/glnxa64:/mcr_path/R2023b/extern/bin/glnxa64"
 
-
-#Add code dir to path
 ENV PATH="${PATH}:/python_code"
 ENV pipeline_name=made
 ENV PYTHONUNBUFFERED=1
+
 COPY ./python_code/run.py /python_code/$pipeline_name
 COPY ./python_code/run.py /python_code/run.py
 
-#Change Permissions
+# Change permissions
 RUN chmod 555 -R /mcr_path /python_code /sample_locs
 
 ENTRYPOINT ["made"]
