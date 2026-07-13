@@ -15,7 +15,7 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with EEG fi
 3. Merge all task files together.
 4. Check whether any electrodes are outliers at the session level. This is done by using FASTER (Nolan, 2010). In short, for each electrode, the following measures will be calculated to judge outlier status, and any electrodes that have deviations greater than 3 SDs on any given measure will be excluded from further analysis:
     * The average temporal correlation to other electrodes
-    * The Hurst exponent (measuring the self-similarity within each electrode’s time signal
+    * The Hurst exponent (measuring the self-similarity within each electrode’s time signal)
     * The signal variance
 5. Run through ICA on the electrodes:
     * Create a temporary copy of the EEG signal high passed at 1Hz for ICA
@@ -49,14 +49,15 @@ The HBCD-MADE pipeline will run preprocessing on BIDS-formatted data with EEG fi
 * Savannah McNair (smcnair1@umd.edu)
 * Jessica Norris (jnorri10@umd.edu)
 * Erik Lee (eex6144@umn.edu)
+* Kira Ashton (kashton7@umd.edu)
+* Trisha Maheshwari (tmahesh@umd.edu)
+* Whitney E. Kasenetz (kasenetz@umd.edu)
 
 **Ongoing Contributors:**
 
 * Alicia Vallorani (avallora@umd.edu)
-* Kira Ashton (kashton7@umd.edu)
-* Trisha Maheshwari (tmahesh@umd.edu)
-* Whitney E. Kasenetz (kasenetz@umd.edu)
 * Dylan Gilbreath (dylangil@umd.edu)
+* Katherine Manning (kmannin4@umd.edu)
             
 ## Contents 
 

@@ -100,11 +100,15 @@ def main():
             if num_eeg_affiliated_files == 0:
                 print('Skipping processing for {} since eeg directory appears to be empty (did not contain any files with character sequence "eeg." in file name)'.format(temp_session))
                 continue
-            #temp_log_file_path = os.path.join(temp_session, 'MCR_Processing_Log.txt')
+
+            print('Processing participant: {}  |  session: {}'.format(temp_participant, temp_session_label))
+
             output_status = os.system(compiled_executable_path + ' ' + mcr_path + ' ' + output_dir + ' ' + bids_dir + ' ' + temp_participant + ' ' + temp_session_label + ' ' + file_extension + ' ' + json_settings + ' ' + save_interim)
             output_status = os.WEXITSTATUS(output_status)
             if output_status > 0:
                 raise ValueError('Error: Matlab command line returned non-zero exit status ({})'.format(output_status))
+
+    print('HBCD-MADE successfully finished.')
             
     return
 

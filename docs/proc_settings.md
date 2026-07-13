@@ -93,7 +93,7 @@ These supported global settings are specified in the proc_settings_HBCD_containe
     DIN markers are inserted by a StimTracker and denote specific types of stimuli. DIN2 markers represent auditory stimuli from computer speakers, and DIN3 markers represent visual stimuli captured by a photocell on the participant monitor. DIN2 flags will always be present in MMN, and will appear in the FACE and VEP task only in cases when the researcher prompted “attention getter” stimuli which involve an auditory signal to bring the participant’s attention back to the computer screen. See [HBCD EEG Task Information](https://docs.hbcdstudy.org/latest/instruments/eeg/tasks/#hbcd-eeg-tasks) for more information.
 
 
-### Age-Dependent ERP time windows
+### Age-Dependent ERP Time Windows
 Some ERP components are scored with age-dependent time windows, which are defined in the [processing settings .json file](https://github.com/DCAN-Labs/HBCD-MADE/blob/main/proc_settings_HBCD.json). 
 
 Here's an example of how to interpret the .json specifying the age-dependent ERP time windows:
@@ -123,3 +123,12 @@ Unlike the ERP time windows, the ROI clusters used to score any given ERP are st
 }
 ```
 
+## Additional Functionality
+
+The following functionality was added in MADE v.1.7.0 and will be reflected in the HBCD DR3.0. 
+
+### StimTracker Artifact Detection and Correction
+`stimtracker_artifact_interpolation.m` averages all epochs per task and flags voltage fluctuations >1 µV in two time windows: –10 to 10 ms and 250 to 270 ms. Voltage fluctuations during those time windows have been identified as an artifact originating from the StimTracker device. See the [Central HBCD docs](https://docs.hbcdstudy.org/latest/instruments/eeg/qc/#eeg-quality-control-procedures) for additional details about MADE's StimTracker artifact detection and correction algorithm. 
+
+### Signal Uniformity Checks
+`run_MADE.m` checks for signal uniformity, which may indicate technical issues during administration. 

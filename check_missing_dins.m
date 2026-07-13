@@ -10,7 +10,7 @@ function [EEG] = check_missing_dins(EEG, task, siteinfo, site_delays)
 % site information is provided. This script in the pipeline will be used
 % for internal HBCD processing. 
 
-% This script relies on a mean_flag_delay_by_site.csv file that must be
+% This script relies on a median_flag_delay_by_site.csv file that must be
 % uploaded to CBrain. For local use, this path will be changed to where the
 % downloaded file is stored.
 
@@ -51,7 +51,7 @@ if strcmp(task, 'FACE')
     % if same number of dins and stms, nothing to fix 
     if length(din3s) < length(events)
 
-        sitedelay = site_delays(index,'mean_FACE_delay').mean_FACE_delay;
+        sitedelay = site_delays(index,'median_FACE_delay').median_FACE_delay;
 
         for t = events
 
@@ -86,7 +86,7 @@ elseif strcmp(task, 'MMN')
     % if same number of dins and stms, nothing to fix 
     if length(din2s) < length(events)
 
-        sitedelay = site_delays(index,'mean_MMN_delay').mean_MMN_delay;
+        sitedelay = site_delays(index,'median_MMN_delay').median_MMN_delay;
 
         for t = events
 
@@ -133,7 +133,7 @@ elseif strcmp(task, 'VEP')
     % if same number of dins and stms, nothing to fix 
     if length(din3s) < length(events)
 
-        sitedelay = site_delays(index,'mean_VEP_delay').mean_VEP_delay;
+        sitedelay = site_delays(index,'median_VEP_delay').median_VEP_delay;
         
         trsps = find(strcmp({EEG.event.type}, 'TRSP'));
         if length(din3s) == 0 
@@ -206,7 +206,7 @@ elseif strcmp(task, 'RS')
 
     % if same number of dins and stms, nothing to fix 
     if length(din3s) < length(events)
-        sitedelay = site_delays(index,'mean_FACE_delay').mean_FACE_delay;
+        sitedelay = site_delays(index,'median_FACE_delay').median_FACE_delay;
         
         for t = events
 

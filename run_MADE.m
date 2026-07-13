@@ -826,7 +826,7 @@ for run=1:length(datafile_names)
     catch ME
 
         warning('Stimtracker interpolation failed for %s:\n%s', ...
-            filename, ME.message);
+            participant_label, ME.message);
 
         artifact_detected = NaN;
         stimtracker_interp_applied = 0;
